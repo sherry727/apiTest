@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>筑家易云测试平台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="筑家易云测试平台">
+    <meta name="description" content="筑家易云测试平台">
+    <link rel="shortcut icon" href="/static/mine/images/favicon.ico" type="image/x-icon"/>
+    <link rel="stylesheet" href="/static/mine/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_693759_ask70l8wanw.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css"/>
+    <link rel="stylesheet" href="/static/mine/css/login.css"/>
+	<link rel="stylesheet" href="/static/mine/lib/nprogress/nprogress.css">
+</head>
+<body>
+    <div class="login-box animated rotateIn">
+        <div class="head"></div>
+        <div class="input-box">
+            <form class="layui-form" action="/login_action/" method="POST">
+{#                {% csrf_token %}#}
+{#                <input type="hidden" id="csrf_token" value="{{ csrf_token }}">#}
+                <input type="text" name="username" required lay-verify="required" placeholder="邮箱/手机号/平台账号" autocomplete="off" class="layui-input">
+                <input type="password" name="password" required lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">
+                <div class="remember-me">
+                    <span>记住我：</span>
+                    <input type="checkbox" name="zzz" lay-skin="switch" lay-text="是|否">
+                </div>
+                <div style="color:#F00">{{ error }}</div>
+                <input type="submit" value="登 录" lay-submit lay-filter="login">
+            </form>
+{#            <div class="oauth">#}
+{#                <i class="iconfont icon-WechatIMG" style="font-size: 25px;"></i>#}
+{#                <i class="iconfont icon-github"></i>#}
+{#                <i class="iconfont icon-logo-weibo"></i>#}
+{#                <i class="iconfont icon-qq"></i>#}
+{#                <i class="iconfont icon-weixin"></i>#}
+{#                <i class="iconfont icon-zhifubao"></i>#}
+{#            </div>#}
+        </div>
+        <div class="copyright">
+            © 2018-2019 zjy. All rights reserved.
+        </div>
+    </div>
+    <!--js逻辑-->
+    <script src="/static/mine/lib/layui/layui.js"></script>
+	<script src="/static/mine/lib/nprogress/nprogress.js"></script>
+    <script>
+		NProgress.start();
+		window.onload = function() {
+		    NProgress.done();
+		}
+        layui.use(['form', 'jquery'], function () {
+            var form = layui.form;
+            var $ = layui.jquery;
+
+{#            form.on('submit(login)', function (data) {#}
+{#                layer.msg("登陆中...", {icon: 6, time: 1000, anim: 4}, function () {#}
+{#                    window.location = "/index/";#}
+{#                });#}
+{#                return false;#}
+{#            });#}
+
+{#            $(".oauth .icon-WechatIMG").click(function () {#}
+{#                layer.msg('正在打开Gitee登陆页面，请稍后...');#}
+{#            });#}
+{##}
+{#            $(".oauth .icon-github").click(function () {#}
+{#                layer.msg('正在打开Github登陆页面，请稍后...');#}
+{#            });#}
+{##}
+{#            $(".oauth .icon-logo-weibo").click(function () {#}
+{#                layer.msg('正在打开微博登陆页面，请稍后...');#}
+{#            });#}
+{##}
+{#            $(".oauth .icon-qq").click(function () {#}
+{#                layer.msg('正在打开QQ登陆页面，请稍后...');#}
+{#            });#}
+{##}
+{#            $(".oauth .icon-weixin").click(function () {#}
+{#                layer.msg('正在打开微信登陆页面，请稍后...');#}
+{#            });#}
+{##}
+{#            $(".oauth .icon-zhifubao").click(function () {#}
+{#                layer.msg('正在打开支付宝登陆页面，请稍后...');#}
+{#            });#}
+        });
+    </script>
+</body>
+</html>

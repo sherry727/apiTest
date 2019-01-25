@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>添加用例</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/mine/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/mine/css/scroll-bar.css">
+    <link rel="stylesheet" href="/static/mine/css/sub-page.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_693759_wytlyqhtdtj1nhfr.css">
+</head>
+<body>
+<div class="ok-body">
+    <!--面包屑导航区域-->
+    <div class="ok-body-breadcrumb">
+            <span class="layui-breadcrumb">
+                <a><cite>用例管理</cite></a>
+                <a><cite>用例管理</cite></a>
+				<a><cite>添加接口</cite></a>
+            </span>
+        <a class="layui-btn layui-btn-small" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon layui-icon-refresh"></i>
+        </a>
+    </div>
+    <!--form表单-->
+    <form class="layui-form layui-form-pane ok-form" id="api-add">
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择项目</label>
+            <div class="layui-input-block">
+                <select name="projectid" id="projectName" lay-verify="required" lay-filter="projectNameFilter">
+                    <option value=""></option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">接口名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" placeholder="请输入名称" autocomplete="off" class="layui-input" lay-verify="required" >
+                <input type="hidden" name="user" placeholder="请输入用户" autocomplete="off" class="layui-input" value="{{ user }}" >
+                <input type="hidden" name="caseId" placeholder="caseId" autocomplete="off" class="layui-input" value="{{ caseId }}" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">请求方式</label>
+            <div class="layui-input-inline">
+                <select name="method" id="method">
+                    <option value="POST">POST</option>
+                    <option value="GET">GET</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="httptype" id="httptype">
+                    <option value="HTTP">HTTP</option>
+                    <option value="HTTPS">HTTPS</option>
+                </select>
+            </div>
+        </div>
+         <div class="layui-form-item">
+               <label class="layui-form-label">访问路径</label>
+               <div class="layui-input-block">
+                   <input type="text" name="url" placeholder="格式：/actmgt/user/login" autocomplete="off" class="layui-input" lay-verify="required" >
+               </div>
+         </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">请求头</label>
+            <div class="layui-input-block">
+                <div id="hd">
+                    <table class="layui-table" id="pa">
+                        <colgroup>
+                          <col width="200">
+                          <col width="200">
+                          <col width="50">
+                          <col width="100">
+                          <col>
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th>参数名</th>
+                            <th>参数值</th>
+                            <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addhead"><i class="layui-icon">&#xe654;</i></button>
+{#                                  <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="delhead"><i class="layui-icon" ></i></button>#}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+{#                          <tr>#}
+{#                              <th><input type="text" name="head_name" placeholder="请输入参数名" class="layui-input"> </th>#}
+{#                              <th><input type="text" name="head_key" placeholder="请输入参数值" class="layui-input"> </th>#}
+{#                              <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addhead"><i class="layui-icon">&#xe654;</i></button>#}
+{#                                  <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon" onclick="" id="delhead"></i></button>#}
+{#                              </th>#}
+{#                          </tr>#}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">请求参数</label>
+            <div class="layui-input-block" id="re">
+              <input type="radio" name="requestParameterType" id = "raw" value="0" title="json源数据" lay-filter="type" disabled>
+              <input type="radio" name="requestParameterType" id="fa" value="1" title="表单（form-data）" lay-filter="type" checked="true">
+{#                <div class='layui-form-item layui-form-text' id='hh'>#}
+{#                    <label class='layui-form-label'>json参数</label>#}
+{#                    <div class='layui-input-block'>#}
+{#                        <textarea placeholder='请输入内容' class='layui-textarea'></textarea>#}
+{#                    </div>#}
+{#                </div>#}
+{#                  表格#}
+            <div id="hh">
+                <table class="layui-table" id="param">
+                    <colgroup>
+                      <col width="200">
+                      <col width="200">
+                      <col width="50">
+                      <col width="50">
+                      <col>
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        <th>参数名</th>
+                        <th>参数值</th>
+                        <th>类型</th>
+                        <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="add1"><i class="layui-icon">&#xe654;</i></button>
+{#                              <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon" onclick="" id="delrow"></i></button>#}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+{#                      <tr>#}
+{#                          <th><input type="text" name="param_name" placeholder="请输入参数名" class="layui-input"> </th>#}
+{#                          <th><input type="text" name="param_key" placeholder="请输入参数值" class="layui-input"> </th>#}
+{#                          <th><select name="paramType" id="paramType">#}
+{#                                    <option value="int">int</option>#}
+{#                                    <option value="string">string</option>#}
+{#                              </select>#}
+{#                          </th>#}
+{#                          <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="add1"><i class="layui-icon">&#xe654;</i></button>#}
+{#                              <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon" onclick="" id="delrow"></i></button>#}
+{#                          </th>#}
+{#                      </tr>#}
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <label class="layui-form-label">环境描述</label>
+            <div class="layui-input-block">
+                <input type="text" name="desc" placeholder="请输入环境描述" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="add">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--js逻辑-->
+<script src="/static/mine/lib/layui/layui.js"></script>
+<script>
+
+    layui.use(['element', 'form', 'jquery', 'laydate'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.jquery;
+        var laydate = layui.laydate;
+
+
+        form.on('radio(type)', function (data) {
+            //判断单选框的选中值
+            abc=data.value;
+            if(abc==0){
+                $('#pm').remove();
+                $('#raw').parent().append("<div class='layui-form-item layui-form-text' id='hh'>"+ "<label class='layui-form-label'>"+"json参数"+"</label>"+"<div class='layui-input-block'>"+ "<textarea placeholder='请输入内容' class='layui-textarea'>"+"</textarea>"+ "</div>"+"</div>");
+            }else{
+                $('#hh').remove();
+                $('#fa').parent().append("<div id='pm'><table class ='layui-table'>" + "<colgroup>" + "<col width=’150’>"+"<col width=“150”>"+"<col width=’200’>" + "<col>"+"</colgroup>"+"<thead>"+"<tr>"+"<th>参数名</th>"+"<th>参数值</th>"+"<th>操作</th>"+"</tr>"+"</thead>"+"<tbody>"+"<tr>"+"<th>"+"<input type=’text’ name=’param_name’ placeholder=请输入参数名 class=’layui-input’>"+" </th>"+"<th><input type=’text’  name=’param_key’ placeholder=请输入参数值 class=’layui-input’> </th>"+"</tr>"+ "</tbody>" + "</table>"+"</div>");
+
+            }
+            form.render();
+        });
+
+         $('#add1').click(function (event) {
+                var thtml="<tr>"+"<th>"+"<input type='text' name='param_name' placeholder=请输入参数名 class='layui-input'>"+" </th>"+"<th><input type='text'  name='param_key' placeholder=请输入参数值 class='layui-input'> </th>"+"<th><select name='paramType' id='paramType'>"+"<option value='string'>string</option>"+"<option value='int'>int</option>"+"</select>"+"</th>"+"<th>"+"<a  class='delrow' id='delrow' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
+                {#var thtml="<tr>"+"<th>"+"<input type='text' name='param_name' placeholder=请输入参数名 class='layui-input'>"+" </th>"+"<th><input type='text'  name='param_key' placeholder=请输入参数值 class='layui-input'> </th>"+"<th><select name='paramType' id='paramType'>"+"<option value='string'>string</option>"+"<option value='int'>int</option>"+"</select>"+"</th>"+"<th>"+"<button class='layui-btn layui-btn-primary layui-btn-sm' onclick='' id='delrow'><i class='layui-icon'></i></button>"+"</th>"+"</tr>";#}
+                $('#param tbody').append(thtml);
+
+                form.render();
+                return false;
+            });
+
+        $('#param').on('click', '.delrow', function (e) {
+            $(this).closest('tr').remove()
+        });
+
+         $('#addhead').click(function (event) {
+                var thtml="<tr>"+"<th>"+"<input type='text' name='head_name' placeholder=请输入参数名 class='layui-input'>"+" </th>"+"<th><input type='text'  name='head_key' placeholder=请输入参数值 class='layui-input'> </th>"+"<th>"+"<a  class='delhead' id='delhead' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
+                $('#pa tbody').append(thtml);
+                return false;
+            });
+
+         $('#pa').on('click', '.delhead', function (e) {
+            $(this).closest('tr').remove()
+        });
+
+        //下拉选择框
+            $.ajax({
+                url: '/selectProjectName/',
+                dataType: 'json',
+                type: 'get',
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        $('#projectName').append(new Option(item.projectName, item.id));// 下拉菜单里添加元素
+                    });
+                    layui.form.render("select");
+                    //重新渲染 固定写法
+                }
+            });
+
+
+        form.on('submit(add)',function (data) {
+            var values={};
+            $(function (){
+            var params = $("#api-add").serializeArray();//序列化表单，转化成一个json结构对象
+            var x;
+            values["headers"] = [];
+            values["params"] = [];
+            var a = ["head_name","head_key","param_name","param_key"];
+            for(x in params){
+                var j = $.inArray(params[x].name,a);
+                if(j==-1){
+                    values[params[x].name] = params[x].value;
+                }
+
+            }
+            {#alert(JSON.stringify(values));#}
+            for(var n = 0;n < $("input[name='head_key']").length;n++){
+                var dh = {};
+                dh['head_name'] = $("input[name='head_name']")[n].value;
+                dh['head_key'] = $("input[name='head_key']")[n].value;
+                values["headers"].push(dh);
+            }
+            for(var i=0;i<$("input[name='param_name']").length;i++){
+                var dp = {};
+                dp['param_name'] = $("input[name='param_name']")[i].value;
+                dp['param_key'] = $("input[name='param_key']")[i].value;
+                dp['paramType'] = $("select[name='paramType']")[i].value;
+                {#dp['param_default'] = $("input[name='param_default']")[i].value;#}
+                {#dp['param_type'] = $("input[name='param_type']")[i].value;#}
+                {#dp['param_must'] = $("input[name='param_must']")[i].checked?1:0;#}
+                values["params"].push(dp);
+            }
+            });
+            var hp = JSON.stringify(values);
+            $.ajax({
+                url : '/caseApiAddPost/',
+                type : 'post',
+                dataType : 'json',
+                contentType :"application/json",
+                data : hp,
+                success : function (data1) {
+                    if (data1.code == 0) {
+                        layer.msg('添加成功', {
+                            offset: ['50%'],
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        },function () {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index);
+                            location.href = '/caseApi/'
+                        });
+                    } else if (data1.code==2) {
+                        layer.msg(data1.msg)
+                    }
+                    else{
+                        layer.msg('添加失败')
+                    }
+                }
+            });
+        return false;
+    })
+
+    })
+</script>
+</body>
+</html>

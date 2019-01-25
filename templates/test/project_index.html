@@ -1,0 +1,51 @@
+{% extends 'test/index.html' %}
+{% block content %}
+<div class="projectTools" xmlns="http://www.w3.org/1999/html">
+搜索：
+<div class="layui-inline">
+<input class="layui-input" name="id" id="projectSearch" placeholder="项目名称" autocomplete="off">
+</div>
+<a href='' class="layui-btn" data-type="projectSearch">搜索</a>
+</div>
+<table class="layui-hide" id="test"></table>
+<script src="/static/layui/layui.js" charset="utf-8"></script>
+<div style="margin-bottom: 5px;">
+
+<!-- 列表 -->
+<ins class="adsbygoogle" style="display:inline-block;width:px;height:50px" data-ad-client="ca-pub-6111334333458862" data-ad-slot="3820120620"></ins>
+</div>
+    <div id="project-env-tool" class="layui-btn-group">
+        <a href="/createProject" class="layui-btn" data-type="envAdd">新增项目</a>
+    </div>
+    <div style="position: relative; left:-2%;">
+   <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px">
+    </fieldset>
+      <table class="layui-table">
+        <colgroup>
+          <col width="150">
+          <col width="200">
+          <col>
+        </colgroup>
+        <thead>
+          <tr class="layui-bg-green">
+            <th>序号</th>
+            <th>项目名称</th>
+            <th>版本</th>
+            <th>创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        {% for contact in content %}
+          <tr>
+            <td>{{ contact.id }}</td>
+            <td>{{ contact.name }}</td>
+            <td>{{ contact.version }}</td>
+            <td>{{ contact.p_createTime }}</td>
+            <th>
+                <a href="#">查看</a>
+                <a href="#">编辑</a>
+                <a href="#">删除</a>
+            </th>
+          </tr>
+        {% endfor %}
+ {% endblock %}
