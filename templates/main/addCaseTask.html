@@ -149,7 +149,6 @@
 
         form.on('submit(add)',function (data) {
             var d = JSON.stringify(data.field);
-            alert(d);
             $.ajax({
                 url : '/caseTaskPost/',
                 type : 'post',

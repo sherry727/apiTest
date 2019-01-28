@@ -17,13 +17,14 @@ from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
 jobstores = {
        'default': SQLAlchemyJobStore(url='mysql://root:yhh12345678@localhost/autoapi')
+       # 'default': SQLAlchemyJobStore(url='mysql+mysqlconnector://root:yhh12345678@localhost/autoapi')
    }
 executors = {
        'default': ThreadPoolExecutor(20),
        'processpool': ProcessPoolExecutor(5),
     }
 job_defaults = {
-       'coalesce': False,
+       'coalesce': True,
        'max_instances': 10,
    }
 # scheduler = BackgroundScheduler(jobstores=jobstores, executors=executors, job_defaults=job_defaults)
@@ -32,7 +33,7 @@ try:
     logging.basicConfig(
         level=logging.DEBUG,  # 控制台打印的日志级别
         filename='taskRun.log',
-        filemode='a',  ##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
+        filemode='w',  ##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
         # a是追加模式，默认如果不写的话，就是追加模式
         format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'
     )
@@ -189,8 +190,11 @@ def caseTaskPost(request):
                         value = p.value
                         params[name] = value
                     ur = url+ i.apiAddress
-                    r = Public.execute(url=ur, params=params, method=i.method, heads=headers)
-                    print r.text
+                    try:
+                        r = Public.execute(url=ur, params=params, method=i.method, heads=headers)
+                        print r.text
+                    except:
+                        print '接口请求出错，请检查'
 
         def my_listener(event):
             if event.exception:
@@ -270,8 +274,11 @@ def taskRun(request):
                     value = p.value
                     params[name] = value
                 ur = url + i.apiAddress
-                r = Public.execute(url=ur, params=params, method=i.method, heads=headers)
-                print r.text
+                try:
+                    r = Public.execute(url=ur, params=params, method=i.method, heads=headers)
+                    print r.text
+                except:
+                    print '接口请求出错，请检查'
 
     def my_listener(event):
         if event.exception:

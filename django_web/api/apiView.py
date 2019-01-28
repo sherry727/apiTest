@@ -8,6 +8,7 @@ import requests
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
+from django_web.api import Public
 
 
 @login_required
@@ -367,13 +368,20 @@ def apiSimpleRun(request):
          url = env.env_url+':'+env.evn_port+api.apiAddress
     else:
         url = env.env_url+api.apiAddress
-    ur= url.encode('unicode-escape').decode('string_escape')
-    if method =='post':
-        r = requests.request('post', json=params, headers=headers, url=url)
-    else:
-        r = requests.request('get', json=params, headers=headers, url=url)
-    print r.content
-    return JsonResponse(r.text, safe=False)
+    ur = url.encode('unicode-escape').decode('string_escape')
+    try:
+        if method =='post':
+            r = requests.request('post', json=params, headers=headers, url=url)
+        else:
+            r = requests.request('get', json=params, headers=headers, url=url)
+
+        # r = Public.execute(url=ur, params=params, method=method, heads=headers)
+        print r.content
+        return JsonResponse(r.text, safe=False)
+    except:
+        data = '没有该接口，请检查接口信息'
+        return JsonResponse(data, safe=False)
+
 
 #环境下拉
 def selectEnvName(request,eid):

@@ -5,7 +5,6 @@ import json
 
 def execute(url, heads, params, method='POST', cookies=None, files=None):
     r =''
-
     if method=='POST':
         r=requests.request('post', url=url, headers=heads, json=params, cookies=cookies, files=files)
     elif method=='GET':
