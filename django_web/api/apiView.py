@@ -375,7 +375,7 @@ def apiSimpleRun(request):
         else:
             r = requests.request('get', json=params, headers=headers, url=url)
 
-        # r = Public.execute(url=ur, params=params, method=method, heads=headers)
+        # r = Public.execute(url=url, params=params, method=method, heads=headers)
         print r.content
         return JsonResponse(r.text, safe=False)
     except:

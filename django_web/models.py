@@ -28,6 +28,7 @@ REQUEST_PARAMETER_TYPE_CHOICE = (
 RESULT_CHOICE = (
     ('PASS', '成功'),
     ('FAIL', '失败'),
+    ('ERROR', '异常'),
 )
 
 HTTP_CODE_CHOICE = (
@@ -332,6 +333,8 @@ class taskResult(models.Model):
     httpStatus = models.CharField(max_length=50, blank=True, null=True, verbose_name='http状态', choices=HTTP_CODE_CHOICE)
     responseData = models.TextField(blank=True, null=True, verbose_name='实际返回内容')
     user = models.CharField(max_length=32, verbose_name='创建人')
+    testTime = models.CharField(max_length=50, verbose_name='测试时间',default='')
+
 
     def __unicode__(self):
         return self.httpStatus
@@ -348,6 +351,7 @@ class AutoTaskRunTime(models.Model):
     task = models.ForeignKey(task, on_delete=models.CASCADE, verbose_name='任务', default='')
     startTime = models.CharField(max_length=50, verbose_name='开始时间')
     endTime = models.CharField(max_length=50, verbose_name='结束时间')
+    testTime = models.CharField(max_length=50, verbose_name='测试时间',default='')
 
     class Meta:
         verbose_name = '用例任务执行时间'

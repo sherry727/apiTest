@@ -18,7 +18,7 @@ from django.contrib import admin
 from django_web import views
 from bugStatistics.stViews import bugStView
 from django.conf.urls import include
-from django_web.api import projectView, envView, apiView,caseView,caseApiView,taskView
+from django_web.api import projectView, envView, apiView,caseView,caseApiView,taskView,reportView
 from django.views import static
 from django.conf import settings
 
@@ -117,6 +117,10 @@ urlpatterns = [
     url(r'^caseTaskPost/$', taskView.caseTaskPost, name='caseTaskPost'),
     url(r'^taskResume/$', taskView.taskResume, name='taskResume'),
     url(r'^taskEdit/(?P<tid>\d+)$', taskView.taskEdit, name='taskEdit'),
+    url(r'^tResult/(?P<tid>\d+)$', taskView.tResult, name='tResult'),
+
+    #report
+    url(r'^resuLtList/(?P<taskId>\d+)$', reportView.resuLtList, name='resuLtList'),
 
 
 
