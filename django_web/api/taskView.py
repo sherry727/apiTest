@@ -16,6 +16,7 @@ from apscheduler.events import EVENT_JOB_EXECUTED,EVENT_JOB_ERROR,EVENT_SCHEDULE
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
+import time
 jobstores = {
        'default': SQLAlchemyJobStore(url='mysql://root:yhh12345678@localhost/autoapi')
        # 'default': SQLAlchemyJobStore(url='mysql+mysqlconnector://root:yhh12345678@localhost/autoapi')
@@ -185,7 +186,7 @@ def caseTaskPost(request):
                                                   httpStatus=r.status_code, result=result, responseData=r.text, user=user,
                                                   testTime=testTime).save()
                     except:
-                        taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id, httpStatus='404',
+                        taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id, httpStatus='502',
                                                   result='ERROR', responseData='接口请求出错，请检查', user=user,
                                                   testTime=testTime).save()
 
@@ -409,13 +410,15 @@ def taskEdit(request,tid):
     return render(request, 'main/case-edit.html', data)
 
 def tResult(request, tid):
-    # tasks = task.objects.get(id=tid)
+    tk = task.objects.get(id=tid)
     w = taskResult.objects.filter(task_id=tid).order_by('testTime').last()
     totalCount = taskResult.objects.filter(task_id=tid, testTime=w.testTime).count()
     PassTotalCount = taskResult.objects.filter(task_id=tid, testTime=w.testTime, httpStatus='200').count()
     FallTotalCount = taskResult.objects.filter(task_id=tid, testTime=w.testTime, httpStatus='404').count()
     errorTotalCount = taskResult.objects.filter(task_id=tid, testTime=w.testTime, httpStatus='502').count()
     sTime = AutoTaskRunTime.objects.get(testTime=w.testTime).startTime
+
+
     eTime = AutoTaskRunTime.objects.get(testTime=w.testTime).endTime
     caseCount =taskCase.objects.filter(task_id=tid).count()
     # ys = eTime-sTime
@@ -428,7 +431,8 @@ def tResult(request, tid):
         'sTime': sTime,
         'eTime': eTime,
         'caseCount': caseCount,
+        'TName': tk.name,
         # 'ys': ys,
     }
-    return render(request, 'main/taskResult.html', data)
+    return render(request, 'main/tResult.html', data)
 

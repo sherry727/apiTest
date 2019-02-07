@@ -25,7 +25,7 @@ def getApiList(request):
     projectid=request.GET.get('projectid')
     projects = Project.objects.filter(status=1).values('id')
     if key == ''and projectid == '':
-        p = ApiCase.objects.filter(status=1, project_id__in=projects).order_by('-CreateTime')
+        p = ApiCase.objects.filter(project_id__in=projects).order_by('-CreateTime')
         resultdict = {}
         total = p.count()
         p = p[i:j]
@@ -50,7 +50,7 @@ def getApiList(request):
         resultdict['data'] = dict
         return JsonResponse(resultdict, safe=False)
     elif projectid:
-        p = ApiCase.objects.filter(name__contains=key, project_id=projectid, status=1).order_by('-CreateTime')
+        p = ApiCase.objects.filter(name__contains=key, project_id=projectid).order_by('-CreateTime')
         resultdict = {}
         total = p.count()
         p = p[i:j]
@@ -75,7 +75,7 @@ def getApiList(request):
         # print resultdict
         return JsonResponse(resultdict, safe=False)
     else:
-        p = ApiCase.objects.filter(name__contains=key, status=1,project_id__in=projects).order_by('-CreateTime')
+        p = ApiCase.objects.filter(name__contains=key,project_id__in=projects).order_by('-CreateTime')
         resultdict = {}
         total = p.count()
         p = p[i:j]

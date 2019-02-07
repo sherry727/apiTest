@@ -379,15 +379,16 @@ def caseApiMultRun(request,eid):
             ur = url1.encode('unicode-escape').decode('string_escape')
             method = caseApi.method
             sort = s.get('sort')
-            r = Public.execute(url=ur, params=params, method=method, heads=headers)
-            if r.status_code==200:
-                AutoApiCase.objects.filter(id=s.get('id')).update(status='成功')
-                # TestResult.objects.create()
-            else:
-                AutoApiCase.objects.filter(id=s.get('id')).update(status='失败')
-
-
-            print r.status_code
+            try:
+                r = Public.execute(url=ur, params=params, method=method, heads=headers)
+                if r.status_code == 200:
+                    AutoApiCase.objects.filter(id=s.get('id')).update(status='成功')
+                    # TestResult.objects.create()
+                else:
+                    AutoApiCase.objects.filter(id=s.get('id')).update(status='失败')
+            except:
+                AutoApiCase.objects.filter(id=s.get('id')).update(status='异常')
+            print r.text
         endTime = timezone.now()
         resultdict = {
             'code': 0,

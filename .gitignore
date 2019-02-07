@@ -1,0 +1,9 @@
+*.pyc
+.idea/
+django_web/migrations/
+.DS_Store
+*.xmind
+test.py
+templates/test/
+
+
