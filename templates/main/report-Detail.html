@@ -1,10 +1,204 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>接口详情</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/mine/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/mine/css/scroll-bar.css">
+    <link rel="stylesheet" href="/static/mine/css/sub-page.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_693759_wytlyqhtdtj1nhfr.css">
 </head>
 <body>
+<div class="ok-body">
+    <!--面包屑导航区域-->
+    <div class="ok-body-breadcrumb">
+            <span class="layui-breadcrumb">
+                <a><cite>报告</cite></a>
+                <a><cite>接口报告</cite></a>
+            </span>
 
+        <a class="layui-btn layui-btn-small" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon layui-icon-refresh"></i>
+        </a>
+        {%  if result == 'FAIL' %}
+            <button class="layui-btn layui-btn-warm layui-btn-radius">FALL<button>
+        {%  elif result == 'ERROR' %}
+            <button class="layui-btn layui-btn-danger layui-btn-radius">ERROR<button>
+        {%  elif result == 'PASS'  %}
+            <button class="layui-btn layui-btn-radius">PASS<button>
+        {%  else  %}
+
+        {% endif %}
+
+
+    </div>
+    <!--form表单-->
+    <form class="layui-form layui-form-pane ok-form" id="api-add">
+        <div class="layui-form-item">
+            <label class="layui-form-label">所属项目</label>
+            <div class="layui-input-block">
+                 <input type="text" name="projectname" autocomplete="off" class="layui-input" lay-verify="required" value="{{ projectName }}" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">所属任务</label>
+            <div class="layui-input-block">
+                 <input type="text" name="projectname" autocomplete="off" class="layui-input" lay-verify="required" value="{{ taskName }}" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">所属用例</label>
+            <div class="layui-input-block">
+                 <input type="text" name="caseName" autocomplete="off" class="layui-input" lay-verify="required" value="{{ caseName }}" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">接口名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" placeholder="请输入名称" autocomplete="off" class="layui-input" lay-verify="required" value="{{ apiName }}" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">请求方式</label>
+            <div class="layui-input-inline">
+                <select name="method" id="method" disabled>
+                    <option value="post">POST</option>
+                    <option value="get">GET</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="httptype" id="httptype" disabled>
+                    <option value="http">HTTP</option>
+                    <option value="https">HTTPS</option>
+                </select>
+            </div>
+        </div>
+         <div class="layui-form-item">
+               <label class="layui-form-label">请求路径</label>
+               <div class="layui-input-block">
+                   <input type="text" name="url" placeholder="请输入访问路径" autocomplete="off" class="layui-input" lay-verify="required" value="{{ url }}" disabled>
+               </div>
+         </div>
+        <div class="layui-form-item">
+            <div id="head" d="{{ headers }}" style="display: none"></div>
+            <label class="layui-form-label">请求头</label>
+            <div class="layui-input-block">
+                <div id="hd">
+                    <table class="layui-table" id="pa">
+                        <colgroup>
+                          <col width="200">
+                          <col width="200">
+                          <col>
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th>参数名</th>
+                            <th>参数值</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div id="op" o="{{ params }}" style="display: none"></div>
+            <label class="layui-form-label">请求参数</label>
+            <div class="layui-input-block" id="re">
+              <input type="radio" name="requestParameterType" id = "raw" value="0" title="json源数据" lay-filter="type" disabled>
+              <input type="radio" name="requestParameterType" id="fa" value="1" title="表单（form-data）" lay-filter="type" checked="true">
+{#                <div class='layui-form-item layui-form-text' id='hh'>#}
+{#                    <label class='layui-form-label'>json参数</label>#}
+{#                    <div class='layui-input-block'>#}
+{#                        <textarea placeholder='请输入内容' class='layui-textarea'></textarea>#}
+{#                    </div>#}
+{#                </div>#}
+{#                  表格#}
+            <div id="hh">
+                <table class="layui-table" id="param" >
+                    <colgroup>
+                      <col width="200">
+                      <col width="200">
+                      <col>
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        <th>参数名</th>
+                        <th>参数值</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">执行结果</label>
+            <div class="layui-input-block">
+                <textarea name="response" autocomplete="off" class="layui-textarea" id="response" style="min-height: 200px" disabled></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button  class="layui-btn"  onclick="javascript:parent.layer.close(parent.layer.getFrameIndex(window.name));">返回</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--js逻辑-->
+<script src="/static/mine/lib/layui/layui.js"></script>
+<script>
+
+    layui.use(['element', 'form', 'jquery', 'laydate'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.jquery;
+        var laydate = layui.laydate;
+
+        $("#method option[value='{{ method }}']").prop("selected",true);
+        $("#httptype option[value='{{ httptype }}']").prop("selected",true);
+        $("#response").html('{{ responseData }}');//给textarea赋值
+
+        form.on('radio(type)', function (data) {
+            //判断单选框的选中值
+            abc=data.value;
+            if(abc==0){
+                $('#pm').remove();
+                $('#raw').parent().append("<div class='layui-form-item layui-form-text' id='hh'>"+ "<label class='layui-form-label'>"+"json参数"+"</label>"+"<div class='layui-input-block'>"+ "<textarea placeholder='请输入内容' class='layui-textarea'>"+"</textarea>"+ "</div>"+"</div>");
+            }else{
+                $('#hh').remove();
+                $('#fa').parent().append("<div id='pm'><table class ='layui-table'>" + "<colgroup>" + "<col width=’150’>"+"<col width=“150”>"+"<col width=’200’>" + "<col>"+"</colgroup>"+"<thead>"+"<tr>"+"<th>参数名</th>"+"<th>参数值</th>"+"<th>操作</th>"+"</tr>"+"</thead>"+"<tbody>"+"<tr>"+"<th>"+"<input type=’text’ name=’param_name’ placeholder=请输入参数名 class=’layui-input’>"+" </th>"+"<th><input type=’text’  name=’param_key’ placeholder=请输入参数值 class=’layui-input’> </th>"+"</tr>"+ "</tbody>" + "</table>"+"</div>");
+
+            }
+            form.render();
+        });
+
+        var d=$("#head").attr("d");
+        var f = d.replace(/u'/g,"'");
+        var da=eval(f);
+        if (da) {
+            for(var i=0;i<da.length;i++) {
+                    var thtml = "<tr>" + "<th>" + "<input type='text' name='head_name' class='layui-input' value='" + da[i].head_name + "' disabled>" + " </th>" + "<th><input type='text'  name='head_key'  class='layui-input' value='" + da[i].head_key + "' disabled> </th>" + "</tr>";
+                    $('#pa tbody').append(thtml);// tabel动态显示元素
+
+            }
+         }
+        var k=$("#op").attr("o");
+        var l = k.replace(/u'/g,"'");
+        var oa=eval(l);
+        if (oa) {
+            for(var i=0;i<oa.length;i++) {
+                    var thtml = "<tr>" + "<th>" + "<input type='text' name='param_name'  class='layui-input' value='" + oa[i].param_name + "'disabled>" + " </th>" + "<th><input type='text'  name='param_key'  class='layui-input' value='" + oa[i].param_key + "' disabled> </th>" + "</tr>";
+                    $('#param tbody').append(thtml);// tabel动态显示元素
+
+            }
+         }
+
+    })
+</script>
 </body>
 </html>

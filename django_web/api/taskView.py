@@ -184,11 +184,11 @@ def caseTaskPost(request):
                             result = 'FAIL'
                         taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id,
                                                   httpStatus=r.status_code, result=result, responseData=r.text, user=user,
-                                                  testTime=testTime).save()
+                                                  testTime=testTime, autoRunTime_id=s.id).save()
                     except:
                         taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id, httpStatus='502',
                                                   result='ERROR', responseData='接口请求出错，请检查', user=user,
-                                                  testTime=testTime).save()
+                                                  testTime=testTime, autoRunTime_id=s.id).save()
 
         def my_listener(event):
             if event.exception:
@@ -282,11 +282,13 @@ def taskRun(request):
                     else:
                         result = 'FAIL'
                     t =taskResult.objects.create(case_id=c.case_id, autoApi_id=i.id, task_id=tid, httpStatus=r.status_code,
-                                                 result=result, responseData=r.text, user=user, testTime=testTime)
+                                                 result=result, responseData=r.text, user=user, testTime=testTime,
+                                                 autoRunTime_id=s.id)
                     t.save()
                 except:
                     t = taskResult.objects.create(case_id=c.case_id, autoApi_id=i.id, task_id=tid, httpStatus='502',
-                                                  result='ERROR', responseData='接口请求出错，请检查', user=user,testTime=testTime)
+                                                  result='ERROR', responseData='接口请求出错，请检查', user=user,testTime=testTime,
+                                                  autoRunTime_id=s.id)
                     t.save()
                     print '接口请求出错，请检查'
 
@@ -409,20 +411,19 @@ def taskEdit(request,tid):
     }
     return render(request, 'main/case-edit.html', data)
 
-def tResult(request, tid):
-    tk = task.objects.get(id=tid)
-    w = taskResult.objects.filter(task_id=tid).order_by('testTime').last()
-    totalCount = taskResult.objects.filter(task_id=tid, testTime=w.testTime).count()
-    PassTotalCount = taskResult.objects.filter(task_id=tid, testTime=w.testTime, httpStatus='200').count()
-    FallTotalCount = taskResult.objects.filter(task_id=tid, testTime=w.testTime, httpStatus='404').count()
-    errorTotalCount = taskResult.objects.filter(task_id=tid, testTime=w.testTime, httpStatus='502').count()
-    sTime = AutoTaskRunTime.objects.get(testTime=w.testTime).startTime
-    eTime = AutoTaskRunTime.objects.get(testTime=w.testTime).endTime
-    caseCount =taskCase.objects.filter(task_id=tid).count()
+def tResult(request,autoRuntimeid):
+    taskId = AutoTaskRunTime.objects.get(id=autoRuntimeid).task_id
+    tk = task.objects.get(id=taskId)
+    totalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid).count()
+    PassTotalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid, httpStatus='200').count()
+    FallTotalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid, httpStatus='404').count()
+    errorTotalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid, httpStatus='502').count()
+    sTime = AutoTaskRunTime.objects.get(id=autoRuntimeid).startTime
+    eTime = AutoTaskRunTime.objects.get(id=autoRuntimeid).endTime
+    caseCount =taskCase.objects.filter(task_id=taskId).count()
     ys = eTime-sTime
-
     data = {
-        'taskId': tid,
+        'taskId': taskId,
         'totalCount': totalCount,
         'PassTotalCount': PassTotalCount,
         'FallTotalCount': FallTotalCount,
@@ -431,6 +432,7 @@ def tResult(request, tid):
         'eTime': eTime.strftime("%Y-%m-%d %H:%M:%S"),
         'caseCount': caseCount,
         'TName': tk.name,
+        'autoRuntimeid': autoRuntimeid,
         'ys': ys,
     }
     return render(request, 'main/tResult.html', data)
@@ -450,7 +452,6 @@ def taskLogList(request,tid):
     dict = []
     for a in p:
         dic = {}
-        print type(a.endTime)
         dic['endTime'] = a.endTime.strftime("%Y-%m-%d %H:%M:%S")
         dic['startTime'] = a.startTime.strftime("%Y-%m-%d %H:%M:%S")
         dic['id'] = a.id

@@ -327,6 +327,7 @@ class taskResult(models.Model):
     """
     id = models.AutoField(primary_key=True)
     task = models.ForeignKey(task, on_delete=models.CASCADE, verbose_name='任务关联')
+    autoRunTime_id = models.IntegerField(null=True, verbose_name='时间关联')
     case_id=models.IntegerField(default=0, verbose_name='用例')
     autoApi_id=models.IntegerField(default=0, verbose_name='用例')
     result = models.CharField(max_length=50, verbose_name='测试结果', choices=RESULT_CHOICE)

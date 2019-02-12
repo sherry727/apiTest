@@ -117,13 +117,13 @@ urlpatterns = [
     url(r'^caseTaskPost/$', taskView.caseTaskPost, name='caseTaskPost'),
     url(r'^taskResume/$', taskView.taskResume, name='taskResume'),
     url(r'^taskEdit/(?P<tid>\d+)$', taskView.taskEdit, name='taskEdit'),
-    url(r'^tResult/(?P<tid>\d+)$', taskView.tResult, name='tResult'),
+    url(r'^tResult/(?P<autoRuntimeid>\d+)$', taskView.tResult, name='tResult'),
     url(r'^taskDetail/(?P<tid>\d+)$', taskView.taskDetail, name='taskDetail'),
     url(r'^taskLogList/(?P<tid>\d+)$', taskView.taskLogList, name='taskLogList'),
 
     #report
-    url(r'^resuLtList/(?P<taskId>\d+)$', reportView.resuLtList, name='resuLtList'),
-    url(r'^rDetail/(?P<apiId>\d+)$', reportView.rDetail, name='rDetail'),
+    url(r'^resuLtList/(?P<autoRuntimeid>\d+)$', reportView.resuLtList, name='resuLtList'),
+    url(r'^rDetail/(?P<apiData>.*)$', reportView.rDetail, name='rDetail'),
 
 
 

@@ -1,133 +1,91 @@
-2019-02-12 12:55:37,882 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:162] - INFO: Scheduler started
-2019-02-12 12:55:37,882 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 12:55:37,884 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1013] - DEBUG: No jobs; waiting until a job is added
-2019-02-12 13:29:20,603 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:878] - INFO: Added job "job" to job store "default"
-2019-02-12 13:29:20,604 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 13:29:20,604 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1017] - DEBUG: Next wakeup is due at 2019-02-12 13:29:21+08:00 (in 0.395799 seconds)
-2019-02-12 13:29:21,002 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 13:29:21,003 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:123] - INFO: Running job "job (trigger: cron[], next run at: 2019-02-12 13:29:21 CST)" (scheduled at 2019-02-12 13:29:21+08:00)
-2019-02-12 13:29:21,004 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1017] - DEBUG: Next wakeup is due at 2019-02-12 13:29:22+08:00 (in 0.996911 seconds)
-2019-02-12 13:29:21,074 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:21,116 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
-2019-02-12 13:29:21,126 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:21,191 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:21,203 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:21,253 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:21,264 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:21,336 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:21,348 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:21,418 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:21,428 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.comfsdfs:443
-2019-02-12 13:29:21,431 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:144] - INFO: Job "job (trigger: cron[], next run at: 2019-02-12 13:29:22 CST)" executed successfully
-2019-02-12 13:29:22,005 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 13:29:22,006 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:123] - INFO: Running job "job (trigger: cron[], next run at: 2019-02-12 13:29:22 CST)" (scheduled at 2019-02-12 13:29:22+08:00)
-2019-02-12 13:29:22,007 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1017] - DEBUG: Next wakeup is due at 2019-02-12 13:29:23+08:00 (in 0.993928 seconds)
-2019-02-12 13:29:22,055 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:22,110 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
-2019-02-12 13:29:22,122 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:22,189 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:22,201 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:22,256 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:22,267 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:22,324 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:22,340 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:22,392 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:22,404 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.comfsdfs:443
-2019-02-12 13:29:22,411 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:144] - INFO: Job "job (trigger: cron[], next run at: 2019-02-12 13:29:23 CST)" executed successfully
-2019-02-12 13:29:23,003 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 13:29:23,004 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:123] - INFO: Running job "job (trigger: cron[], next run at: 2019-02-12 13:29:23 CST)" (scheduled at 2019-02-12 13:29:23+08:00)
-2019-02-12 13:29:23,005 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1017] - DEBUG: Next wakeup is due at 2019-02-12 13:29:24+08:00 (in 0.995730 seconds)
-2019-02-12 13:29:23,011 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:23,277 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
-2019-02-12 13:29:23,286 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:23,556 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:23,567 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:23,805 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:23,816 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:24,007 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 13:29:24,008 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:975] - WARNING: Execution of job "job (trigger: cron[], next run at: 2019-02-12 13:29:24 CST)" skipped: maximum number of running instances reached (1)
-2019-02-12 13:29:24,008 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1017] - DEBUG: Next wakeup is due at 2019-02-12 13:29:25+08:00 (in 0.991876 seconds)
-2019-02-12 13:29:24,061 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:24,074 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:24,178 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:24,190 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.comfsdfs:443
-2019-02-12 13:29:24,194 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:144] - INFO: Job "job (trigger: cron[], next run at: 2019-02-12 13:29:25 CST)" executed successfully
-2019-02-12 13:29:25,002 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 13:29:25,003 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:123] - INFO: Running job "job (trigger: cron[], next run at: 2019-02-12 13:29:25 CST)" (scheduled at 2019-02-12 13:29:25+08:00)
-2019-02-12 13:29:25,005 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1017] - DEBUG: Next wakeup is due at 2019-02-12 13:29:26+08:00 (in 0.997371 seconds)
-2019-02-12 13:29:25,011 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:25,066 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
-2019-02-12 13:29:25,078 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:25,133 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:25,143 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:25,204 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:25,216 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:25,279 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:25,294 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:25,720 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:25,732 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.comfsdfs:443
-2019-02-12 13:29:25,738 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:144] - INFO: Job "job (trigger: cron[], next run at: 2019-02-12 13:29:26 CST)" executed successfully
-2019-02-12 13:29:26,008 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 13:29:26,009 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:123] - INFO: Running job "job (trigger: cron[], next run at: 2019-02-12 13:29:26 CST)" (scheduled at 2019-02-12 13:29:26+08:00)
-2019-02-12 13:29:26,010 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1017] - DEBUG: Next wakeup is due at 2019-02-12 13:29:27+08:00 (in 0.991281 seconds)
-2019-02-12 13:29:26,059 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:26,105 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
-2019-02-12 13:29:26,118 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:26,171 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:26,182 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:26,229 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:26,239 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:26,291 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:26,307 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:26,373 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:26,384 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.comfsdfs:443
-2019-02-12 13:29:26,388 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:144] - INFO: Job "job (trigger: cron[], next run at: 2019-02-12 13:29:27 CST)" executed successfully
-2019-02-12 13:29:27,004 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 13:29:27,005 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:123] - INFO: Running job "job (trigger: cron[], next run at: 2019-02-12 13:29:27 CST)" (scheduled at 2019-02-12 13:29:27+08:00)
-2019-02-12 13:29:27,006 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1017] - DEBUG: Next wakeup is due at 2019-02-12 13:29:28+08:00 (in 0.995073 seconds)
-2019-02-12 13:29:27,012 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:27,068 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
-2019-02-12 13:29:27,079 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:27,134 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:27,145 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:27,221 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:27,235 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:27,287 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:27,304 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:27,361 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:27,374 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.comfsdfs:443
-2019-02-12 13:29:27,379 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:144] - INFO: Job "job (trigger: cron[], next run at: 2019-02-12 13:29:28 CST)" executed successfully
-2019-02-12 13:29:28,006 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 13:29:28,007 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:123] - INFO: Running job "job (trigger: cron[], next run at: 2019-02-12 13:29:28 CST)" (scheduled at 2019-02-12 13:29:28+08:00)
-2019-02-12 13:29:28,009 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1017] - DEBUG: Next wakeup is due at 2019-02-12 13:29:29+08:00 (in 0.993015 seconds)
-2019-02-12 13:29:28,056 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:28,113 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
-2019-02-12 13:29:28,124 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:28,176 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:28,188 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:28,244 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:28,253 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:28,318 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:28,332 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:28,383 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:28,393 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.comfsdfs:443
-2019-02-12 13:29:28,398 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:144] - INFO: Job "job (trigger: cron[], next run at: 2019-02-12 13:29:29 CST)" executed successfully
-2019-02-12 13:29:29,006 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 13:29:29,006 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:123] - INFO: Running job "job (trigger: cron[], next run at: 2019-02-12 13:29:29 CST)" (scheduled at 2019-02-12 13:29:29+08:00)
-2019-02-12 13:29:29,008 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1017] - DEBUG: Next wakeup is due at 2019-02-12 13:29:30+08:00 (in 0.993610 seconds)
-2019-02-12 13:29:29,013 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:29,066 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
-2019-02-12 13:29:29,077 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:29,127 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:29,139 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:29,186 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:29,198 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:29,269 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:29,282 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
-2019-02-12 13:29:29,338 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
-2019-02-12 13:29:29,349 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.comfsdfs:443
-2019-02-12 13:29:29,352 - /usr/local/lib/python2.7/site-packages/apscheduler/executors/base.py[line:144] - INFO: Job "job (trigger: cron[], next run at: 2019-02-12 13:29:30 CST)" executed successfully
-2019-02-12 13:29:29,632 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:624] - INFO: Removed job 218
-2019-02-12 13:29:30,003 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 13:29:30,003 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1013] - DEBUG: No jobs; waiting until a job is added
-2019-02-12 13:53:22,301 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /favicon.ico
+2019-02-12 18:28:37,658 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:162] - INFO: Scheduler started
+2019-02-12 18:28:37,659 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
+2019-02-12 18:28:37,660 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1013] - DEBUG: No jobs; waiting until a job is added
+2019-02-12 18:36:30,297 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/pbList/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 36, in pbList
+    total = p.count()
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 364, in count
+    return self.query.get_count(using=self.db)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 499, in get_count
+    number = obj.get_aggregation(using, ['__count'])['__count']
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 479, in get_aggregation
+    compiler = outer_query.get_compiler(using)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 255, in get_compiler
+    connection = connections[using]
+  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 208, in __getitem__
+    self.ensure_defaults(alias)
+  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 178, in ensure_defaults
+    raise ConnectionDoesNotExist("The connection %s doesn't exist" % alias)
+ConnectionDoesNotExist: The connection chandao doesn't exist
+2019-02-12 18:36:30,335 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/bugProjectName/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 199, in bugProjectName
+    for a in p:
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 250, in __iter__
+    self._fetch_all()
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 1118, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 53, in __iter__
+    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 894, in execute_sql
+    raise original_exception
+ProgrammingError: (1146, "Table 'autoapi.zt_product' doesn't exist")
+2019-02-12 18:36:32,053 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/pbList/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 36, in pbList
+    total = p.count()
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 364, in count
+    return self.query.get_count(using=self.db)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 499, in get_count
+    number = obj.get_aggregation(using, ['__count'])['__count']
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 479, in get_aggregation
+    compiler = outer_query.get_compiler(using)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 255, in get_compiler
+    connection = connections[using]
+  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 208, in __getitem__
+    self.ensure_defaults(alias)
+  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 178, in ensure_defaults
+    raise ConnectionDoesNotExist("The connection %s doesn't exist" % alias)
+ConnectionDoesNotExist: The connection chandao doesn't exist
+2019-02-12 18:36:32,092 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/bugProjectName/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 199, in bugProjectName
+    for a in p:
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 250, in __iter__
+    self._fetch_all()
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 1118, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 53, in __iter__
+    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 894, in execute_sql
+    raise original_exception
+ProgrammingError: (1146, "Table 'autoapi.zt_product' doesn't exist")

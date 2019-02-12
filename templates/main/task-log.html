@@ -86,12 +86,34 @@
         });
         {#重载结束#}
 
+        table.on('tool(tableFilter)', function (obj) {
+            var data = obj.data;
+            var eid = data['apiId'];
+            var layEvent = obj.event;
+            a =JSON.stringify(data);
+            alert(a)
+            if (layEvent === 'tResult') {
+                $.ajax({
+                    url: "/tResult/" ,
+                    data: JSON.stringify(data),
+                    type: "post" ,
+                    dataType:'json',
+                    contentType :"application/json",
+                    success:function(data){
+
+                    }
+                });
+
+            }
+        })
+
 
 
     })
 </script>
 <script type="text/html" id="operationTpl">
-    <a class="layui-btn layui-btn-xs" href="/tResult/{% verbatim %}{{d.taskId}}{% endverbatim %}" target="_blank">查看结果</a>
+{#    <a class="layui-btn layui-btn-xs" href="javascript:;" lay-event="tResult" target="_blank">查看结果</a>#}
+    <a class="layui-btn layui-btn-xs" href="/tResult/{% verbatim %}{{d.id}}{% endverbatim %}" target="_blank">查看结果</a>
 {#    <a class="layui-btn layui-btn-xs" href="/tResult/{% verbatim %}{{d.id}}{% endverbatim %}" target="_blank">查看日志</a>#}
 </script>
 <script type="text/html" id="jindu">
