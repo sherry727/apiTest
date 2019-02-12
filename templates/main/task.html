@@ -207,15 +207,14 @@
                     }
                 });
 
-            }else if (layEvent === 'result') {
+            }else if (layEvent === 'taskDetail') {
                 layer.open({
-                    title: '查看任务结果',
+                    title: '查看历史任务结果',
                     type: 2,
                     shade: false,
                     maxmin: true,
-                    shade: 0.5,
-                    area: ['90%', '90%'],
-                    content: '/tResult/'+tid,
+                    area: ['50%', '90%'],
+                    content: '/taskDetail/'+tid,
                     zIndex: layer.zIndex,
                     end: function () {
                         $(".layui-laypage-btn")[0].click();
@@ -288,8 +287,9 @@
     {% verbatim %}{{#  if(d.status ==1){ }}{% endverbatim %}
         <a href="javascript:;" title="暂停" lay-event="pause"><i class="layui-icon">&#xe651;</i></a>
     {% verbatim %}{{# }if(d.status ==2) { }}{% endverbatim %}
-         <a href="javascript:;" title="运行" lay-event="run"><i class="layui-icon">&#xe652;</i></a>
-         <a href="javascript:location.href='/tResult/{% verbatim %}{{d.id}}{% endverbatim %}'" title="查看结果"><i class="layui-icon">&#xe60a;</i></a>
+        <a href="javascript:;" title="运行" lay-event="run"><i class="layui-icon">&#xe652;</i></a>
+        <a href="javascript:;" lay-event="taskDetail" title="查看结果"><i class="layui-icon">&#xe60a;</i></a>
+{#         <a href="javascript:location.href='/tResult/{% verbatim %}{{d.id}}{% endverbatim %}'" title="查看结果"><i class="layui-icon">&#xe60a;</i></a>#}
     {% verbatim %}{{# }if(d.status ==0) { }}{% endverbatim %}
         <a href="javascript:;" title="运行" lay-event="run"><i class="layui-icon">&#xe652;</i></a>
     {% verbatim %}{{# }if(d.status ==3) { }}{% endverbatim %}

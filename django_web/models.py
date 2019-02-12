@@ -349,9 +349,9 @@ class AutoTaskRunTime(models.Model):
     """
     id = models.AutoField(primary_key=True)
     task = models.ForeignKey(task, on_delete=models.CASCADE, verbose_name='任务', default='')
-    startTime = models.CharField(max_length=50, verbose_name='开始时间')
-    endTime = models.CharField(max_length=50, verbose_name='结束时间')
-    testTime = models.CharField(max_length=50, verbose_name='测试时间',default='')
+    startTime = models.DateTimeField(verbose_name='开始时间', null=True)
+    endTime = models.DateTimeField(verbose_name='结束时间', null=True)
+    testTime = models.DateTimeField(verbose_name='测试时间',null=True)
 
     class Meta:
         verbose_name = '用例任务执行时间'

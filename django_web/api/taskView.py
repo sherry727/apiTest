@@ -35,7 +35,7 @@ try:
     logging.basicConfig(
         level=logging.DEBUG,  # 控制台打印的日志级别
         filename='taskRun.log',
-        filemode='a',  ##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
+        filemode='w',  ##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
         # a是追加模式，默认如果不写的话，就是追加模式
         format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'
     )
@@ -177,7 +177,7 @@ def caseTaskPost(request):
                     ur = url+ i.apiAddress
                     try:
                         r = Public.execute(url=ur, params=params, method=i.method, heads=headers)
-                        print i.name
+                        print r.text
                         if r.status_code ==200:
                             result = 'PASS'
                         else:
@@ -276,7 +276,7 @@ def taskRun(request):
                 ur = url + i.apiAddress
                 try:
                     r = Public.execute(url=ur, params=params, method=i.method, heads=headers)
-                    print i.name
+                    print r.text
                     if r.status_code == 200:
                         result = 'PASS'
                     else:
@@ -285,8 +285,8 @@ def taskRun(request):
                                                  result=result, responseData=r.text, user=user, testTime=testTime)
                     t.save()
                 except:
-                    t = taskResult.objects.create(case_id=c.case_id, autoApi_id=i.id, task_id=tid, httpStatus='404',
-                                                  result='FAIL', responseData='接口请求出错，请检查', user=user,testTime=testTime)
+                    t = taskResult.objects.create(case_id=c.case_id, autoApi_id=i.id, task_id=tid, httpStatus='502',
+                                                  result='ERROR', responseData='接口请求出错，请检查', user=user,testTime=testTime)
                     t.save()
                     print '接口请求出错，请检查'
 
@@ -417,22 +417,50 @@ def tResult(request, tid):
     FallTotalCount = taskResult.objects.filter(task_id=tid, testTime=w.testTime, httpStatus='404').count()
     errorTotalCount = taskResult.objects.filter(task_id=tid, testTime=w.testTime, httpStatus='502').count()
     sTime = AutoTaskRunTime.objects.get(testTime=w.testTime).startTime
-
-
     eTime = AutoTaskRunTime.objects.get(testTime=w.testTime).endTime
     caseCount =taskCase.objects.filter(task_id=tid).count()
-    # ys = eTime-sTime
+    ys = eTime-sTime
+
     data = {
         'taskId': tid,
         'totalCount': totalCount,
         'PassTotalCount': PassTotalCount,
         'FallTotalCount': FallTotalCount,
         'errorTotalCount': errorTotalCount,
-        'sTime': sTime,
-        'eTime': eTime,
+        'sTime': sTime.strftime("%Y-%m-%d %H:%M:%S"),
+        'eTime': eTime.strftime("%Y-%m-%d %H:%M:%S"),
         'caseCount': caseCount,
         'TName': tk.name,
-        # 'ys': ys,
+        'ys': ys,
     }
     return render(request, 'main/tResult.html', data)
+
+def taskDetail(request,tid):
+    data={
+        'taskId': tid
+    }
+    # print tid
+    return render(request, 'main/task-log.html', data)
+
+def taskLogList(request,tid):
+    p = AutoTaskRunTime.objects.filter(task_id=tid).order_by('-testTime')
+    t = task.objects.get(id=tid)
+    resultdict = {}
+    total = p.count()
+    dict = []
+    for a in p:
+        dic = {}
+        print type(a.endTime)
+        dic['endTime'] = a.endTime.strftime("%Y-%m-%d %H:%M:%S")
+        dic['startTime'] = a.startTime.strftime("%Y-%m-%d %H:%M:%S")
+        dic['id'] = a.id
+        dic['testTime'] = a.testTime
+        dic['taskId'] = tid
+        dic['status'] = t.status
+        dict.append(dic)
+    resultdict['code'] = 0
+    resultdict['msg'] = ''
+    resultdict['count'] = total
+    resultdict['data'] = dict
+    return JsonResponse(resultdict, safe=False)
 

@@ -38,6 +38,7 @@ def resuLtList(request,taskId):
         api = AutoApiCase.objects.get(id=c.autoApi_id)
         dic = {}
         dic['apiName'] = api.name
+        dic['apiId'] = api.id
         dic['url'] = e.env_url+api.apiAddress
         dic['caseName'] = case.name
         dic['caseId'] = c.case_id
@@ -53,3 +54,7 @@ def resuLtList(request,taskId):
     resultdict['count'] = total
     resultdict['data'] = dict
     return JsonResponse(resultdict, safe=False)
+
+def rDetail(request,apiId):
+    print apiId
+    return render(request, 'main/report-Detail.html')

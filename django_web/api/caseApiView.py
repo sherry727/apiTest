@@ -381,6 +381,7 @@ def caseApiMultRun(request,eid):
             sort = s.get('sort')
             try:
                 r = Public.execute(url=ur, params=params, method=method, heads=headers)
+                print r.text
                 if r.status_code == 200:
                     AutoApiCase.objects.filter(id=s.get('id')).update(status='成功')
                     # TestResult.objects.create()
@@ -388,7 +389,6 @@ def caseApiMultRun(request,eid):
                     AutoApiCase.objects.filter(id=s.get('id')).update(status='失败')
             except:
                 AutoApiCase.objects.filter(id=s.get('id')).update(status='异常')
-            print r.text
         endTime = timezone.now()
         resultdict = {
             'code': 0,

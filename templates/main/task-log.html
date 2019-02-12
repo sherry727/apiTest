@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>任务管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/mine/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/mine/css/scroll-bar.css">
+    <link rel="stylesheet" href="/static/mine/css/sub-page.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_693759_wytlyqhtdtj1nhfr.css">
+    <link rel="stylesheet" href="/static/mine/lib/nprogress/nprogress.css">
+</head>
+<div class="ok-body">
+    <!--面包屑导航区域-->
+    <div class="ok-body-breadcrumb">
+            <span class="layui-breadcrumb">
+                <a><cite>任务管理</cite></a>
+                <a><cite>任务列表</cite></a>
+                <a><cite>查看结果</cite></a>
+            </span>
+        <a class="layui-btn layui-btn-small" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon layui-icon-refresh"></i>
+        </a>
+    </div>
+    <!--数据表格-->
+    <input type="hidden" class="layui-input" name="id" id="pkey" value="{{ taskId }}">
+    <table class="layui-hide" id="tableId"  lay-filter="tableFilter"></table>
+</div>
+<!--js逻辑-->
+<script src="/static/mine/lib/layui/layui.js"></script>
+<script src="/static/mine/lib/nprogress/nprogress.js"></script>
+<script>
+    NProgress.start();
+    window.onload = function () {
+        NProgress.done();
+    };
+    layui.use(['element', 'table', 'form', 'jquery', 'laydate'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.jquery;
+        var laydate = layui.laydate;
+        var laypage = layui.laypage;
+
+        var pkey = $('#pkey').val();
+        table.render({
+            elem: '#tableId',
+            url: '/taskLogList/'+pkey,
+            limit: 10,
+            page:false,
+            id:"tableId",
+            cols: [[
+                {#{type: 'checkbox'},#}
+                {field: 'index', title: 'ID',type:'numbers'},
+                {field: 'ts', title: '进度',templet:'#jindu'},
+                {field: 'startTime', title: '执行开始时间'},
+                {title: '操作',  templet: '#operationTpl', align: 'center'}
+            ]],
+            done: function (res, curr, count) {
+                $("#countNum").text(count);
+                element.init();
+            }
+        });
+        {#重载#}
+        var active = {
+                    reload: function () {
+
+                          //执行重载
+                    table.reload('tableId', {
+                                page: {
+                                      curr: 1 //重新从第 1 页开始
+                        }
+                        , where: {
+                                'taskId': pkey
+                        },
+                        {#url: '/search/'#}
+                    });
+                }
+            };
+        $('.layui-btn').on('click', function () {
+
+            var type = $(this).data('type');
+
+            active[type] ? active[type].call(this) : '';
+
+        });
+        {#重载结束#}
+
+
+
+    })
+</script>
+<script type="text/html" id="operationTpl">
+    <a class="layui-btn layui-btn-xs" href="/tResult/{% verbatim %}{{d.taskId}}{% endverbatim %}" target="_blank">查看结果</a>
+{#    <a class="layui-btn layui-btn-xs" href="/tResult/{% verbatim %}{{d.id}}{% endverbatim %}" target="_blank">查看日志</a>#}
+</script>
+<script type="text/html" id="jindu">
+<div class="layui-progress layui-progress-big" lay-showpercent="true">
+        <div class="layui-progress-bar layui-bg-green" lay-percent="{% verbatim %}{{d.status == 1?'50%':(d.status == 0?'0%':(d.status == 2?'100%':'50%'))}} {% endverbatim %}"></div>
+</div>
+
+</script>
+</body>
+</html>

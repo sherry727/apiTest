@@ -82,12 +82,12 @@
     <div class="container-fluid">
         <div class="page-header">
             <h1 class="text-primary" style="font-size:35px;line-height:75px">{{ TName }}接口自动化测试报告
-                <a class="layui-btn layui-btn-small" href="javascript:location.replace(location.href);" title="刷新" STYLE="float: right">
-                    <i class="layui-icon layui-icon-refresh"></i>
-                </a>
-                <a class="layui-btn layui-btn-small" href="javascript:history.back(-1);" title="返回上一页" STYLE="float: right">
-                    <i class="layui-icon layui-icon-left">返回</i>
-                </a>
+{#                <a class="layui-btn layui-btn-small" href="javascript:location.replace(location.href);" title="刷新" STYLE="float: right">#}
+{#                    <i class="layui-icon layui-icon-refresh"></i>#}
+{#                </a>#}
+{#                <a class="layui-btn layui-btn-small" href="javascript:history.back(-1);" title="返回上一页" STYLE="float: right">#}
+{#                    <i class="layui-icon layui-icon-left">返回</i>#}
+{#                </a>#}
             </h1>
         </div>
 
@@ -106,7 +106,7 @@
                         </tr>
                         <tr class="info">
                             <td class="text-center">测试用时</td>
-                            <td class="text-center">11 分 4 秒</td>
+                            <td class="text-center">{{ ys }}</td>
                         </tr>
                         <tr class="info">
                             <td class="text-center">总用例数</td>
@@ -189,7 +189,7 @@
                                 }
                             }, {
                             value: {{ errorTotalCount }},
-                            name: '未检验',
+                            name: '异常',
                             itemStyle: {
                                 normal: {
                                     label: {
@@ -230,7 +230,7 @@
                     <a class="layui-btn" data-type="reload" id="st2" value="2" lay-filter="search" style="Background-Color: #5cb85c; color: #fff;">失  败 ({{ FallTotalCount }})</a>
                 </li>
                 <li>
-                    <a class="layui-btn" data-type="reload" id="st3" value="3" lay-filter="search" style="Background-Color: #5bc0de; color: #fff;">未验证 ({{ errorTotalCount }})</a>
+                    <a class="layui-btn" data-type="reload" id="st3" value="3" lay-filter="search" style="Background-Color: #5bc0de; color: #fff;">异常 ({{ errorTotalCount }})</a>
                 </li>
             </ul>
         </div>
@@ -305,7 +305,32 @@
 
         });
         {#重载结束#}
+
+        table.on('tool(tableFilter)', function (obj) {
+            var data = obj.data;
+            var eid = data['apiId'];
+            var layEvent = obj.event;
+            if (layEvent === 'rDetail') {
+                layer.open({
+                    title: '查看结果',
+                    type: 2,
+                    shade: false,
+                    maxmin: true,
+                    area: ['90%', '90%'],
+                    offset: ['30px', '50px'],
+                    content: '/rDetail/' + eid,
+                    zIndex: layer.zIndex,
+                    end: function () {
+                        $(".layui-laypage-btn")[0].click();
+                    }
+                });
+            }
+        })
+
     })
+</script>
+<script type="text/html" id="operationTpl">
+    <a class="layui-btn layui-btn-xs" lay-event="rDetail">查看结果</a>
 </script>
 </body>
 </html>
