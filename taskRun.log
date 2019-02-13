@@ -1,7 +1,14 @@
-2019-02-12 18:28:37,658 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:162] - INFO: Scheduler started
-2019-02-12 18:28:37,659 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-12 18:28:37,660 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1013] - DEBUG: No jobs; waiting until a job is added
-2019-02-12 18:36:30,297 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/pbList/
+2019-02-13 15:22:17,345 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:162] - INFO: Scheduler started
+2019-02-13 15:22:17,346 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
+2019-02-13 15:22:17,348 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1013] - DEBUG: No jobs; waiting until a job is added
+2019-02-13 15:38:26,548 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /accounts/login/
+2019-02-13 15:40:10,977 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /accounts/login/
+2019-02-13 15:40:20,233 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /index/undefined
+2019-02-13 15:40:20,248 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /accounts/login/
+2019-02-13 15:40:45,350 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /accounts/login/
+2019-02-13 15:40:51,465 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /accounts/login/
+2019-02-13 15:54:34,630 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /accounts/login/
+2019-02-13 15:58:02,061 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/pbList/
 Traceback (most recent call last):
   File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -24,7 +31,7 @@ Traceback (most recent call last):
   File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 178, in ensure_defaults
     raise ConnectionDoesNotExist("The connection %s doesn't exist" % alias)
 ConnectionDoesNotExist: The connection chandao doesn't exist
-2019-02-12 18:36:30,335 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/bugProjectName/
+2019-02-13 15:58:02,111 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/bugProjectName/
 Traceback (most recent call last):
   File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -45,7 +52,7 @@ Traceback (most recent call last):
   File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 894, in execute_sql
     raise original_exception
 ProgrammingError: (1146, "Table 'autoapi.zt_product' doesn't exist")
-2019-02-12 18:36:32,053 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/pbList/
+2019-02-13 15:58:08,685 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/testerList/
 Traceback (most recent call last):
   File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -53,7 +60,7 @@ Traceback (most recent call last):
     response = self.process_exception_by_middleware(e, request)
   File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 36, in pbList
+  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 92, in testerList
     total = p.count()
   File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 364, in count
     return self.query.get_count(using=self.db)
@@ -68,7 +75,30 @@ Traceback (most recent call last):
   File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 178, in ensure_defaults
     raise ConnectionDoesNotExist("The connection %s doesn't exist" % alias)
 ConnectionDoesNotExist: The connection chandao doesn't exist
-2019-02-12 18:36:32,092 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/bugProjectName/
+2019-02-13 15:58:09,513 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/devList/
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 158, in devList
+    total = p.count()
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 364, in count
+    return self.query.get_count(using=self.db)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 499, in get_count
+    number = obj.get_aggregation(using, ['__count'])['__count']
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 479, in get_aggregation
+    compiler = outer_query.get_compiler(using)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 255, in get_compiler
+    connection = connections[using]
+  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 208, in __getitem__
+    self.ensure_defaults(alias)
+  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 178, in ensure_defaults
+    raise ConnectionDoesNotExist("The connection %s doesn't exist" % alias)
+ConnectionDoesNotExist: The connection chandao doesn't exist
+2019-02-13 15:58:09,558 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/bugDevName/
 Traceback (most recent call last):
   File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -78,7 +108,7 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/usr/local/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 199, in bugProjectName
+  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 210, in bugDevName
     for a in p:
   File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 250, in __iter__
     self._fetch_all()
@@ -88,4 +118,4 @@ Traceback (most recent call last):
     results = compiler.execute_sql(chunked_fetch=self.chunked_fetch)
   File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 894, in execute_sql
     raise original_exception
-ProgrammingError: (1146, "Table 'autoapi.zt_product' doesn't exist")
+ProgrammingError: (1146, "Table 'autoapi.zt_user' doesn't exist")

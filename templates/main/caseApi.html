@@ -30,6 +30,7 @@
         <form class="layui-form layui-col-md12 ok-search">
             <input class="layui-input" placeholder="请输入接口名称" autocomplete="off" name="id" id="pkey">
             <input class="layui-input" type="hidden" autocomplete="off" name="id" id="caseId" value="{{ id }}">
+            <input class="layui-input" type="hidden" autocomplete="off" name="id" id="user" value="{{ user }}">
             <a class="layui-btn" data-type="reload" lay-filter="search">
                 <i class="layui-icon layui-icon-search"></i>
             </a>
@@ -71,6 +72,7 @@
         var laypage = layui.laypage;
 
         var caseId = $('#caseId').val();
+        var user = $('#user').val();
         table.render({
             elem: '#tableId',
             url: '/caseApiList/',
@@ -79,7 +81,8 @@
             id:"tableId",
             where: {
                 'keyword': '',
-                'caseId':caseId
+                'caseId':caseId,
+                'user':user
             },
             cols: [[
                 {#{type: 'checkbox'},#}
@@ -110,7 +113,8 @@
                         }
                         , where: {
                                 'keyword': pkey,
-                                'caseId': caseId
+                                'caseId': caseId,
+                                'user': user
 
                         },
                         {#url: '/search/'#}
@@ -137,7 +141,7 @@
                     shade: false,
                     maxmin: true,
                     shade: 0.5,
-                    area: ['90%', '90%'],
+                    area: ['70%', '90%'],
                     content: '/caseApiEdit/'+eid,
                     zIndex: layer.zIndex,
                     end: function () {

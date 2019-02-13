@@ -54,12 +54,14 @@ def taskList(request):
     j = (int(page) - 1) * int(rows) + int(rows)
     key = request.GET.get('keyword')
     status = request.GET.get('status')
+    user = request.GET.get('user')
     q1 = Q()
     q1.connector = 'AND'
     if len(key) > 0:
         q1.children.append(('name__contains', key))
     if len(status) > 0:
         q1.children.append(('status', status))
+    q1.children.append(('user', user))
     p = task.objects.filter(q1).order_by('-CreateTime')
     resultdict = {}
     total = p.count()
@@ -74,7 +76,7 @@ def taskList(request):
         dic['name'] = a.name
         dic['createTime'] = a.CreateTime.strftime("%Y-%m-%d %H:%M:%S")
         dic['desc'] = a.desc
-        dic['user'] = a.user
+        dic['user'] = user
         dic['type'] = a.type
         dic['status'] = a.status
         dict.append(dic)

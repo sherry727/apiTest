@@ -58,8 +58,10 @@ def getCaseApiList(request):
 
 
 def caseApi(request, id):
+    user = Case.objects.get(id=id).user
     data = {
         'id': id,
+        'user': user
     }
     return render(request, 'main/caseApi.html', data)
 

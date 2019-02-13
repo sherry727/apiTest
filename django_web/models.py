@@ -358,6 +358,17 @@ class AutoTaskRunTime(models.Model):
         verbose_name = '用例任务执行时间'
         verbose_name_plural = '用例任务执行时间'
 
+class globalVariable(models.Model):
+    """
+    全局变量
+    """
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50, verbose_name='变量名')
+    value = models.CharField(max_length=50, verbose_name='变量值', null=True)
+    user = models.CharField(max_length=50, verbose_name='创建人')
+
+
+
 
 
 

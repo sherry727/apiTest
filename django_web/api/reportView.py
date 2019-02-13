@@ -61,7 +61,6 @@ def resuLtList(request,autoRuntimeid):
 def rDetail(request,apiData):
     c = apiData.encode('utf-8')
     apiData = json.loads(c)
-    print apiData
     # u = AutoApiCase.objects.get(id=apiData.get('apiId'))  # 接口表
     h = autoApiHead.objects.filter(autoApi_id=apiData.get('apiId'))  # 请求头
     m = autoAPIParameter.objects.filter(autoApi_id=apiData.get('apiId'))  # 请求参数
@@ -96,5 +95,5 @@ def rDetail(request,apiData):
         'responseData': s.responseData,
         'result': apiData.get('result').encode('utf-8')
     }
-    print type(apiData.get('result').encode('utf-8'))
+    # print type(apiData.get('result').encode('utf-8'))
     return render(request, 'main/report-Detail.html', data)

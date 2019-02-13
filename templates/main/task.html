@@ -37,6 +37,7 @@
                 </div>
                 <div class="layui-input-inline">
                     <input class="layui-input" placeholder="请输入任务名称" autocomplete="off" name="id" id="pkey">
+                    <input class="layui-input" type="hidden" autocomplete="off" name="id" id="user" value="{{ user }}">
                  </div>
                 <a class="layui-btn" data-type="reload" lay-filter="search">
                      <i class="layui-icon layui-icon-search"></i>
@@ -72,6 +73,7 @@
         var laydate = layui.laydate;
         var laypage = layui.laypage;
 
+        var user = $('#user').val();
         table.render({
             elem: '#tableId',
             url: '/taskList/',
@@ -80,7 +82,8 @@
             id:"tableId",
             where: {
                 'keyword': '',
-                'status': ''
+                'status': '',
+                'user': user
             },
             cols: [[
                 {type: 'checkbox'},
@@ -109,7 +112,8 @@
                         }
                         , where: {
                                 'keyword': pkey,
-                                'status' : status
+                                'status' : status,
+                                'user' : user
 
                         },
                         {#url: '/search/'#}
