@@ -25,6 +25,14 @@
     <!--form表单-->
     <form class="layui-form layui-form-pane ok-form" id="api-add" lay-filter="api">
         <div class="layui-form-item">
+            <label class="layui-form-label">执行环境</label>
+            <div class="layui-input-block">
+                 <select name="envid" id="envname" lay-verify="required">
+                    <option value="请选择">请选择</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label">选择项目</label>
             <div class="layui-input-block">
                 <select name="projectid" id="projectName" lay-verify="required" lay-filter="projectNameFilter">
@@ -148,15 +156,74 @@
 {#            </div>#}
 {#        </div>#}
         <div class="layui-form-item ">
-            <label class="layui-form-label">环境描述</label>
+            <label class="layui-form-label">描述</label>
             <div class="layui-input-block">
                 <input type="text" name="desc" placeholder="请输入环境描述" autocomplete="off" class="layui-input" value="{{ desc }}">
             </div>
         </div>
         <div class="layui-form-item">
+            <div id="globalVariable"  style="display: none"></div>
+            <label class="layui-form-label">全局变量</label>
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="edit">立即提交</button>
-                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <div id="hd">
+                    <table class="layui-table" id="gv">
+                        <colgroup>
+                          <col width="200">
+                          <col width="200">
+                          <col width="50">
+                          <col>
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th>全局变量命名</th>
+                            <th>结果参数名</th>
+                            <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addGv"><i class="layui-icon">&#xe654;</i></button>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+         <div class="layui-form-item">
+            <div id="assert"  style="display: none"></div>
+            <label class="layui-form-label">响应断言</label>
+            <div class="layui-input-block">
+                <div id="hd">
+                    <table class="layui-table" id="as">
+                        <colgroup>
+                          <col width="200">
+                          <col width="200">
+                          <col width="50">
+                          <col>
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th>返回参数名</th>
+                            <th>返回参数值</th>
+                            <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addAs"><i class="layui-icon">&#xe654;</i></button>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <label class="layui-form-label">响应结果</label>
+            <div class="layui-input-block">
+                <textarea name="response" autocomplete="off" class="layui-textarea" id="response" style="min-height: 200px" disabled></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="run">测试运行</button>
+                <button class="layui-btn" lay-submit lay-filter="edit">保存</button>
+{#                <button type="reset" class="layui-btn layui-btn-primary">重置</button>#}
             </div>
         </div>
     </form>
@@ -224,9 +291,6 @@
                 return false;
             });
 
-        $('#param').on('click', '.delrow', function (e) {
-            $(this).closest('tr').remove()
-        });
 
          $('#addhead').click(function (event) {
                 var thtml="<tr>"+"<th>"+"<input type='text' name='head_name' placeholder=请输入参数名 class='layui-input'>"+" </th>"+"<th><input type='text'  name='head_key' placeholder=请输入参数值 class='layui-input'> </th>"+"<th>"+"<a  class='delhead' id='delhead' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
@@ -234,11 +298,48 @@
                 return false;
             });
 
-         $('#pa').on('click', '.delhead', function (e) {
+         $('#addGv').click(function (event) {
+                var thtml="<tr>"+"<th>"+"<input type='text' name='gv_name' placeholder=请输入全局变量名称 class='layui-input'>"+" </th>"+"<th><input type='text'  name='gv_value' placeholder=请输入结果返回的参数名称 class='layui-input'> </th>"+"<th>"+"<a  class='delGv' id='delGv' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
+                $('#gv tbody').append(thtml);
+                return false;
+            });
+
+         $('#addAs').click(function (event) {
+                var thtml="<tr>"+"<th>"+"<input type='text' name='a_name' placeholder=请输入验证的返回参数名称 class='layui-input'>"+" </th>"+"<th><input type='text'  name='a_value' placeholder=请输入返回的参数值 class='layui-input'> </th>"+"<th>"+"<a  class='delAs' id='delAs' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
+                $('#as tbody').append(thtml);
+                return false;
+            });
+
+         $('#param').on('click', '.delrow', function (e) {
             $(this).closest('tr').remove()
         });
 
-        //下拉选择框
+         $('#as').on('click', '.delAs', function (e) {
+            $(this).closest('tr').remove()
+        });
+
+         $('#gv').on('click', '.delGv', function (e) {
+            $(this).closest('tr').remove()
+        });
+
+
+         $('#pa').on('click', '.delhead', function (e) {
+            $(this).closest('tr').remove()
+        });
+        //环境下拉选择
+         $.ajax({
+            url: '/selectApiEnvName/',
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $('#envname').append(new Option(item.ename, item.eid));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        });
+
+        //项目下拉选择框
             $.ajax({
                 url: '/selectProjectName/',
                 dataType: 'json',
@@ -254,6 +355,26 @@
                 }
             });
 
+        form.on('submit(run)',function (data) {
+            var hp = JSON.stringify(data.field);
+            $.ajax({
+                url : '/autoApiSimpleRun/',
+                type : 'post',
+                dataType : 'json',
+                contentType :"application/json",
+                data : hp,
+                success : function (data1) {
+                    {#alert(JSON.stringify(data1));#}
+                    $("#response").text(data1);//给textarea赋值
+                },
+                error:function(){
+                     layer.msg('运行失败，请检查接口信息设置')
+                }
+
+            });
+        return false;
+    });
+
 
         form.on('submit(edit)',function (data) {
             var values={};
@@ -262,6 +383,8 @@
             var x;
             values["headers"] = [];
             values["params"] = [];
+            values["asserts"] = [];
+            values["galobalValues"] = [];
             var a = ["head_name","head_key","param_name","param_key"];
             for(x in params){
                 var j = $.inArray(params[x].name,a);
@@ -287,9 +410,23 @@
                 {#dp['param_must'] = $("input[name='param_must']")[i].checked?1:0;#}
                 values["params"].push(dp);
             }
+            for(var o = 0;o < $("input[name='a_name']").length;o++){
+                var da = {};
+                da['a_name'] = $("input[name='a_name']")[o].value;
+                da['a_value'] = $("input[name='a_value']")[o].value;
+                values["asserts"].push(da);
+            }
+
+            for(var k = 0;k < $("input[name='gv_name']").length;k++){
+                var dg = {};
+                dg['gv_name'] = $("input[name='gv_name']")[k].value;
+                dg['gv_value'] = $("input[name='gv_value']")[k].value;
+                values["galobalValues"].push(dg);
+            }
+
             });
             var hp = JSON.stringify(values);
-            {#alert(hp);#}
+            alert(hp);
             $.ajax({
                 url : '/caseApiEditPost/',
                 type : 'post',

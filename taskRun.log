@@ -1,14 +1,9 @@
-2019-02-13 15:22:17,345 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:162] - INFO: Scheduler started
-2019-02-13 15:22:17,346 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
-2019-02-13 15:22:17,348 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1013] - DEBUG: No jobs; waiting until a job is added
-2019-02-13 15:38:26,548 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /accounts/login/
-2019-02-13 15:40:10,977 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /accounts/login/
-2019-02-13 15:40:20,233 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /index/undefined
-2019-02-13 15:40:20,248 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /accounts/login/
-2019-02-13 15:40:45,350 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /accounts/login/
-2019-02-13 15:40:51,465 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /accounts/login/
-2019-02-13 15:54:34,630 - /usr/local/lib/python2.7/site-packages/django/core/handlers/base.py[line:152] - WARNING: Not Found: /accounts/login/
-2019-02-13 15:58:02,061 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/pbList/
+2019-02-14 11:42:28,193 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:162] - INFO: Scheduler started
+2019-02-14 11:42:28,193 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:937] - DEBUG: Looking for jobs to run
+2019-02-14 11:42:28,195 - /usr/local/lib/python2.7/site-packages/apscheduler/schedulers/base.py[line:1013] - DEBUG: No jobs; waiting until a job is added
+2019-02-14 11:42:38,456 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 11:42:38,513 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 11:43:15,828 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /autoApiSimpleRun/
 Traceback (most recent call last):
   File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -16,22 +11,42 @@ Traceback (most recent call last):
     response = self.process_exception_by_middleware(e, request)
   File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 36, in pbList
-    total = p.count()
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 364, in count
-    return self.query.get_count(using=self.db)
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 499, in get_count
-    number = obj.get_aggregation(using, ['__count'])['__count']
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 479, in get_aggregation
-    compiler = outer_query.get_compiler(using)
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 255, in get_compiler
-    connection = connections[using]
-  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 208, in __getitem__
-    self.ensure_defaults(alias)
-  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 178, in ensure_defaults
-    raise ConnectionDoesNotExist("The connection %s doesn't exist" % alias)
-ConnectionDoesNotExist: The connection chandao doesn't exist
-2019-02-13 15:58:02,111 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/bugProjectName/
+  File "/Users/sherry/Desktop/pythonProject/Django/django_web/api/caseApiView.py", line 438, in autoApiSimpleRun
+    env = Env.objects.get(id=env_id)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 371, in get
+    clone = self.filter(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 784, in filter
+    return self._filter_or_exclude(False, *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
+    clone.query.add_q(Q(*args, **kwargs))
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 1250, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
+    allow_joins=allow_joins, split_subq=split_subq,
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 1210, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 1104, in build_lookup
+    return final_lookup(lhs, rhs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/lookups.py", line 24, in __init__
+    self.rhs = self.get_prep_lookup()
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/lookups.py", line 74, in get_prep_lookup
+    return self.lhs.output_field.get_prep_value(self.rhs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
+    return int(value)
+UnicodeEncodeError: 'decimal' codec can't encode characters in position 0-2: invalid decimal Unicode string
+2019-02-14 11:43:23,358 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 11:43:23,427 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 11:45:33,644 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 11:45:33,703 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
+2019-02-14 11:45:48,866 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 11:45:48,927 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
+2019-02-14 11:45:56,912 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 11:45:56,965 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "GET /actmgt/user/login2323 HTTP/1.1" 404 None
+2019-02-14 11:46:12,162 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 11:46:12,214 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "GET /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 12:36:44,451 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /autoApiSimpleRun/
 Traceback (most recent call last):
   File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -39,20 +54,42 @@ Traceback (most recent call last):
     response = self.process_exception_by_middleware(e, request)
   File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 199, in bugProjectName
-    for a in p:
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 250, in __iter__
-    self._fetch_all()
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 1118, in _fetch_all
-    self._result_cache = list(self._iterable_class(self))
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 53, in __iter__
-    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch)
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 894, in execute_sql
-    raise original_exception
-ProgrammingError: (1146, "Table 'autoapi.zt_product' doesn't exist")
-2019-02-13 15:58:08,685 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/testerList/
+  File "/Users/sherry/Desktop/pythonProject/Django/django_web/api/caseApiView.py", line 438, in autoApiSimpleRun
+    env = Env.objects.get(id=env_id)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 371, in get
+    clone = self.filter(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 784, in filter
+    return self._filter_or_exclude(False, *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
+    clone.query.add_q(Q(*args, **kwargs))
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 1250, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
+    allow_joins=allow_joins, split_subq=split_subq,
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 1210, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 1104, in build_lookup
+    return final_lookup(lhs, rhs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/lookups.py", line 24, in __init__
+    self.rhs = self.get_prep_lookup()
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/lookups.py", line 74, in get_prep_lookup
+    return self.lhs.output_field.get_prep_value(self.rhs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
+    return int(value)
+UnicodeEncodeError: 'decimal' codec can't encode characters in position 0-2: invalid decimal Unicode string
+2019-02-14 12:37:07,622 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 12:37:07,677 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "GET /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 12:37:14,130 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 12:37:14,185 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 13:11:59,634 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 13:11:59,702 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 13:35:25,707 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 13:35:25,773 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 13:58:50,194 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 13:58:50,274 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 14:30:46,939 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /autoApiSimpleRun/
 Traceback (most recent call last):
   File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -60,62 +97,58 @@ Traceback (most recent call last):
     response = self.process_exception_by_middleware(e, request)
   File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 92, in testerList
-    total = p.count()
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 364, in count
-    return self.query.get_count(using=self.db)
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 499, in get_count
-    number = obj.get_aggregation(using, ['__count'])['__count']
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 479, in get_aggregation
-    compiler = outer_query.get_compiler(using)
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 255, in get_compiler
-    connection = connections[using]
-  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 208, in __getitem__
-    self.ensure_defaults(alias)
-  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 178, in ensure_defaults
-    raise ConnectionDoesNotExist("The connection %s doesn't exist" % alias)
-ConnectionDoesNotExist: The connection chandao doesn't exist
-2019-02-13 15:58:09,513 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/devList/
-Traceback (most recent call last):
-  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 158, in devList
-    total = p.count()
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 364, in count
-    return self.query.get_count(using=self.db)
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 499, in get_count
-    number = obj.get_aggregation(using, ['__count'])['__count']
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 479, in get_aggregation
-    compiler = outer_query.get_compiler(using)
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 255, in get_compiler
-    connection = connections[using]
-  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 208, in __getitem__
-    self.ensure_defaults(alias)
-  File "/usr/local/lib/python2.7/site-packages/django/db/utils.py", line 178, in ensure_defaults
-    raise ConnectionDoesNotExist("The connection %s doesn't exist" % alias)
-ConnectionDoesNotExist: The connection chandao doesn't exist
-2019-02-13 15:58:09,558 - /usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py[line:135] - ERROR: Internal Server Error: /bugStatistics/bugDevName/
-Traceback (most recent call last):
-  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python2.7/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/Users/sherry/Desktop/pythonProject/Django/bugStatistics/stViews/bugStView.py", line 210, in bugDevName
-    for a in p:
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 250, in __iter__
-    self._fetch_all()
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 1118, in _fetch_all
-    self._result_cache = list(self._iterable_class(self))
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 53, in __iter__
-    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch)
-  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 894, in execute_sql
-    raise original_exception
-ProgrammingError: (1146, "Table 'autoapi.zt_user' doesn't exist")
+  File "/Users/sherry/Desktop/pythonProject/Django/django_web/api/caseApiView.py", line 438, in autoApiSimpleRun
+    env = Env.objects.get(id=env_id)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 371, in get
+    clone = self.filter(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 784, in filter
+    return self._filter_or_exclude(False, *args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
+    clone.query.add_q(Q(*args, **kwargs))
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 1250, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
+    allow_joins=allow_joins, split_subq=split_subq,
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 1210, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/sql/query.py", line 1104, in build_lookup
+    return final_lookup(lhs, rhs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/lookups.py", line 24, in __init__
+    self.rhs = self.get_prep_lookup()
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/lookups.py", line 74, in get_prep_lookup
+    return self.lhs.output_field.get_prep_value(self.rhs)
+  File "/usr/local/lib/python2.7/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
+    return int(value)
+UnicodeEncodeError: 'decimal' codec can't encode characters in position 0-2: invalid decimal Unicode string
+2019-02-14 16:13:49,423 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 16:13:49,488 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 17:01:29,685 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 17:01:29,748 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 17:05:55,159 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 17:05:55,233 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 19:56:59,529 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): zhacjavaapi.zje.com:443
+2019-02-14 19:57:00,338 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): zhacjavaapi.zje.com:443
+2019-02-14 19:57:00,596 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
+2019-02-14 19:57:00,629 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): zhacjavaapi.zje.com:443
+2019-02-14 19:57:01,165 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
+2019-02-14 19:57:01,200 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): zhacjavaapi.zje.com:443
+2019-02-14 19:57:01,404 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 404 None
+2019-02-14 19:57:01,437 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): zhacjavaapi.zje.com:443
+2019-02-14 19:57:02,004 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 404 None
+2019-02-14 19:57:02,036 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): zhacjavaapi.zje.com:443
+2019-02-14 19:57:02,298 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 404 None
+2019-02-14 19:57:02,332 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): zhacjavaapi.zje.com:443
+2019-02-14 19:57:03,869 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 404 None
+2019-02-14 19:57:03,917 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 404 None
+2019-02-14 19:57:03,950 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): zhacjavaapi.zje.com:443
+2019-02-14 19:57:04,443 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 404 None
+2019-02-14 19:57:13,039 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 19:57:13,085 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login2323 HTTP/1.1" 404 None
+2019-02-14 19:57:13,096 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 19:57:13,158 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 19:57:13,169 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 19:57:13,218 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None
+2019-02-14 19:57:13,230 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:813] - DEBUG: Starting new HTTPS connection (1): test-zhacjavaapi.zje.com:443
+2019-02-14 19:57:13,297 - /usr/local/lib/python2.7/site-packages/urllib3/connectionpool.py[line:393] - DEBUG: https://test-zhacjavaapi.zje.com:443 "POST /actmgt/user/login HTTP/1.1" 200 None

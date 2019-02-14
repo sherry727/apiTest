@@ -416,4 +416,43 @@ def selectApiEnvName(request):
         dict.append(dic)
     return JsonResponse(dict, safe=False)
 
+def autoApiSimpleRun(request):
+    u = json.loads(request.body)
+    print u
+    api_id = u.get('id')
+    api = AutoApiCase.objects.get(id=api_id)
+    env_id = u.get('envid')
+    method = u.get('method')
+    pa = autoAPIParameter.objects.filter(autoApi_id=api_id).values('name', 'value')
+    params = {}
+    for p in pa:
+        name = p.get('name')
+        value = p.get('value')
+        params[name] = value
+    he = autoApiHead.objects.filter(autoApi_id=api_id).values('name', 'value')
+    headers = {}
+    for p in he:
+        name = p.get('name')
+        value = p.get('value')
+        headers[name] = value
+    env = Env.objects.get(id=env_id)
+    if env.evn_port:
+        url = env.env_url + ':' + env.evn_port + api.apiAddress
+    else:
+        url = env.env_url + api.apiAddress
+    ur = url.encode('unicode-escape').decode('string_escape')
+    try:
+        # if method == 'post':
+        #     r = requests.request('post', json=params, headers=headers, url=url)
+        # else:
+        #     r = requests.request('get', json=params, headers=headers, url=url)
+
+        r = Public.execute(url=url, params=params, method=method, heads=headers)
+        print r.text
+        return JsonResponse(r.text, safe=False)
+    except:
+        data = '没有该接口，请检查接口信息'
+        return JsonResponse(data, safe=False)
+
+
 

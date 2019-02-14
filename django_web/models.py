@@ -293,7 +293,7 @@ class step(models.Model):
     步骤管理
     """
     id = models.AutoField(primary_key=True)
-    autoCase = models.ForeignKey(AutoApiCase, on_delete=models.CASCADE, verbose_name='所属项目')
+    autoCase_id = models.IntegerField(null=True, verbose_name='所属项目')
     name = models.CharField(max_length=50, verbose_name='步骤名称')
     type = models.CharField(max_length=20, verbose_name='步骤类型')
     sort = models.PositiveIntegerField(default=0, verbose_name='步骤排序')

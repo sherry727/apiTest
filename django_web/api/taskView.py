@@ -319,6 +319,7 @@ def taskRun(request):
             scheduler.add_job(job, 'cron', id=str(tid), start_date=tasks.startTime, end_date=tasks.endTime)
             scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
         else:
+            AutoTaskRunTime.objects.filter(id=s.id).update(endTime=timezone.now())
             resultdict = {
                 'code': 1,
                 'msg': '无法运行，请检查设置运行时间！',
@@ -449,6 +450,7 @@ def taskDetail(request,tid):
 def taskLogList(request,tid):
     p = AutoTaskRunTime.objects.filter(task_id=tid).order_by('-testTime')
     t = task.objects.get(id=tid)
+    print t.endTime
     resultdict = {}
     total = p.count()
     dict = []

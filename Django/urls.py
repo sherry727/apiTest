@@ -106,6 +106,7 @@ urlpatterns = [
     url(r'^caseApiMultRun/(?P<eid>\d+)$', caseApiView.caseApiMultRun, name='caseApiMultRun'),
     url(r'^caseApiEditPost/$', caseApiView.caseApiEditPost, name='caseApiEditPost'),
     url(r'^selectApiEnvName/$', caseApiView.selectApiEnvName, name='selectApiEnvName'),
+    url(r'^autoApiSimpleRun/$', caseApiView.autoApiSimpleRun, name='autoApiSimpleRun'),
 
     #task
     url(r'^task_index/$', taskView.task_index, name='task_index'),
