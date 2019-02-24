@@ -18,7 +18,7 @@ from django.contrib import admin
 from django_web import views
 from bugStatistics.stViews import bugStView
 from django.conf.urls import include
-from django_web.api import projectView, envView, apiView,caseView,caseApiView,taskView,reportView
+from django_web.api import projectView, envView, apiView, caseView, caseApiView, taskView, reportView, sqlView
 from django.views import static
 from django.conf import settings
 
@@ -125,6 +125,19 @@ urlpatterns = [
     #report
     url(r'^resuLtList/(?P<autoRuntimeid>\d+)$', reportView.resuLtList, name='resuLtList'),
     url(r'^rDetail/(?P<apiData>.*)$', reportView.rDetail, name='rDetail'),
+
+
+    #sql
+    url(r'^sql_index/$', sqlView.sql_index, name='sql_index'),
+    url(r'^DBList/$', sqlView.DBList, name='DBList'),
+    url(r'^dbAdd/$', sqlView.dbAdd, name='dbAdd'),
+    url(r'^DBAddPost/$', sqlView.DBAddPost, name='DBAddPost'),
+    url(r'^DBEdit/(?P<DBid>\d+)$', sqlView.DBEdit, name='DBEdit'),
+    url(r'^DBEditPost/$', sqlView.DBEditPost, name='DBEditPost'),
+    url(r'^DBDelete/$', sqlView.DBDelete, name='DBDelete'),
+    url(r'^testDB/$', sqlView.testDB, name='testDB'),
+
+
 
 
 

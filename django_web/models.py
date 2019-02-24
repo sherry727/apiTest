@@ -61,7 +61,7 @@ class Project(models.Model):
     version = models.CharField(max_length=50, verbose_name='版本')
     type = models.CharField(max_length=50, verbose_name='类型', choices=ProjectType)
     description = models.CharField(max_length=1024, blank=True, null=True, verbose_name='描述')
-    status = models.BooleanField(default=True, verbose_name='状态')
+    status = models.BooleanField(default=True, verbose_name='状态0:删除，1：未删除')
     LastUpdateTime = models.DateTimeField(auto_now=True, verbose_name='最近修改时间')
     createTime = models.DateTimeField(auto_now=True, verbose_name='创建时间')
     user = models.CharField(max_length=32)
@@ -188,16 +188,16 @@ class task(models.Model):
     type = models.CharField(max_length=50, default='timing', verbose_name='类型', choices=TASK_CHOICE)
     time = models.CharField(max_length=1024, verbose_name='定时')
     status = models.IntegerField(default=0, verbose_name='1:执行中，2：结束，0：待执行,3:暂停')
-    startTime = models.DateTimeField(auto_now=False, verbose_name='开始时间')
-    endTime = models.DateTimeField(auto_now=False, verbose_name='结束时间')
+    startTime = models.DateTimeField(auto_now=False, verbose_name='开始时间',null=True)
+    endTime = models.DateTimeField(auto_now=False, verbose_name='结束时间',null=True)
     user = models.CharField(max_length=32, verbose_name='创建人', default= '')
     env_id = models.CharField(max_length=32, verbose_name='环境', default='')
     CreateTime = models.DateTimeField(auto_now=True, verbose_name='创建时间')
-    min = models.CharField(max_length=32, default='*', verbose_name='分钟')
-    hour = models.CharField(max_length=32, default='*', verbose_name='小时')
-    day = models.CharField(max_length=32, default='*', verbose_name='天')
-    month = models.CharField(max_length=32, default='*', verbose_name='月')
-    week = models.CharField(max_length=32, default='*', verbose_name='周')
+    min = models.CharField(max_length=32, default='*', verbose_name='分钟',null=True)
+    hour = models.CharField(max_length=32, default='*', verbose_name='小时',null=True)
+    day = models.CharField(max_length=32, default='*', verbose_name='天',null=True)
+    month = models.CharField(max_length=32, default='*', verbose_name='月',null=True)
+    week = models.CharField(max_length=32, default='*', verbose_name='周',null=True)
 
 
 
@@ -363,11 +363,36 @@ class globalVariable(models.Model):
     全局变量
     """
     id = models.AutoField(primary_key=True)
+    autoApi_id=models.IntegerField(null=True, verbose_name='用例')
     name = models.CharField(max_length=50, verbose_name='变量名')
+    path = models.CharField(max_length=200, verbose_name='返回参数路径', null=True)
     value = models.CharField(max_length=50, verbose_name='变量值', null=True)
     user = models.CharField(max_length=50, verbose_name='创建人')
 
 
+class sqlManager(models.Model):
+    """
+    数据库管理
+    """
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50, verbose_name='数据库取名')
+    sqltype=models.IntegerField(null=True, verbose_name='数据库类型1：mysql，2：redis，3：mango')
+    host=models.CharField(null=True, verbose_name='数据库地址', max_length=50)
+    username=models.CharField(null=True, verbose_name='登录名', max_length=50)
+    password=models.CharField(null=True, verbose_name='密码', max_length=50)
+    db=models.CharField(null=True, verbose_name='数据库名', max_length=50)
+    port=models.CharField(null=True, verbose_name='端口', max_length=10)
+    user = models.CharField(null=True, verbose_name='创建人', max_length=50)
+    desc = models.CharField(null=True, verbose_name='描述', max_length=200)
+    CreateTime = models.DateTimeField(auto_now=True, verbose_name='创建时间')
+
+class sql_api(models.Model):
+    """
+    数据库和api关联
+    """
+    id = models.AutoField(primary_key=True)
+    sql_id= models.IntegerField(null=True, verbose_name='数据库环境')
+    autoApi_id=models.IntegerField(null=True, verbose_name='接口')
 
 
 

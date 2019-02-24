@@ -110,6 +110,7 @@ def taskDelete(request):
 def caseTaskPost(request):
     if request.method == "POST":
         u = json.loads(request.body)
+        print u
         envid =u.get('envid')
         env = Env.objects.get(id=envid)
         if env.evn_port:
@@ -130,16 +131,6 @@ def caseTaskPost(request):
         month=u.get('month')
         week=u.get('week')
         testTime = timezone.now()
-        t = task.objects.create(name=name, desc=desc, type=ty, startTime=startTime, endTime=endTime, user=user,
-                                min=min, hour=hour, day=day, month=month, week=week, CreateTime=timezone.now(),
-                                env_id=u.get('envid'))
-        t.save()
-        s = AutoTaskRunTime.objects.create(startTime=timezone.now(), task_id=t.id, testTime=testTime)
-        s.save()
-        tasks = []
-        d = re.sub("u'", "\"", cases)
-        d = re.sub("'", "\"", d)
-        ca = json.loads(d)
         if min=='':
             min=None
         if hour=='':
@@ -154,6 +145,16 @@ def caseTaskPost(request):
             endTime=None
         if startTime=='':
             startTime=None
+        t = task.objects.create(name=name, desc=desc, type=ty, startTime=startTime, endTime=endTime, user=user,
+                                min=min, hour=hour, day=day, month=month, week=week, CreateTime=timezone.now(),
+                                env_id=envid)
+        t.save()
+        s = AutoTaskRunTime.objects.create(startTime=timezone.now(), task_id=t.id, testTime=testTime)
+        s.save()
+        tasks = []
+        d = re.sub("u'", "\"", cases)
+        d = re.sub("'", "\"", d)
+        ca = json.loads(d)
 
         for c in ca:
             tasks.append(taskCase(task_id=t.id, case_id=c.get('id')))
@@ -189,12 +190,11 @@ def caseTaskPost(request):
                                                   testTime=testTime, autoRunTime_id=s.id).save()
                     except:
                         taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id, httpStatus='502',
-                                                  result='ERROR', responseData='接口请求出错，请检查', user=user,
+                                                  result='ERROR', responseData='接口请求异常，请检查', user=user,
                                                   testTime=testTime, autoRunTime_id=s.id).save()
 
         def my_listener(event):
             if event.exception:
-                # task.objects.filter(id=t.id).update(status=1)
                 print('接口请求异常，请检查')
             else:
                 print('运行中')
@@ -289,10 +289,10 @@ def taskRun(request):
                     t.save()
                 except:
                     t = taskResult.objects.create(case_id=c.case_id, autoApi_id=i.id, task_id=tid, httpStatus='502',
-                                                  result='ERROR', responseData='接口请求出错，请检查', user=user,testTime=testTime,
+                                                  result='ERROR', responseData='接口请求异常，请检查', user=user,testTime=testTime,
                                                   autoRunTime_id=s.id)
                     t.save()
-                    print '接口请求出错，请检查'
+                    print '接口请求异常，请检查'
 
     def my_listener(event):
         if event.exception:
@@ -310,13 +310,13 @@ def taskRun(request):
     if ty == 1:
         print '定时'
         scheduler.add_job(job, 'cron', id=str(tid), day_of_week=tasks.week, hour=tasks.hour, minute=tasks.min,
-                          day=tasks.day, month=tasks.month)
+                          day=tasks.day, month=tasks.month,max_instances=10)
         scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
     else:
         print '循环'
         print tasks.endTime
         if tasks.endTime>timezone.now():
-            scheduler.add_job(job, 'cron', id=str(tid), start_date=tasks.startTime, end_date=tasks.endTime)
+            scheduler.add_job(job, 'cron', id=str(tid), start_date=tasks.startTime, end_date=tasks.endTime,max_instances=10)
             scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
         else:
             AutoTaskRunTime.objects.filter(id=s.id).update(endTime=timezone.now())

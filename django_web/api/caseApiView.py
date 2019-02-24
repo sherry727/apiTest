@@ -132,63 +132,35 @@ def apiListForProject(request):
     j = (int(page) - 1) * int(rows) + int(rows)
     projectid = request.GET.get('projectId')
     projects = Project.objects.filter(status=1).values('id')
-    if projectid == '':
-        p = ApiCase.objects.filter(status=1).order_by('-CreateTime')
-        resultdict = {}
-        total = p.count()
-        p = p[i:j]
-        dict = []
-        resultdict['total'] = total
-        for a in p:
-            dic = {}
-            dic['id'] = a.id
-            dic['project_id'] = a.project_id
-            r = Project.objects.get(id=a.project_id)
-            dic['projectName'] = r.name
-            dic['name'] = a.name
-            dic['method'] = a.method
-            dic['apiAddress'] = a.apiAddress
-            dic['createTime'] = a.CreateTime.strftime("%Y-%m-%d %H:%M:%S")
-            dic['desc'] = a.desc
-            dic['user'] = a.user
-            dict.append(dic)
-        resultdict['code'] = 0
-        resultdict['msg'] = ''
-        resultdict['count'] = total
-        resultdict['data'] = dict
-        return JsonResponse(resultdict, safe=False)
-    elif projectid:
-        p = ApiCase.objects.filter(project_id=projectid, status=1).order_by('-CreateTime')
-        resultdict = {}
-        total = p.count()
-        p = p[i:j]
-        dict = []
-        for a in p:
-            dic = {}
-            dic['id'] = a.id
-            dic['project_id'] = a.project_id
-            r = Project.objects.get(id=a.project_id)
-            dic['projectName'] = r.name
-            dic['name'] = a.name
-            dic['method'] = a.method
-            dic['apiAddress'] = a.apiAddress
-            dic['createTime'] = a.CreateTime.strftime("%Y-%m-%d %H:%M:%S")
-            dic['desc'] = a.desc
-            dic['user'] = a.user
-            dict.append(dic)
-        resultdict['code'] = 0
-        resultdict['msg'] = ''
-        resultdict['count'] = total
-        resultdict['data'] = dict
-        # print resultdict
-        return JsonResponse(resultdict, safe=False)
-    else:
-        resultdict = {
-            'code': 1,
-            'msg': 'fail',
-            'data': {}
-        }
-        return JsonResponse(resultdict, safe=False)
+    q1 = Q()
+    q1.connector = 'AND'
+    if len(projectid) > 0:
+        q1.children.append(('project_id', projectid))
+    p = ApiCase.objects.filter(q1).order_by('-CreateTime')
+    resultdict = {}
+    total = p.count()
+    p = p[i:j]
+    dict = []
+    resultdict['total'] = total
+    for a in p:
+        dic = {}
+        dic['id'] = a.id
+        dic['project_id'] = a.project_id
+        r = Project.objects.get(id=a.project_id)
+        dic['projectName'] = r.name
+        dic['name'] = a.name
+        dic['method'] = a.method
+        dic['apiAddress'] = a.apiAddress
+        dic['createTime'] = a.CreateTime.strftime("%Y-%m-%d %H:%M:%S")
+        dic['desc'] = a.desc
+        dic['user'] = a.user
+        dict.append(dic)
+    resultdict['code'] = 0
+    resultdict['msg'] = ''
+    resultdict['count'] = total
+    resultdict['data'] = dict
+    return JsonResponse(resultdict, safe=False)
+
 
 def caseApiAddOldPost(request,caseId):
     if request.method == "POST":
@@ -294,6 +266,7 @@ def caseApiDelete(request):
 def caseApiEditPost(request):
     if request.method == "POST":
         u = json.loads(request.body)
+        print u
         projectname = u.get('projectid')
         p = Project.objects.get(name=projectname)
         projectid=p.id
@@ -307,6 +280,8 @@ def caseApiEditPost(request):
         httptype = u.get('httptype')
         headers = u.get('headers')
         params = u.get('params')
+        asserts = u.get('asserts')
+        galobalValues = u.get('galobalValues')
         sort = u.get('sort')
         AutoApiCase.objects.filter(id=id).update(project_id=projectid, name=name, user=user, method=method,
                                                  requestParameterType=requestParameterType,

@@ -176,7 +176,7 @@
                         <thead>
                           <tr>
                             <th>全局变量命名</th>
-                            <th>结果参数名</th>
+                            <th>返回参数的路径</th>
                             <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addGv"><i class="layui-icon">&#xe654;</i></button>
                           </tr>
                         </thead>
@@ -187,6 +187,32 @@
                 </div>
             </div>
         </div>
+        <div class="layui-form-item">
+            <div id="sqlM"  style="display: none"></div>
+            <label class="layui-form-label">添加数据库</label>
+            <div class="layui-input-inline" style="width: 300px">
+                <select name="sqlType" id="sqlType">
+                    <option value="">请选择数据库类型</option>
+                    <option value="1">mysql</option>
+                    <option value="2">redis</option>
+                    <option value="3">mangoDB</option>
+                </select>
+            </div>
+            <div class="layui-input-inline" style="width: 300px">
+                <select name="sqlType" id="sqlName">
+                    <option value="">请选数据库环境</option>
+                </select>
+            </div>
+        </div>
+         <div class="layui-form-item">
+             <div class="layui-input-block">
+                <textarea name="sqlText" autocomplete="off" placeholder="请输入对应sql语句，分号隔开" class="layui-textarea" id="response" style="min-height: 100px"></textarea>
+             </div>
+             <label class="layui-form-label">sql变量名</label>
+             <div class="layui-input-block">
+                <input type="text" name="sqlGlobalname" placeholder="请输入sql接收变量名称，分号隔开" autocomplete="off" class="layui-input"  value="{{ sqlGlobalname }}" >
+             </div>
+         </div>
          <div class="layui-form-item">
             <div id="assert"  style="display: none"></div>
             <label class="layui-form-label">响应断言</label>
@@ -201,7 +227,7 @@
                         </colgroup>
                         <thead>
                           <tr>
-                            <th>返回参数名</th>
+                            <th>返回参数路径</th>
                             <th>返回参数值</th>
                             <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addAs"><i class="layui-icon">&#xe654;</i></button>
                           </tr>
@@ -241,7 +267,6 @@
 
         $("#method option[value='{{ method }}']").prop("selected",true);
         $("#httptype option[value='{{ httptype }}']").prop("selected",true);
-
 
 
         form.on('radio(type)', function (data) {
@@ -299,13 +324,13 @@
             });
 
          $('#addGv').click(function (event) {
-                var thtml="<tr>"+"<th>"+"<input type='text' name='gv_name' placeholder=请输入全局变量名称 class='layui-input'>"+" </th>"+"<th><input type='text'  name='gv_value' placeholder=请输入结果返回的参数名称 class='layui-input'> </th>"+"<th>"+"<a  class='delGv' id='delGv' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
+                var thtml="<tr>"+"<th>"+"<input type='text' name='gv_name' placeholder=请设置全局变量名称 class='layui-input'>"+" </th>"+"<th><input type='text'  name='gv_value' placeholder=请输入结果返回的参数路径 class='layui-input'> </th>"+"<th>"+"<a  class='delGv' id='delGv' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
                 $('#gv tbody').append(thtml);
                 return false;
             });
 
          $('#addAs').click(function (event) {
-                var thtml="<tr>"+"<th>"+"<input type='text' name='a_name' placeholder=请输入验证的返回参数名称 class='layui-input'>"+" </th>"+"<th><input type='text'  name='a_value' placeholder=请输入返回的参数值 class='layui-input'> </th>"+"<th>"+"<a  class='delAs' id='delAs' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
+                var thtml="<tr>"+"<th>"+"<input type='text' name='a_name' placeholder=请输入验证的返回参数路径 class='layui-input'>"+" </th>"+"<th><input type='text'  name='a_value' placeholder=请输入返回的参数值 class='layui-input'> </th>"+"<th>"+"<a  class='delAs' id='delAs' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
                 $('#as tbody').append(thtml);
                 return false;
             });
@@ -334,6 +359,19 @@
             success: function (data) {
                 $.each(data, function (index, item) {
                     $('#envname').append(new Option(item.ename, item.eid));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        });
+
+         //sql下拉选择
+         $.ajax({
+            url: '/selectSql/',
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $('#sqlName').append(new Option(item.ename, item.eid));// 下拉菜单里添加元素
                 });
                 layui.form.render("select");
             }

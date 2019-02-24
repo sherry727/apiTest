@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>添加数据库</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/mine/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/mine/css/scroll-bar.css">
+    <link rel="stylesheet" href="/static/mine/css/sub-page.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_693759_wytlyqhtdtj1nhfr.css">
+</head>
+<body>
+<div class="ok-body">
+    <!--面包屑导航区域-->
+    <div class="ok-body-breadcrumb">
+            <span class="layui-breadcrumb">
+                <a><cite>用例管理</cite></a>
+                <a><cite>数据库管理</cite></a>
+				<a><cite>添加数据库</cite></a>
+            </span>
+        <a class="layui-btn layui-btn-small" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon layui-icon-refresh"></i>
+        </a>
+    </div>
+    <!--form表单-->
+    <form class="layui-form layui-form-pane ok-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择类型</label>
+            <div class="layui-input-block">
+                <select name="sqlType" id="sqlType" lay-verify="required">
+                    <option value="">请选择</option>
+                    <option value="1">mysql</option>
+                    <option value="2">redis</option>
+                    <option value="3">mongoDB</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" placeholder="请输入数据库名称" autocomplete="off" class="layui-input" lay-verify="required" >
+                <input type="hidden" name="user" placeholder="请输入用户" autocomplete="off" class="layui-input" value="{{ user }}" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">登录用户</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" placeholder="请输入登录名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">登录密码</label>
+            <div class="layui-input-block">
+                <input type="text" name="password" placeholder="请输入登录密码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">主机地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="hostname" placeholder="请输入主机名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">端口号</label>
+            <div class="layui-input-block">
+                <input type="text" name="port" placeholder="请输入端口号" autocomplete="off" class="layui-input" lay-verify="required|number">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">DB名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="DBname" placeholder="请输入需要连接的数据库名称" autocomplete="off" class="layui-input" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">描述</label>
+            <div class="layui-input-block">
+                <textarea name="desc" placeholder="请输入描述" autocomplete="off" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="testDB">测试连接数据库</button>
+                <button class="layui-btn" lay-submit lay-filter="add">保存</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--js逻辑-->
+<script src="/static/mine/lib/layui/layui.js"></script>
+<script>
+    layui.use(['element', 'form', 'jquery', 'laydate'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.jquery;
+        var laydate = layui.laydate;
+
+
+        form.on('submit(add)',function (data) {
+            var d = JSON.stringify(data.field);
+            $.ajax({
+                url : '/DBAddPost/',
+                type : 'post',
+                dataType : 'json',
+                contentType :"application/json",
+                data : d,
+                success : function (data1) {
+                    if (data1.code == 0) {
+                        layer.msg('添加成功', {
+                            offset: ['50%'],
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index);
+                            location.href = '/DB_index/'
+                        });
+                    } else if (data1.code==2) {
+                        layer.msg(data1.msg)
+                    }
+                    else{
+                        layer.msg('添加失败')
+                    }
+                }
+            });
+        return false;
+    })
+
+        form.on('submit(testDB)',function (data) {
+            var d = JSON.stringify(data.field);
+            $.ajax({
+                url : '/testDB/',
+                type : 'post',
+                dataType : 'json',
+                contentType :"application/json",
+                data : d,
+                success : function (data1) {
+                    if (data1.code == 0) {
+                        layer.msg('链接成功', {
+                            offset: ['50%'],
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index);
+                            location.href = '/DB_index/'
+                        });
+                    } else if (data1.code==2) {
+                        layer.msg(data1.msg)
+                    }
+                    else{
+                        layer.msg('连接异常')
+                    }
+                }
+            });
+        return false;
+    })
+
+    })
+</script>
+</body>
+</html>

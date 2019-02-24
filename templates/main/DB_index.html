@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>用例列表</title>
+    <title>数据库管理</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="/static/mine/lib/layui/css/layui.css">
     <link rel="stylesheet" href="/static/mine/css/scroll-bar.css">
@@ -15,8 +15,7 @@
     <div class="ok-body-breadcrumb">
             <span class="layui-breadcrumb">
                 <a><cite>接口用例管理</cite></a>
-                <a><cite>接口管理</cite></a>
-                <a><cite>接口列表</cite></a>
+                <a><cite>数据库管理</cite></a>
             </span>
         <a class="layui-btn layui-btn-small" href="javascript:location.replace(location.href);" title="刷新">
             <i class="layui-icon layui-icon-refresh"></i>
@@ -24,34 +23,19 @@
     </div>
     <!--模糊搜索区域-->
     <div class="layui-row">
-        <form class="layui-form layui-col-md12 layui-form-pane ok-form">
-            <div class="layui-form-item">
-                <label class="layui-form-label">选择项目</label>
-                <div class="layui-input-inline ">
-                    <select name="projectid" id="projectName" >
-                        <option value=""></option>
-                    </select>
-                </div>
-                <label class="layui-form-label">接口名称</label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" placeholder="请输入接口名称" autocomplete="off" name="id" id="pkey">
-                </div>
-                <a class="layui-btn" data-type="reload" lay-filter="search">
-                     <i class="layui-icon layui-icon-search"></i>
-                </a>
-            </div>
+        <form class="layui-form layui-col-md12 ok-search">
+            <input class="layui-input" placeholder="请输入名称" autocomplete="off" name="id" id="pkey">
+            <a class="layui-btn" data-type="reload" lay-filter="search">
+                <i class="layui-icon layui-icon-search"></i>
+            </a>
         </form>
     </div>
     <!--工具栏-->
     <okToolbar>
-        <button class="layui-btn" id="addcase">
-            <i class="layui-icon">&#xe61f;</i>添加接口
+        <button class="layui-btn" id="addDB">
+            <i class="layui-icon">&#xe61f;</i>添加数据库
         </button>
-{#        <button class="layui-btn" id="batchtask">#}
-{#            <i class="layui-icon">&#xe61f;</i>批量执行#}
-{#        </button>#}
         <span>共有数据：<i id="countNum"></i> 条</span>
-
     </okToolbar>
     <!--数据表格-->
     <table class="layui-hide" id="tableId" lay-filter="tableFilter"></table>
@@ -70,25 +54,11 @@
         var form = layui.form;
         var $ = layui.jquery;
         var laydate = layui.laydate;
-        var laypage = layui.laypage;
-
-        //下拉选择框
-            $.ajax({
-                url: '/selectProjectName/',
-                dataType: 'json',
-                type: 'get',
-                success: function (data) {
-                    $.each(data, function (index, item) {
-                        $('#projectName').append(new Option(item.projectName, item.id));// 下拉菜单里添加元素
-                    });
-                    layui.form.render("select");
-                    //重新渲染 固定写法
-                }
-            });
+        var laypage = layui.laypage
 
         table.render({
             elem: '#tableId',
-            url: '/apiList/',
+            url: '/DBList/',
             limit: 10,
             page: true,
             id:"tableId",
@@ -98,13 +68,12 @@
             cols: [[
                 {type: 'checkbox'},
                 {field: 'index', title: 'ID',type:'numbers'},
-                {field: 'projectName', title: '所属项目'},
-                {field: 'name', title: '接口名称'},
-                {field: 'method', title: '请求方式'},
-                {field: 'apiAddress', title: '接口地址'},
-                {#{field: 'requestParameterType', title: '请求参数格式'},#}
+                {field: 'name', title: '数据库名称'},
+                {field: 'sqlType', title: '数据库类型', templet:'#statusTpl'},
+                {field: 'host', title: '数据库地址'},
+                {field: 'port', title: '端口'},
                 {field: 'user', title: '创建人'},
-                {field: 'createTime', title: '创建时间',width:200},
+                {#{field: 'CreateTime', title: '创建时间',width:200},#}
                 {title: '操作',  templet: '#operationTpl', align: 'center'}
             ]],
             done: function (res, curr, count) {
@@ -115,15 +84,14 @@
         var active = {
                     reload: function () {
                     var pkey = $('#pkey').val();
-                    var projectid= $('#projectName').val();
+                        {#alert(pkey);#}
                           //执行重载
                     table.reload('tableId', {
                                 page: {
                                       curr: 1 //重新从第 1 页开始
                         }
                         , where: {
-                                'keyword': pkey,
-                                'projectid':projectid
+                                'keyword': pkey
                         },
                         {#url: '/search/'#}
                     });
@@ -144,13 +112,13 @@
             var layEvent = obj.event;
             if (layEvent === 'edit') {
                 layer.open({
-                    title: '编辑api',
+                    title: '编辑数据库',
                     type: 2,
                     shade: false,
                     maxmin: true,
                     shade: 0.5,
                     area: ['90%', '90%'],
-                    content: '/apiEdit/'+pid,
+                    content: '/DBEdit/'+pid,
                     zIndex: layer.zIndex,
                     end: function () {
                         $(".layui-laypage-btn")[0].click();
@@ -158,8 +126,9 @@
                 });
             } else if (layEvent === 'del') {
                 layer.confirm("确定要删除吗？", {skin: 'layui-layer-lan', icon: 2, title: '提示', anim: 6}, function () {
+                    {#layer.msg(id);#}
                     $.ajax({
-                    url: "/apiDelete/" ,
+                    url: "/DBDelete/" ,
                     data: JSON.stringify({'id':pid}),
                     type: "post" ,
                     dataType:'json',
@@ -176,64 +145,22 @@
                             layer.msg(data.msg);
                          }
                     }
-                    });
+                    })
                     {#layer.msg("操作成功！", {icon: 1, time: 1000});#}
-                });
-            }else if (layEvent === 'detail') {
-                layer.open({
-                    title: '查看详情',
-                    type: 2,
-                    shade: false,
-                    maxmin: true,
-                    shade: 0.5,
-                    area: ['90%', '90%'],
-                    content: '/apiDetail/' + pid,
-                    zIndex: layer.zIndex,
-                    end: function () {
-                        $(".layui-laypage-btn")[0].click();
-                    }
-                });
-            }else if (layEvent === 'run') {
-                layer.open({
-                    title: '测试运行',
-                    type: 2,
-                    shade: false,
-                    maxmin: true,
-                    shade: 0.5,
-                    area: ['90%', '90%'],
-                    content: '/simpleRun/' + pid,
-                    zIndex: layer.zIndex,
-                    end: function () {
-                        $(".layui-laypage-btn")[0].click();
-                    }
-                });
-            }else if (layEvent === 'copy') {
-                layer.open({
-                    title: '复制接口',
-                    type: 2,
-                    shade: false,
-                    maxmin: true,
-                    shade: 0.5,
-                    area: ['90%', '90%'],
-                    content: '/copyApi/' + pid,
-                    zIndex: layer.zIndex,
-                    end: function () {
-                        $(".layui-laypage-btn")[0].click();
-                    }
                 });
             }
         });
 
-        $("#addcase").click(function () {
+        $("#addDB").click(function () {
             layer.open({
-                title: '添加接口',
+                title: '添加数据库',
                 type: 2,
                 shade: false,
                 maxmin: true,
                 shade: 0.5,
                 anim: 4,
-                area: ['90%', '90%'],
-                content: '/apiAdd/',
+                area: ['60%', '90%'],
+                content: '/dbAdd/',
                 zIndex: layer.zIndex,
                 // skin: 'layui-layer-molv',
                 end: function () {
@@ -243,10 +170,10 @@
         })
     })
 </script>
+<script type="text/html" id="statusTpl">
+        <div><a href="javascript:;" class="layui-table-link">{% verbatim %}{{d.sqlType == 1?"MYSQL":(d.sqlType == 2?"REDIS":"MONGODB")}}{% endverbatim %}</a ></div>
+</script>
 <script type="text/html" id="operationTpl">
-    <a href="javascript:;" title="运行" lay-event="run"><i class="layui-icon">&#xe623;</i></a>
-    <a href="javascript:;" title="复制" lay-event="copy"><i class="layui-icon">&#xe630;</i></a>
-    <a href="javascript:;" title="详情" lay-event="detail"><i class="layui-icon">&#xe60a;</i></a>
     <a href="javascript:;" title="编辑" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
     <a href="javascript:;" title="删除" lay-event="del"><i class="layui-icon">&#xe640;</i></a>
 </script>
