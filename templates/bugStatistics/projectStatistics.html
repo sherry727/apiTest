@@ -49,9 +49,10 @@
     </div>
     <!--工具栏-->
     <okToolbar>
-        <div style="min-height: 30px">
-            <span>共有数据：<i id="countNum"></i> 条</span>
-        </div>
+        <button class="layui-btn" id="export">
+            <i class="layui-icon">&#xe61f;</i>导出数据
+        </button>
+        <span>共有数据：<i id="countNum"></i> 条</span>
     </okToolbar>
     <!--数据表格-->
     <table class="layui-hide" id="tableId" lay-filter="tableFilter"></table>
