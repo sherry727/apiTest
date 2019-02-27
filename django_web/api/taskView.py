@@ -456,7 +456,10 @@ def taskLogList(request,tid):
     dict = []
     for a in p:
         dic = {}
-        dic['endTime'] = a.endTime.strftime("%Y-%m-%d %H:%M:%S")
+        if t.endTime:
+            dic['endTime'] = a.endTime.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            dic['endTime']=''
         dic['startTime'] = a.startTime.strftime("%Y-%m-%d %H:%M:%S")
         dic['id'] = a.id
         dic['testTime'] = a.testTime

@@ -96,7 +96,6 @@ def DBEdit(request,DBid):
         'desc': d.desc,
         'db': d.db
     }
-    print data
     return render(request, 'main/DB-edit.html',data)
 
 def DBEditPost(request):
@@ -187,9 +186,9 @@ def testDB(request):
                 }
         elif int(sqlType) == 2:
             try:
-                r = redis.Redis(host=host, port=port, password=password)
-                # r = redis.Redis(host='192.168.1.20', port='6379', password='123456')
-                print r
+                r = redis.Redis(host=host, port=int(port), password=password)
+                # r = redis.Redis(host='192.168.1.20', port=6379, password='123456')
+                r.keys(pattern='*')
                 resultdict = {
                     'code': 0,
                     'msg': 'success',
