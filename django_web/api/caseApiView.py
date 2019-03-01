@@ -266,7 +266,7 @@ def caseApiDelete(request):
 def caseApiEditPost(request):
     if request.method == "POST":
         u = json.loads(request.body)
-        print u
+        # print u
         projectname = u.get('projectid')
         p = Project.objects.get(name=projectname)
         projectid=p.id

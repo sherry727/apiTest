@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 import requests
-import json
+import json,csv
+import codecs
+import pymysql
+import logging
+import sys;
+reload(sys);
+sys.setdefaultencoding('utf8')
 
 
 def execute(url, heads, params, method='POST', cookies=None, files=None):
@@ -51,3 +57,20 @@ def get_value_from_response(self, response, json_path=''):
             return response.get(json_path)
         else:
             return response
+
+
+def write_csv_file(path, head, data):
+    try:
+        with open(path, 'wb') as csv_file:
+            csv_file.write(codecs.BOM_UTF8)
+            writer = csv.writer(csv_file, dialect='excel')
+            if head is not None:
+                writer.writerow(head)
+            for row in data:
+                writer.writerow(row)
+            csv_file.close()
+            print("Write a CSV file to path %s Successful." % path)
+            logging.info("Write a CSV file to path %s Successful." % path)
+    except Exception as e:
+        logging.info("Write an CSV file to path: %s, Case: %s" % (path, e))
+

@@ -368,6 +368,7 @@ class globalVariable(models.Model):
     path = models.CharField(max_length=200, verbose_name='返回参数路径', null=True)
     value = models.CharField(max_length=50, verbose_name='变量值', null=True)
     user = models.CharField(max_length=50, verbose_name='创建人')
+    CreateTime = models.DateTimeField(auto_now=True, verbose_name='创建时间')
 
 
 class sqlManager(models.Model):

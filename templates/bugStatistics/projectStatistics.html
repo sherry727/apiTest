@@ -50,7 +50,7 @@
     <!--工具栏-->
     <okToolbar>
         <button class="layui-btn" id="export">
-            <i class="layui-icon">&#xe61f;</i>导出数据
+            <i class="layui-icon">&#xe601;</i>导出数据
         </button>
         <span>共有数据：<i id="countNum"></i> 条</span>
     </okToolbar>
@@ -157,6 +157,39 @@
 
         });
         {#重载结束#}
+
+        $("#export").click(function () {
+            {#var checkStatus = table.checkStatus('tableId')#}
+            {#    ,data = checkStatus.data;#}
+            {#data = JSON.stringify(layui.table.cache.tableId);#}
+            {#data1 = JSON.stringify(table);#}
+            var p = formSelects.value('selectId', 'all');
+            var pkey = JSON.stringify(p);
+            $.ajax({
+                    url: '/bugStatistics/projectExportToCsv/',
+                    data: pkey,
+                    type: "post" ,
+                    dataType:'json',
+                    contentType :"application/json",
+                    success:function (data1) {
+                    if (data1.code == 0) {
+                        layer.msg('导出成功', {
+                            offset: ['50%'],
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        },function () {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index);
+                            location.href = '/bugStatistics/statistics/'
+                        });
+                    } else if (data1.code==2) {
+                        layer.msg(data1.msg)
+                    }
+                    else{
+                        layer.msg('导出异常，请检查')
+                    }
+                }
+            });
+        });
 
     })
 </script>

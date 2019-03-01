@@ -201,7 +201,7 @@
             var checkStatus = table.checkStatus('tableId')
                 ,data = checkStatus.data;
            {#alert(JSON.stringify(layui.table.cache.tableId));#}
-           console.log(layui.table.cache.tableId);
+           {#console.log(layui.table.cache.tableId);#}
             {#for (var d in data) {#}
               {#data[d].index = +d + 1#}
             {#    data[d].index = +d +1#}

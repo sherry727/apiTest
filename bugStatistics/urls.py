@@ -27,5 +27,6 @@ urlpatterns = [
     url(r'^devList/$', bugStView.devList, name='devList'),
     url(r'^bugProjectName/$', bugStView.bugProjectName, name='bugProjectName'),
     url(r'^bugDevName/$', bugStView.bugDevName, name='bugDevName'),
+    url(r'^projectExportToCsv/$', bugStView.projectExportToCsv, name='projectExportToCsv'),
 
 ]

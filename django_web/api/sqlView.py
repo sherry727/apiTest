@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django_web.models import Project,Env,task,taskCase
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.db.models import Q
 from django_web.models import Env,Project,Case,AutoApiCase,autoApiHead,autoAPIParameter,task,taskCase,AutoTaskRunTime

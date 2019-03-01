@@ -87,21 +87,21 @@ DATABASES = {
         'OPTIONS': {
             "init_command": "SET default_storage_engine='INNODB'"
         }
-   },
-    'chandao': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'zentao', #第二个数据库的名称
-        'USER': 'test',
-        'PASSWORD': '123456',
-        'HOST': '192.168.1.235',
-        'PORT': '3306',
-    }
+   }
+    # 'chandao': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'zentao', #第二个数据库的名称
+    #     'USER': 'test',
+    #     'PASSWORD': '123456',
+    #     'HOST': '192.168.1.235',
+    #     'PORT': '3306',
+    # }
 }
 
-DATABASE_ROUTERS = ['Django.db_router.chandaoRouter']
-DATABASE_APPS_MAPPING = {
-    'bugStatistics': 'chandao',
-}
+# DATABASE_ROUTERS = ['Django.db_router.chandaoRouter']
+# DATABASE_APPS_MAPPING = {
+#     'bugStatistics': 'chandao',
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>添加变量</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/mine/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/mine/css/scroll-bar.css">
+    <link rel="stylesheet" href="/static/mine/css/sub-page.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_693759_wytlyqhtdtj1nhfr.css">
+</head>
+<body>
+<div class="ok-body">
+    <!--面包屑导航区域-->
+    <div class="ok-body-breadcrumb">
+            <span class="layui-breadcrumb">
+                <a><cite>用例管理</cite></a>
+                <a><cite>全局变量</cite></a>
+				<a><cite>添加变量</cite></a>
+            </span>
+        <a class="layui-btn layui-btn-small" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon layui-icon-refresh"></i>
+        </a>
+    </div>
+    <!--form表单-->
+    <form class="layui-form layui-form-pane ok-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">变量名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" placeholder="请输入变量名称" autocomplete="off" class="layui-input" lay-verify="required" >
+                <input type="hidden" name="user" placeholder="请输入用户" autocomplete="off" class="layui-input" value="{{ user }}" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">变量值</label>
+            <div class="layui-input-block">
+                <input type="text" name="value" placeholder="请输入变量值" autocomplete="off" class="layui-input" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="add">提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--js逻辑-->
+<script src="/static/mine/lib/layui/layui.js"></script>
+<script>
+    layui.use(['element', 'form', 'jquery', 'laydate'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.jquery;
+        var laydate = layui.laydate;
+
+
+        form.on('submit(add)',function (data) {
+            var d = JSON.stringify(data.field);
+            $.ajax({
+                url : '/gvAddPost/',
+                type : 'post',
+                dataType : 'json',
+                contentType :"application/json",
+                data : d,
+                success : function (data1) {
+                    if (data1.code == 0) {
+                        layer.msg('添加成功', {
+                            offset: ['50%'],
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index);
+                            location.href = '/DB_index/'
+                        });
+                    } else if (data1.code==2) {
+                        layer.msg(data1.msg)
+                    }
+                    else{
+                        layer.msg('添加失败')
+                    }
+                }
+            });
+        return false;
+    })
+
+
+    })
+</script>
+</body>
+</html>

@@ -18,7 +18,7 @@ from django.contrib import admin
 from django_web import views
 from bugStatistics.stViews import bugStView
 from django.conf.urls import include
-from django_web.api import projectView, envView, apiView, caseView, caseApiView, taskView, reportView, sqlView
+from django_web.api import projectView, envView, apiView, caseView, caseApiView, taskView, reportView, sqlView,gvView
 from django.views import static
 from django.conf import settings
 
@@ -136,6 +136,13 @@ urlpatterns = [
     url(r'^DBEditPost/$', sqlView.DBEditPost, name='DBEditPost'),
     url(r'^DBDelete/$', sqlView.DBDelete, name='DBDelete'),
     url(r'^testDB/$', sqlView.testDB, name='testDB'),
+
+    #globalVarables
+    url(r'^globalVarables/$', gvView.globalVarables, name='globalVarables'),
+    url(r'^gvList/$', gvView.gvList, name='gvList'),
+    url(r'^gvAdd/$', gvView.gvAdd, name='gvAdd'),
+    url(r'^gvAddPost/$', gvView.gvAddPost, name='gvAddPost'),
+    url(r'^gvDelete/$', gvView.gvDelete, name='gvDelete'),
 
 
 
