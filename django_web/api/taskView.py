@@ -423,8 +423,14 @@ def tResult(request,autoRuntimeid):
     errorTotalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid, httpStatus='502').count()
     sTime = AutoTaskRunTime.objects.get(id=autoRuntimeid).startTime
     eTime = AutoTaskRunTime.objects.get(id=autoRuntimeid).endTime
+    print eTime
     caseCount =taskCase.objects.filter(task_id=taskId).count()
-    ys = eTime-sTime
+    if eTime==None:
+        ys=0
+        eTime='未结束'
+    else:
+        ys = eTime-sTime
+        eTime=eTime.strftime("%Y-%m-%d %H:%M:%S")
     data = {
         'taskId': taskId,
         'totalCount': totalCount,
@@ -432,7 +438,7 @@ def tResult(request,autoRuntimeid):
         'FallTotalCount': FallTotalCount,
         'errorTotalCount': errorTotalCount,
         'sTime': sTime.strftime("%Y-%m-%d %H:%M:%S"),
-        'eTime': eTime.strftime("%Y-%m-%d %H:%M:%S"),
+        'eTime': eTime,
         'caseCount': caseCount,
         'TName': tk.name,
         'autoRuntimeid': autoRuntimeid,

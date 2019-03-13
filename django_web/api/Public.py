@@ -2,11 +2,13 @@
 import requests
 import json,csv
 import codecs
-import pymysql
+from django_web.models import sqlManager,globalVariable
+import MySQLdb
 import logging
 import sys;
 reload(sys);
 sys.setdefaultencoding('utf8')
+
 
 
 def execute(url, heads, params, method='POST', cookies=None, files=None):
@@ -17,18 +19,18 @@ def execute(url, heads, params, method='POST', cookies=None, files=None):
         r=requests.request('get', url=url, headers=heads, json=params, cookies=cookies, files=files)
     return r
 
-def _load_json_from_response(self, response):
+def _load_json_from_response(response):
     try:
         re = json.loads(response)
     except Exception as e:
         raise ValueError('Not a valid JSON\n' + e.message)
     return re
 
-def get_value_from_response(self, response, json_path=''):
+def get_value_from_response(response, json_path=''):
     """get value
     """
-    if isinstance(response, (str)):
-        response = self._load_json_from_response(response)
+    if isinstance(response, (str, unicode)):
+        response = _load_json_from_response(response)
 
     if json_path.find('.') > -1:
         key = json_path[0: json_path.index('.')]
@@ -42,7 +44,7 @@ def get_value_from_response(self, response, json_path=''):
             return response
         key1 = json_path[json_path.index('.') + 1:]
         if key1.find('.') > -1:
-            return self.get_value_from_response(dict1, key1)
+            return get_value_from_response(dict1, key1)
         else:
             if isinstance(dict1, list) and key1.isdigit():
                 return dict1[int(key1)]
@@ -73,4 +75,21 @@ def write_csv_file(path, head, data):
             logging.info("Write a CSV file to path %s Successful." % path)
     except Exception as e:
         logging.info("Write an CSV file to path: %s, Case: %s" % (path, e))
+
+def excuteSQL(sqlId,sql):
+    s = sqlManager.objects.get(id=sqlId)
+    try:
+        db = MySQLdb.connect(host=s.host, user=s.username, passwd=s.password, db=s.db, port=int(s.port), charset='utf8')
+        cursor = db.cursor()
+        re=cursor.execute(sql)
+    except MySQLdb.Error, e:
+        try:
+            logging.info("Error %d:%s" % (e.args[0], e.args[1]))
+        except IndexError:
+            logging.info("MySQL Error:%s" % str(e))
+        re =''
+    return re
+
+
+
 

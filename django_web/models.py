@@ -302,7 +302,7 @@ class step(models.Model):
 
 class TestResult(models.Model):
     """
-    执行结果
+    手工执行结果
     """
     id = models.AutoField(primary_key=True)
     autoApi = models.ForeignKey(AutoApiCase, on_delete=models.CASCADE, verbose_name='接口')
@@ -364,9 +364,10 @@ class globalVariable(models.Model):
     """
     id = models.AutoField(primary_key=True)
     autoApi_id=models.IntegerField(null=True, verbose_name='用例')
+    gType = models.IntegerField(default=0, verbose_name='用例0:自建，1：数据库,2:返回值')
     name = models.CharField(max_length=50, verbose_name='变量名')
     path = models.CharField(max_length=200, verbose_name='返回参数路径', null=True)
-    value = models.CharField(max_length=50, verbose_name='变量值', null=True)
+    value = models.CharField(max_length=1000, verbose_name='变量值', null=True)
     user = models.CharField(max_length=50, verbose_name='创建人')
     CreateTime = models.DateTimeField(auto_now=True, verbose_name='创建时间')
 
@@ -395,6 +396,19 @@ class sql_api(models.Model):
     sql_id= models.IntegerField(null=True, verbose_name='数据库环境')
     autoApi_id=models.IntegerField(null=True, verbose_name='接口')
 
+
+
+class asserts(models.Model):
+    """
+    响应断言
+    """
+    id = models.AutoField(primary_key=True)
+    autoApi=models.ForeignKey(AutoApiCase, on_delete=models.CASCADE, verbose_name='任务关联')
+    path = models.CharField(max_length=200, verbose_name='返回参数路径', null=True)
+    value = models.CharField(max_length=50, verbose_name='变量值', null=True)
+    real_value = models.CharField(max_length=50, verbose_name='实际变量值', null=True)
+    user = models.CharField(max_length=50, verbose_name='创建人')
+    CreateTime = models.DateTimeField(auto_now=True, verbose_name='创建时间')
 
 
 

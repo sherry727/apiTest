@@ -143,6 +143,7 @@ urlpatterns = [
     url(r'^gvAdd/$', gvView.gvAdd, name='gvAdd'),
     url(r'^gvAddPost/$', gvView.gvAddPost, name='gvAddPost'),
     url(r'^gvDelete/$', gvView.gvDelete, name='gvDelete'),
+    url(r'^selectDBForSql/(?P<sid>\d+)$', gvView.selectDBForSql, name='selectDBForSql'),
 
 
 

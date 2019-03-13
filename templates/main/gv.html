@@ -25,6 +25,7 @@
     <div class="layui-row">
         <form class="layui-form layui-col-md12 ok-search">
             <input class="layui-input" placeholder="请输入名称" autocomplete="off" name="id" id="pkey">
+            <input class="layui-input" type="hidden" name="id" id="user" value="{{ user }}">
             <a class="layui-btn" data-type="reload" lay-filter="search">
                 <i class="layui-icon layui-icon-search"></i>
             </a>
@@ -63,13 +64,15 @@
             page: true,
             id:"tableId",
             where: {
-                'keyword': ''
+                'keyword': '',
+                'user': $('#user').val()
             },
             cols: [[
                 {type: 'checkbox'},
                 {field: 'index', title: 'ID',type:'numbers'},
                 {field: 'name', title: '变量名称'},
                 {field: 'value', title: '变量值'},
+                {field: 'gType', title: '来源',templet:'#gtype'},
                 {field: 'user', title: '创建人'},
                 {title: '操作',  templet: '#operationTpl', align: 'center'}
             ]],
@@ -167,8 +170,8 @@
         })
     })
 </script>
-<script type="text/html" id="statusTpl">
-        <div><a href="javascript:;" class="layui-table-link">{% verbatim %}{{d.sqlType == 1?"MYSQL":(d.sqlType == 2?"REDIS":"MONGODB")}}{% endverbatim %}</a ></div>
+<script type="text/html" id="gtype">
+        <div><a href="javascript:;" class="layui-table-link">{% verbatim %}{{d.gType == 1?"数据库":(d.gType == 2?"参数返回值":"自建")}}{% endverbatim %}</a ></div>
 </script>
 <script type="text/html" id="operationTpl">
 {#    <a href="javascript:;" title="编辑" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>#}

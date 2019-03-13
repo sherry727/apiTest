@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django_web.models import Env,Project,ApiCase,ApiHead,APIParameter
+from django_web.models import Env,Project,ApiCase,ApiHead,APIParameter,globalVariable
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
-import json
+import json,re
 import requests
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -130,6 +130,8 @@ def apiAddPost(request):
         ApiHead.objects.bulk_create(headersList)
         paramsList = []
         for h in params:
+            name = p.get('param_name')
+            params[name] = value
             nm = h.get('param_name')
             key = h.get('param_key')
             paramType = h.get('paramType')
@@ -347,15 +349,12 @@ def apiSimpleRun(request):
     pa= APIParameter.objects.filter(api_id=api_id).values('name', 'value')
     params = {}
     for p in pa:
-        # type=p.get('paramType')
-        # if type == 'int':
-        #     name= p.get('name')
-        #     val = p.get('value')
-        #     value=int(val)
-        #     params[name] = value
-        # else:
+        if re.match(r'^\$\{(.+?)\}$', p.get('value')) != None:
+            w = re.sub('[${}]', '', p.get('value'))
+            value= globalVariable.objects.get(name=w).value
+        else:
+            value = p.get('value')
         name = p.get('name')
-        value = p.get('value')
         params[name] = value
     he =ApiHead.objects.filter(api_id=api_id).values('name', 'value')
     headers = {}

@@ -27,7 +27,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">执行环境</label>
             <div class="layui-input-block">
-                 <select name="envid" id="envname" lay-verify="required">
+                 <select name="envid" id="envname">
                     <option value="请选择">请选择</option>
                 </select>
             </div>
@@ -162,8 +162,8 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <div id="globalVariable"  style="display: none"></div>
-            <label class="layui-form-label">全局变量</label>
+            <div id="globalVariable" globalV="{{ gv }}" style="display: none"></div>
+            <label class="layui-form-label">设置变量</label>
             <div class="layui-input-block">
                 <div id="hd">
                     <table class="layui-table" id="gv">
@@ -191,7 +191,7 @@
             <div id="sqlM"  style="display: none"></div>
             <label class="layui-form-label">添加数据库</label>
             <div class="layui-input-inline" style="width: 300px">
-                <select name="sqlType" id="sqlType">
+                <select name="sqlType" id="sqlType" lay-filter="sqlType">
                     <option value="">请选择数据库类型</option>
                     <option value="1">mysql</option>
                     <option value="2">redis</option>
@@ -199,14 +199,14 @@
                 </select>
             </div>
             <div class="layui-input-inline" style="width: 300px">
-                <select name="sqlType" id="sqlName">
+                <select name="sqlId" id="sqlName">
                     <option value="">请选数据库环境</option>
                 </select>
             </div>
         </div>
          <div class="layui-form-item">
              <div class="layui-input-block">
-                <textarea name="sqlText" autocomplete="off" placeholder="请输入对应sql语句，分号隔开" class="layui-textarea" id="response" style="min-height: 100px"></textarea>
+                <textarea name="sqlText" autocomplete="off" placeholder="请输入对应sql语句，分号隔开" class="layui-textarea" id="sqlText" style="min-height: 100px"></textarea>
              </div>
              <label class="layui-form-label">sql变量名</label>
              <div class="layui-input-block">
@@ -214,10 +214,10 @@
              </div>
          </div>
          <div class="layui-form-item">
-            <div id="assert"  style="display: none"></div>
+            <div id="assert"  at="{{ asserts }}" style="display: none"></div>
             <label class="layui-form-label">响应断言</label>
             <div class="layui-input-block">
-                <div id="hd">
+                <div id="xy">
                     <table class="layui-table" id="as">
                         <colgroup>
                           <col width="200">
@@ -308,6 +308,32 @@
 
          }
 
+          //断言参数赋值
+        var jj=$("#assert").attr("at");
+        var at = jj.replace(/u'/g,"'");
+        var ats=eval(at);
+        if (ats) {
+            for(var i=0;i<ats.length;i++) {
+                    var thtml = "<tr>" + "<th>" + "<input type='text' name='a_path'  class='layui-input' value='" + ats[i].a_path + "'>" + " </th>" + "<th><input type='text'  name='a_value' placeholder=请输入参数值 class='layui-input' value='" + ats[i].a_value + "'></th>" +"<th>"+"<a  class='delAs' id='delAs' ><i class='layui-icon'></i></a>"+"</th>"+ "</tr>";
+                    $('#as tbody').append(thtml);// tabel动态显示元素
+                    form.render();
+            }
+
+         }
+
+           //全局变量赋值
+        var g=$("#globalVariable").attr("globalV");
+        var gg = g.replace(/u'/g,"'");
+        var ggv=eval(gg);
+        if (ggv) {
+            for(var i=0;i<ggv.length;i++) {
+                    var thtml = "<tr>" + "<th>" + "<input type='text' name='gv_name'  class='layui-input' value='" + ggv[i].gv_name + "'>" + " </th>" + "<th><input type='text'  name='gv_path' placeholder=请输入参数值 class='layui-input' value='" + ggv[i].gv_path + "'></th>" +"<th>"+"<a  class='delGv' id='delGv' ><i class='layui-icon'></i></a>"+"</th>"+ "</tr>";
+                    $('#gv tbody').append(thtml);// tabel动态显示元素
+                    form.render();
+            }
+
+         }
+
          $('#add1').click(function (event) {
                 var thtml="<tr>"+"<th>"+"<input type='text' name='param_name' placeholder=请输入参数名 class='layui-input'>"+" </th>"+"<th><input type='text'  name='param_key' placeholder=请输入参数值 class='layui-input'> </th>"+"<th><select name='paramType' id='paramType'>"+"<option value='string'>string</option>"+"<option value='int'>int</option>"+"</select>"+"</th>"+"<th>"+"<a  class='delrow' id='delrow' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
                 {#var thtml="<tr>"+"<th>"+"<input type='text' name='param_name' placeholder=请输入参数名 class='layui-input'>"+" </th>"+"<th><input type='text'  name='param_key' placeholder=请输入参数值 class='layui-input'> </th>"+"<th><select name='paramType' id='paramType'>"+"<option value='string'>string</option>"+"<option value='int'>int</option>"+"</select>"+"</th>"+"<th>"+"<button class='layui-btn layui-btn-primary layui-btn-sm' onclick='' id='delrow'><i class='layui-icon'></i></button>"+"</th>"+"</tr>";#}
@@ -324,7 +350,7 @@
             });
 
          $('#addGv').click(function (event) {
-                var thtml="<tr>"+"<th>"+"<input type='text' name='gv_name' placeholder=请设置全局变量名称 class='layui-input'>"+" </th>"+"<th><input type='text'  name='gv_value' placeholder=请输入结果返回的参数路径 class='layui-input'> </th>"+"<th>"+"<a  class='delGv' id='delGv' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
+                var thtml="<tr>"+"<th>"+"<input type='text' name='gv_name' placeholder=请设置全局变量名称 class='layui-input'>"+" </th>"+"<th><input type='text'  name='gv_path' placeholder=请输入结果返回的参数路径 class='layui-input'> </th>"+"<th>"+"<a class='delGv' id='delGv' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
                 $('#gv tbody').append(thtml);
                 return false;
             });
@@ -344,7 +370,8 @@
         });
 
          $('#gv').on('click', '.delGv', function (e) {
-            $(this).closest('tr').remove()
+            e.preventDefault();
+            $(this).closest('tr').remove();
         });
 
 
@@ -364,18 +391,6 @@
             }
         });
 
-         //sql下拉选择
-         $.ajax({
-            url: '/selectSql/',
-            dataType: 'json',
-            type: 'get',
-            success: function (data) {
-                $.each(data, function (index, item) {
-                    $('#sqlName').append(new Option(item.ename, item.eid));// 下拉菜单里添加元素
-                });
-                layui.form.render("select");
-            }
-        });
 
         //项目下拉选择框
             $.ajax({
@@ -394,7 +409,58 @@
             });
 
         form.on('submit(run)',function (data) {
-            var hp = JSON.stringify(data.field);
+            {#$("#envid").attr("lay-verify",'required');#}
+            {#form.render('select');#}
+            var values={};
+            $(function (){
+            var params = $("#api-add").serializeArray();//序列化表单，转化成一个json结构对象
+            var x;
+            values["headers"] = [];
+            values["params"] = [];
+            values["asserts"] = [];
+            values["galobalValues"] = [];
+            var a = ["head_name","head_key","param_name","param_key"];
+            for(x in params){
+                var j = $.inArray(params[x].name,a);
+                if(j==-1){
+                    values[params[x].name] = params[x].value;
+                }
+
+            }
+            {#alert(JSON.stringify(values));#}
+            for(var n = 0;n < $("input[name='head_key']").length;n++){
+                var dh = {};
+                dh['head_name'] = $("input[name='head_name']")[n].value;
+                dh['head_key'] = $("input[name='head_key']")[n].value;
+                values["headers"].push(dh);
+            }
+            for(var i=0;i<$("input[name='param_name']").length;i++){
+                var dp = {};
+                dp['param_name'] = $("input[name='param_name']")[i].value;
+                dp['param_key'] = $("input[name='param_key']")[i].value;
+                dp['paramType'] = $("select[name='paramType']")[i].value;
+                {#dp['param_default'] = $("input[name='param_default']")[i].value;#}
+                {#dp['param_type'] = $("input[name='param_type']")[i].value;#}
+                {#dp['param_must'] = $("input[name='param_must']")[i].checked?1:0;#}
+                values["params"].push(dp);
+            }
+            for(var o = 0;o < $("input[name='a_path']").length;o++){
+                var da = {};
+                da['a_path'] = $("input[name='a_path']")[o].value;
+                da['a_value'] = $("input[name='a_value']")[o].value;
+                values["asserts"].push(da);
+            }
+
+            for(var k = 0;k < $("input[name='gv_name']").length;k++){
+                var dg = {};
+                dg['gv_name'] = $("input[name='gv_name']")[k].value;
+                dg['gv_path'] = $("input[name='gv_path']")[k].value;
+                values["galobalValues"].push(dg);
+            }
+
+            });
+            var hp = JSON.stringify(values);
+            hp = hp.replace(/\\r\\n/g,"");
             $.ajax({
                 url : '/autoApiSimpleRun/',
                 type : 'post',
@@ -402,8 +468,13 @@
                 contentType :"application/json",
                 data : hp,
                 success : function (data1) {
+                    layer.msg('运行成功', {
+                            offset: ['50%'],
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
                     {#alert(JSON.stringify(data1));#}
-                    $("#response").text(data1);//给textarea赋值
+                             $("#response").text(data1);//给textarea赋值
+                        });
                 },
                 error:function(){
                      layer.msg('运行失败，请检查接口信息设置')
@@ -412,6 +483,23 @@
             });
         return false;
     });
+
+        form.on('select(sqlType)', function(data) {
+            sid = data['value'];
+            $.ajax({
+            url: '/selectDBForSql/'+sid,
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                $('#sqlName').html('');
+                $.each(data, function (index, item) {
+                    $('#sqlName').append(new Option(item.dbName, item.dbId));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+             });
+        });
+
 
 
         form.on('submit(edit)',function (data) {
@@ -448,9 +536,9 @@
                 {#dp['param_must'] = $("input[name='param_must']")[i].checked?1:0;#}
                 values["params"].push(dp);
             }
-            for(var o = 0;o < $("input[name='a_name']").length;o++){
+            for(var o = 0;o < $("input[name='a_path']").length;o++){
                 var da = {};
-                da['a_name'] = $("input[name='a_name']")[o].value;
+                da['a_path'] = $("input[name='a_path']")[o].value;
                 da['a_value'] = $("input[name='a_value']")[o].value;
                 values["asserts"].push(da);
             }
@@ -458,13 +546,12 @@
             for(var k = 0;k < $("input[name='gv_name']").length;k++){
                 var dg = {};
                 dg['gv_name'] = $("input[name='gv_name']")[k].value;
-                dg['gv_value'] = $("input[name='gv_value']")[k].value;
+                dg['gv_path'] = $("input[name='gv_path']")[k].value;
                 values["galobalValues"].push(dg);
             }
 
             });
             var hp = JSON.stringify(values);
-            alert(hp);
             $.ajax({
                 url : '/caseApiEditPost/',
                 type : 'post',

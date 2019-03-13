@@ -208,7 +208,7 @@
            // }
             {#console.log(data);#}
             data = JSON.stringify(layui.table.cache.tableId);
-            {#alert(data);#}
+            alert(data);
 
             ht ="<div class='layui-form-item' style='width:400px'>" + "<label class='layui-form-label'>环境</label>" + " <div>" + "<select name='envid' id='envname' lay-verify='required'>" + "<option value=''>请选择</option>" + "</select>" + "</div>" + "</div>";
             layer.confirm(ht, {skin: 'layui-layer-lan', title: '请选择环境', anim: 6}, function () {
@@ -255,7 +255,7 @@
                 maxmin: true,
                 shade: 0.5,
                 anim: 4,
-                area: ['90%', '90%'],
+                area: ['60%', '90%'],
                 content: '/caseApiAdd/'+caseId,
                 zIndex: layer.zIndex,
                 // skin: 'layui-layer-molv',
@@ -287,8 +287,8 @@
 <script type="text/html" id="operationTpl">
     <a href="javascript:;" title="编辑" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
     <a href="javascript:;" title="删除" lay-event="del"><i class="layui-icon">&#xe640;</i></a>
-{#    <a href="javascript:;" title="上移" lay-event="moveUp"><i class="layui-icon">&#xe619;</i></a>#}
-{#    <a href="javascript:;" title="下移" lay-event="moveDown" class="down"><i class="layui-icon">&#xe61a;</i></a>#}
+    <a href="javascript:;" title="上移" lay-event="moveUp"><i class="layui-icon">&#xe619;</i></a>
+    <a href="javascript:;" title="下移" lay-event="moveDown" class="down"><i class="layui-icon">&#xe61a;</i></a>
 {#    <a href="javascript:" data-opt="movedown"  class="layui-btn layui-btn-mini">下移</a>#}
 {#    <a href="javascript:" data-opt="moveup"  class="layui-btn layui-btn-mini">上移</a>#}
 
