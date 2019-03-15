@@ -344,7 +344,7 @@ def caseApiEditPost(request):
             for h in ase:
                 nm = h.get('a_path')
                 key = h.get('a_value')
-                asert.append(asserts(value=key, autoApi_id=id, path=nm, user=user, CreateTime=timezone.now()))
+                asert.append(asserts(value=key, autoApi_id=id, path=nm, user=loginName, CreateTime=timezone.now()))
             asserts.objects.bulk_create(asert)
 
         AutoApiCase.objects.filter(id=id).update(project_id=projectid, name=name, user=user, method=method,
@@ -386,10 +386,8 @@ def caseApiEditPost(request):
 def caseApiMultRun(request,eid):
     if request.method == "POST":
         u = json.loads(request.body)
-        print u
         env = Env.objects.get(id=eid)
         loginName = request.session.get('Username', '')
-        # print u
         if env.evn_port:
             url = env.env_url+':'+env.evn_port
         else:
@@ -404,12 +402,12 @@ def caseApiMultRun(request,eid):
             sorts.append(dict)
             AutoApiCase.objects.filter(id=id).update(sort=sort)
         startTime = timezone.now()
-        print sorts
         for s in sorts:
             caseApi = AutoApiCase.objects.get(id=s.get('id'))
             he =autoApiHead.objects.filter(autoApi_id=s.get('id'))
             pa =autoAPIParameter.objects.filter(autoApi_id=s.get('id'))
             galobalValues =globalVariable.objects.filter(autoApi_id=s.get('id'))
+            duanyan = asserts.objects.filter(autoApi_id=s.get('id'))
             headers = {}
             params = {}
             for p in he:
@@ -417,12 +415,12 @@ def caseApiMultRun(request,eid):
                 value = p.value
                 headers[name] = value
             for p in pa:
-                if re.match(r'^\$\{(.+?)\}$', p.get('param_key')) != None:
-                    w = re.sub('[${}]', '', p.get('param_key'))
+                if re.match(r'^\$\{(.+?)\}$', p.value) != None:
+                    w = re.sub('[${}]', '', p.value)
                     value = globalVariable.objects.get(name=w).value
                 else:
-                    value = p.get('param_key')
-                name = p.get('param_name')
+                    value = p.value
+                name = p.name
                 params[name] = value
             url1 =url+caseApi.apiAddress
             ur = url1.encode('unicode-escape').decode('string_escape')
@@ -434,20 +432,33 @@ def caseApiMultRun(request,eid):
                     for g in galobalValues:
                         # va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path').encode("utf-8"))
                         va = Public.get_value_from_response(response=r.text, json_path='data.accessToken')
-                        # print va
                         try:
-                            o = globalVariable.objects.get(name=g.get('gv_name'), user=loginName)
-                            globalVariable.objects.filter(name=o.name).update(path=g.get('gv_path'), value=va)
-                        except:
-                            globalVariable.objects.create(name=g.get('gv_name'), path=g.get('gv_path'),
-                                                          autoApi_id=s.get('id'), value=va, user=loginName,
-                                                          gType=1).save()
+                            o = globalVariable.objects.get(name=g.name, user=loginName)
+                            globalVariable.objects.filter(name=o.name).update(path=g.path, value=va)
+                        except Exception as result:
+                            print "未知错误 %s" % result
                 print r.text
-                if r.status_code == 200:
-                    AutoApiCase.objects.filter(id=s.get('id')).update(status='成功')
-                    # TestResult.objects.create()
+                dy = []
+                if len(duanyan) > 0:
+                    for a in duanyan:
+                        nm = a.path
+                        key = a.value
+                        real_value = Public.get_value_from_response(response=r.text, json_path=nm.encode("utf-8"))
+                        print real_value
+                        if key.encode("utf-8") == str(real_value):
+                            AutoApiCase.objects.filter(id=s.get('id')).update(status='成功')
+                        else:
+                            AutoApiCase.objects.filter(id=s.get('id')).update(status='失败')
+                        ast = asserts.objects.filter(autoApi_id=s.get('id'), path=nm)
+                        if len(ast) > 2:
+                            dy.append(
+                                asserts(path=nm, autoApi_id=s.get('id'), value=key, user=loginName, real_value=real_value,
+                                        CreateTime=timezone.now()))
+                        else:
+                            asserts.objects.filter(autoApi_id=s.get('id'), path=nm).update(value=key, real_value=real_value)
+                    asserts.objects.bulk_create(dy)
                 else:
-                    AutoApiCase.objects.filter(id=s.get('id')).update(status='失败')
+                    AutoApiCase.objects.filter(id=s.get('id')).update(status='成功')
             except:
                 AutoApiCase.objects.filter(id=s.get('id')).update(status='异常')
         endTime = timezone.now()
@@ -543,18 +554,19 @@ def autoApiSimpleRun(request):
                 nm = a.get('a_path')
                 key = a.get('a_value')
                 real_value = Public.get_value_from_response(response=r.text, json_path=nm.encode("utf-8"))
+                print real_value
                 if key.encode("utf-8")==str(real_value):
                     AutoApiCase.objects.filter(id=api_id).update(status='成功')
                 else:
                     AutoApiCase.objects.filter(id=api_id).update(status='失败')
-
-
-                ast = asserts.objects.filter(autoApi_id=api_id,path=nm)
+                ast = asserts.objects.filter(autoApi_id=api_id, path=nm)
                 if len(ast)> 2:
-                    dy.append(asserts(path=nm, autoApi_id=api_id, value=key, user=user, real_value=real_value, CreateTime=timezone.now()))
+                    dy.append(asserts(path=nm, autoApi_id=api_id, value=key, user=loginName, real_value=real_value, CreateTime=timezone.now()))
                 else:
                     asserts.objects.filter(autoApi_id=api_id, path=nm).update(value=key, real_value=real_value)
             asserts.objects.bulk_create(dy)
+        else:
+            AutoApiCase.objects.filter(id=api_id).update(status='成功')
 
         return JsonResponse(r.text, safe=False)
     except Exception, e:

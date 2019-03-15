@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django_web.models import Env,Project,task,taskResult,taskCase,AutoApiCase,autoApiHead,autoAPIParameter,Case,AutoTaskRunTime
+from django_web.models import Env,Project,task,taskResult,taskCase,AutoApiCase,autoApiHead,autoAPIParameter,Case,AutoTaskRunTime,globalVariable,asserts
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 import json
@@ -62,6 +62,8 @@ def rDetail(request,apiData):
     c = apiData.encode('utf-8')
     apiData = json.loads(c)
     # u = AutoApiCase.objects.get(id=apiData.get('apiId'))  # 接口表
+    gv = globalVariable.objects.filter(autoApi_id=apiData.get('apiId'))  # 全局变量
+    ast = asserts.objects.filter(autoApi_id=apiData.get('apiId'))  # 断言
     h = autoApiHead.objects.filter(autoApi_id=apiData.get('apiId'))  # 请求头
     m = autoAPIParameter.objects.filter(autoApi_id=apiData.get('apiId'))  # 请求参数
     t= task.objects.get(id=apiData.get('taskId'))#任务表

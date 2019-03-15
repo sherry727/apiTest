@@ -208,7 +208,6 @@
            // }
             {#console.log(data);#}
             data = JSON.stringify(layui.table.cache.tableId);
-            alert(data);
 
             ht ="<div class='layui-form-item' style='width:400px'>" + "<label class='layui-form-label'>环境</label>" + " <div>" + "<select name='envid' id='envname' lay-verify='required'>" + "<option value=''>请选择</option>" + "</select>" + "</div>" + "</div>";
             layer.confirm(ht, {skin: 'layui-layer-lan', title: '请选择环境', anim: 6}, function () {

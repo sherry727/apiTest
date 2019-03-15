@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 from django_web.models import Project,Env,task,taskCase
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.db.models import Q
-from django_web.models import Env,Project,Case,AutoApiCase,autoApiHead,autoAPIParameter,task,taskCase,AutoTaskRunTime
-from django_web.models import taskResult
+from django_web.models import Env,Project,Case,AutoApiCase,autoApiHead,autoAPIParameter,task,taskCase,AutoTaskRunTime,globalVariable
+from django_web.models import taskResult,asserts
 from django.shortcuts import render
 import json,re
 from django.utils import timezone
@@ -110,7 +110,7 @@ def taskDelete(request):
 def caseTaskPost(request):
     if request.method == "POST":
         u = json.loads(request.body)
-        print u
+        loginName = request.session.get('Username', '')
         envid =u.get('envid')
         env = Env.objects.get(id=envid)
         if env.evn_port:
@@ -167,6 +167,8 @@ def caseTaskPost(request):
                 for i in api:
                     he = autoApiHead.objects.filter(autoApi_id=i.id)
                     pa = autoAPIParameter.objects.filter(autoApi_id=i.id)
+                    galobalValues = globalVariable.objects.filter(autoApi_id=i.id)
+                    ast = asserts.objects.filter(autoApi_id=i.id)
                     headers = {}
                     params = {}
                     for p in he:
@@ -174,19 +176,51 @@ def caseTaskPost(request):
                         value = p.value
                         headers[name] = value
                     for p in pa:
+                        if re.match(r'^\$\{(.+?)\}$', p.value) != None:
+                            w = re.sub('[${}]', '', p.value)
+                            value = globalVariable.objects.get(name=w).value
+                        else:
+                            value = p.value
                         name = p.name
-                        value = p.value
                         params[name] = value
                     ur = url+ i.apiAddress
                     try:
                         r = Public.execute(url=ur, params=params, method=i.method, heads=headers)
-                        print r.text
-                        if r.status_code ==200:
-                            result = 'PASS'
+                        if len(galobalValues) > 0:
+                            for g in galobalValues:
+                                # va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path').encode("utf-8"))
+                                va = Public.get_value_from_response(response=r.text, json_path='data.accessToken')
+                                try:
+                                    o = globalVariable.objects.get(name=g.name, user=loginName)
+                                    globalVariable.objects.filter(name=o.name).update(path=g.path, value=va)
+                                except Exception as result:
+                                    print "未知错误 %s" % result
+                        dy=[]
+                        if len(ast) > 0:
+                            for a in ast:
+                                nm = a.path
+                                key = a.value
+                                real_value = Public.get_value_from_response(response=r.text,
+                                                                            json_path=nm.encode("utf-8"))
+                                print real_value
+                                if key.encode("utf-8") == str(real_value):
+                                    result = 'PASS'
+                                else:
+                                    result = 'FAIL'
+                                ast = asserts.objects.filter(autoApi_id=i.id, path=nm)
+                                if len(ast) > 2:
+                                    dy.append(
+                                        asserts(path=nm, autoApi_id=i.id, value=key, user=loginName,
+                                                real_value=real_value,
+                                                CreateTime=timezone.now()))
+                                else:
+                                    asserts.objects.filter(autoApi_id=i.id, path=nm).update(value=key, real_value=real_value)
+                            asserts.objects.bulk_create(dy)
                         else:
-                            result = 'FAIL'
+                            result = 'PASS'
+                        print r.text
                         taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id,
-                                                  httpStatus=r.status_code, result=result, responseData=r.text, user=user,
+                                                  httpStatus=r.status_code, result=result, responseData=r.text, user=loginName,
                                                   testTime=testTime, autoRunTime_id=s.id).save()
                     except:
                         taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id, httpStatus='502',
@@ -239,6 +273,7 @@ def taskRun(request):
     ev= Env.objects.get(id=tasks.env_id)
     taskStartTime = timezone.now()
     testTime =timezone.now()
+    loginName = request.session.get('Username', '')
     s = AutoTaskRunTime.objects.create(startTime=taskStartTime, task_id=tid, testTime=testTime)
     s.save()
     if ev.evn_port:
@@ -265,6 +300,8 @@ def taskRun(request):
             for i in api:
                 he = autoApiHead.objects.filter(autoApi_id=i.id)
                 pa = autoAPIParameter.objects.filter(autoApi_id=i.id)
+                galobalValues = globalVariable.objects.filter(autoApi_id=i.id)
+                ast = asserts.objects.filter(autoApi_id=i.id)
                 headers = {}
                 params = {}
                 for p in he:
@@ -272,27 +309,57 @@ def taskRun(request):
                     value = p.value
                     headers[name] = value
                 for p in pa:
+                    if re.match(r'^\$\{(.+?)\}$', p.value) != None:
+                        w = re.sub('[${}]', '', p.value)
+                        value = globalVariable.objects.get(name=w).value
+                    else:
+                        value = p.value
                     name = p.name
-                    value = p.value
                     params[name] = value
                 ur = url + i.apiAddress
                 try:
                     r = Public.execute(url=ur, params=params, method=i.method, heads=headers)
                     print r.text
-                    if r.status_code == 200:
-                        result = 'PASS'
+                    if len(galobalValues) > 0:
+                        for g in galobalValues:
+                            # va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path').encode("utf-8"))
+                            va = Public.get_value_from_response(response=r.text, json_path='data.accessToken')
+                            try:
+                                o = globalVariable.objects.get(name=g.name, user=loginName)
+                                globalVariable.objects.filter(name=o.name).update(path=g.path, value=va)
+                            except Exception as result:
+                                print "未知错误 %s" % result
+                    dy=[]
+                    if len(ast) > 0:
+                        for a in ast:
+                            nm = a.path
+                            key = a.value
+                            real_value = Public.get_value_from_response(response=r.text,
+                                                                        json_path=nm.encode("utf-8"))
+                            print real_value
+                            if key.encode("utf-8") == str(real_value):
+                                result = 'PASS'
+                            else:
+                                result = 'FAIL'
+                            ast = asserts.objects.filter(autoApi_id=i.id, path=nm)
+                            if len(ast) > 2:
+                                dy.append(
+                                    asserts(path=nm, autoApi_id=i.id, value=key, user=loginName,
+                                            real_value=real_value,
+                                            CreateTime=timezone.now()))
+                            else:
+                                asserts.objects.filter(autoApi_id=i.id, path=nm).update(value=key, real_value=real_value)
+                        asserts.objects.bulk_create(dy)
                     else:
-                        result = 'FAIL'
-                    t =taskResult.objects.create(case_id=c.case_id, autoApi_id=i.id, task_id=tid, httpStatus=r.status_code,
-                                                 result=result, responseData=r.text, user=user, testTime=testTime,
-                                                 autoRunTime_id=s.id)
-                    t.save()
+                        result = 'PASS'
+                    print r.text
+                    taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id,
+                                              httpStatus=r.status_code, result=result, responseData=r.text, user=loginName,
+                                              testTime=testTime, autoRunTime_id=s.id).save()
                 except:
-                    t = taskResult.objects.create(case_id=c.case_id, autoApi_id=i.id, task_id=tid, httpStatus='502',
-                                                  result='ERROR', responseData='接口请求异常，请检查', user=user,testTime=testTime,
-                                                  autoRunTime_id=s.id)
-                    t.save()
-                    print '接口请求异常，请检查'
+                    taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id, httpStatus='502',
+                                              result='ERROR', responseData='接口请求异常，请检查', user=user,
+                                              testTime=testTime, autoRunTime_id=s.id).save()
 
     def my_listener(event):
         if event.exception:
@@ -418,9 +485,9 @@ def tResult(request,autoRuntimeid):
     taskId = AutoTaskRunTime.objects.get(id=autoRuntimeid).task_id
     tk = task.objects.get(id=taskId)
     totalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid).count()
-    PassTotalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid, httpStatus='200').count()
-    FallTotalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid, httpStatus='404').count()
-    errorTotalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid, httpStatus='502').count()
+    PassTotalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid, result='PASS').count()
+    FallTotalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid, result='FAIL').count()
+    errorTotalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid, result='ERROR').count()
     sTime = AutoTaskRunTime.objects.get(id=autoRuntimeid).startTime
     eTime = AutoTaskRunTime.objects.get(id=autoRuntimeid).endTime
     print eTime
@@ -460,6 +527,7 @@ def taskLogList(request,tid):
     resultdict = {}
     total = p.count()
     dict = []
+
     for a in p:
         dic = {}
         if t.endTime:
