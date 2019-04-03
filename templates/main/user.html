@@ -96,7 +96,7 @@
 {#                {field: 'name', title: '姓名', width: 100},#}
 {#                {field: 'password', title: '密码', width: 100},#}
 {#                {field: 'status', title: '状态', width: 85, templet: '#statusTpl'},#}
-{#                {field: 'role', title: '角色', width: 100, templet: '#roleTpl'},#}
+                {field: 'role', title: '角色', width: 100, templet: '#roleTpl'},
                 {field: 'email', title: '邮箱', width: 200},
                 {field: 'date_joined', title: '最近登录时间'},
                 {title: '操作',  templet: '#operationTpl', align: 'center'}
@@ -149,14 +149,28 @@
                     shade: false,
                     maxmin: true,
                     shade: 0.5,
-                    area: ['90%', '90%'],
+                    area: ['40%', '60%'],
                     content: '/userEdit/'+uid,
                     zIndex: layer.zIndex,
                     end: function () {
                         $(".layui-laypage-btn")[0].click();
                     }
                 });
-            } else if (layEvent === 'del') {
+            } else if (layEvent === 'setAuthority') {
+                layer.open({
+                    title: '分配用户权限',
+                    type: 2,
+                    shade: false,
+                    maxmin: true,
+                    shade: 0.5,
+                    area: ['80%', '90%'],
+                    content: '/setAuthority/'+uid,
+                    zIndex: layer.zIndex,
+                    end: function () {
+                        $(".layui-laypage-btn")[0].click();
+                    }
+                });
+            }else if (layEvent === 'del') {
                 layer.confirm("确定要删除吗？", {skin: 'layui-layer-lan', icon: 2, title: '提示', anim: 6}, function () {
                     {#layer.msg(id);#}
                     $.ajax({
@@ -272,10 +286,11 @@
 {#<script type="text/html" id="statusTpl">#}
 {#    <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="启用|停用" {{ d.status== 0 ? 'checked' : ''}}>#}
 {#</script>#}
-{#<script type="text/html" id="roleTpl">#}
-{#    {{ d.role == 0 ? '管理员' : '普通用户    '}}#}
-{#</script>#}
+<script type="text/html" id="roleTpl">
+    {% verbatim %}{{ d.is_superuser == 1 ? '管理员' : '普通用户'}}{% endverbatim %}
+</script>
 <script type="text/html" id="operationTpl">
+    <a href="javascript:;" title="设置权限" lay-event="setAuthority"><i class="layui-icon">&#xe620;</i></a>
     <a href="javascript:;" title="编辑" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
     <a href="javascript:;" title="删除" lay-event="del"><i class="layui-icon">&#xe640;</i></a>
 </script>

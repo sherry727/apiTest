@@ -70,11 +70,11 @@
             cols: [[
                 {type: 'checkbox'},
                 {field: 'index', title: 'ID',type:'numbers'},
-                {field: 'name', title: '变量名称'},
+                {field: 'name', title: '变量名称',width:300},
                 {field: 'value', title: '变量值'},
-                {field: 'gType', title: '来源',templet:'#gtype'},
-                {field: 'user', title: '创建人'},
-                {title: '操作',  templet: '#operationTpl', align: 'center'}
+                {field: 'gType', title: '来源',templet:'#gtype',width:150},
+                {field: 'user', title: '创建人',width:100},
+                {title: '操作',  templet: '#operationTpl', align: 'center',width:100}
             ]],
             done: function (res, curr, count) {
                 $("#countNum").text(count);

@@ -9,7 +9,6 @@ import time
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 
-# Create your views here.
 @login_required
 def welcom(request):
     return render(request, 'main/welcome.html')
@@ -61,6 +60,7 @@ def getUserList(request):
             dic['id'] = p.id
             dic['username'] = p.username
             dic['email'] = p.email
+            dic['is_superuser'] = p.is_superuser
             dic['date_joined'] = p.date_joined.strftime("%Y-%m-%d %H:%M:%S")
             dict.append(dic)
         resultdict['code'] = 0

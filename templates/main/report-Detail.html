@@ -135,6 +135,84 @@
             </div>
             </div>
         </div>
+        <div class="layui-form-item">
+            <div id="globalVariable" globalV="{{ gv }}" style="display: none"></div>
+            <label class="layui-form-label">设置变量</label>
+            <div class="layui-input-block">
+                <div id="hd">
+                    <table class="layui-table" id="gv">
+                        <colgroup>
+                          <col width="200">
+                          <col width="200">
+                          <col width="50">
+                          <col>
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th>全局变量命名</th>
+                            <th>返回参数的路径</th>
+                            <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addGv"><i class="layui-icon">&#xe654;</i></button>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div id="sqlM"  style="display: none"></div>
+            <label class="layui-form-label">添加数据库</label>
+            <div class="layui-input-inline" style="width: 300px">
+                <select name="sqlType" id="sqlType" lay-filter="sqlType">
+                    <option value="">请选择数据库类型</option>
+                    <option value="1">mysql</option>
+                    <option value="2">redis</option>
+                    <option value="3">mangoDB</option>
+                </select>
+            </div>
+            <div class="layui-input-inline" style="width: 300px">
+                <select name="sqlId" id="sqlName">
+                    <option value="">请选数据库环境</option>
+                </select>
+            </div>
+        </div>
+         <div class="layui-form-item">
+             <div class="layui-input-block">
+                <textarea name="sqlText" autocomplete="off" placeholder="请输入对应sql语句，分号隔开" class="layui-textarea" id="sqlText" style="min-height: 100px"></textarea>
+             </div>
+             <label class="layui-form-label">sql变量名</label>
+             <div class="layui-input-block">
+                <input type="text" name="sqlGlobalname" placeholder="请输入sql接收变量名称，分号隔开" autocomplete="off" class="layui-input"  value="{{ sqlGlobalname }}" >
+             </div>
+         </div>
+         <div class="layui-form-item">
+            <div id="assert"  at="{{ asserts }}" style="display: none"></div>
+            <label class="layui-form-label">响应断言</label>
+            <div class="layui-input-block">
+                <div id="xy">
+                    <table class="layui-table" id="as">
+                        <colgroup>
+                          <col width="200">
+                          <col width="200">
+                          <col width="50">
+                          <col>
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th>返回参数路径</th>
+                            <th>返回参数值</th>
+                            <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addAs"><i class="layui-icon">&#xe654;</i></button>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">执行结果</label>
             <div class="layui-input-block">

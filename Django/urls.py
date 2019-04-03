@@ -18,7 +18,7 @@ from django.contrib import admin
 from django_web import views
 from bugStatistics.stViews import bugStView
 from django.conf.urls import include
-from django_web.api import projectView, envView, apiView, caseView, caseApiView, taskView, reportView, sqlView,gvView
+from django_web.api import projectView, envView, apiView, caseView, caseApiView, taskView, reportView, sqlView,gvView,roleView
 from django.views import static
 from django.conf import settings
 
@@ -47,6 +47,12 @@ urlpatterns = [
     url(r'^userEdit/(?P<uid>\d+)$', views.userEdit),
     url(r'^userDelete/$', views.userDelete, name='userDelete'),
     url(r'^userEditPost/$', views.userEditPost, name='userEditPost'),
+
+    #role
+    url(r'^role/$', roleView.role_index, name='role_index'),
+    url(r'^AuthTree/$', roleView.AuthTree, name='AuthTree'),
+    url(r'^setAuthority/(?P<uid>\d+)$', roleView.setAuthority, name='setAuthority'),
+    url(r'^roleSelect/$', roleView.roleSelect, name='roleSelect'),
 
     #project
     url(r'^project_index/$', projectView.project_index, name='project_index'),

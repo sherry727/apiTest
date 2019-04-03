@@ -411,5 +411,17 @@ class asserts(models.Model):
     CreateTime = models.DateTimeField(auto_now=True, verbose_name='创建时间')
 
 
+class manage_permission(models.Model):
+    """
+        模块权限
+    """
+    id = models.AutoField(primary_key=True)
+    content_type_id = models.CharField(null=True, verbose_name='contenType对应list', max_length=100)
+    name = models.CharField(max_length=50, verbose_name='模块名')
+    code_name = models.CharField(max_length=100, verbose_name='模块参数')
+    rank = models.IntegerField(null=True, verbose_name='1:一级2：二级')
+
+
+
 
 
