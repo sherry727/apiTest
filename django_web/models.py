@@ -421,6 +421,21 @@ class manage_permission(models.Model):
     code_name = models.CharField(max_length=100, verbose_name='模块参数')
     rank = models.IntegerField(null=True, verbose_name='1:一级2：二级')
 
+class uploadFile(models.Model):
+    """
+    上传文件管理
+    """
+    id = models.AutoField(primary_key=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='所属项目')
+    name= models.CharField(max_length=50, null=True, verbose_name='文件名称')
+    desc=models.CharField(max_length=100, verbose_name='文件描述',null=True)
+    path=models.CharField(max_length=100, verbose_name='文件路径',null=True)
+    user = models.CharField(max_length=50, verbose_name='创建人')
+    CreateTime = models.DateTimeField(auto_now=True, verbose_name='创建时间')
+
+
+
+
 
 
 

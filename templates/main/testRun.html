@@ -49,15 +49,15 @@
         <div class="layui-form-item">
             <label class="layui-form-label">请求方式</label>
             <div class="layui-input-inline">
-                <select name="method" id="method" disabled>
-                    <option value="post">POST</option>
-                    <option value="get">GET</option>
+                <select name="method" id="method">
+                    <option value="post">post</option>
+                    <option value="get">get</option>
                 </select>
             </div>
             <div class="layui-input-inline">
-                <select name="httptype" id="httptype" disabled>
-                    <option value="http">HTTP</option>
-                    <option value="https">HTTPS</option>
+                <select name="httptype" id="httptype">
+                    <option value="http">http</option>
+                    <option value="https">https</option>
                 </select>
             </div>
         </div>
@@ -106,14 +106,18 @@
             <div id="hh">
                 <table class="layui-table" id="param" >
                     <colgroup>
-                      <col width="200">
-                      <col width="200">
+                      <col width="100">
+                      <col width="300">
+                      <col width="50">
+                      <col width="50">
                       <col>
                     </colgroup>
                     <thead>
                       <tr>
                         <th>参数名</th>
                         <th>参数值</th>
+                        <th>类型</th>
+                        <th>操作</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -198,8 +202,10 @@
         var oa=eval(l);
         if (oa) {
             for(var i=0;i<oa.length;i++) {
-                    var thtml = "<tr>" + "<th>" + "<input type='text' name='param_name'  class='layui-input' value='" + oa[i].param_name + "'disabled>" + " </th>" + "<th><input type='text'  name='param_key'  class='layui-input' value='" + oa[i].param_key + "' disabled> </th>" + "</tr>";
+                    var thtml = "<tr>" + "<th>" + "<input type='text' name='param_name' placeholder=请输入参数名 class='layui-input' value='" + oa[i].param_name + "'>" + " </th>" + "<th><input type='text'  name='param_key' placeholder=请输入参数值 class='layui-input' value='" + oa[i].param_key + "'> </th>" +"<th><select name='paramType' id='paramType"+i+"'>"+"<option value='"+oa[i].paramType+"'>"+oa[i].paramType+"</option>"+"</select>"+"</th>"+"<th>"+"<a  class='delrow' id='delrow' ><i class='layui-icon'></i></a>"+"</th>"+ "</tr>";
+                    {#$("select[id=paramType"+i+"]").val(oa[i].paramType);#}
                     $('#param tbody').append(thtml);// tabel动态显示元素
+                    form.render();
 
             }
          }

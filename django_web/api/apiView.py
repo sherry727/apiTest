@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django_web.models import Env,Project,ApiCase,ApiHead,APIParameter,globalVariable
+from django_web.models import Env,Project,ApiCase,ApiHead,APIParameter,globalVariable,uploadFile
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.db.models import Q
 from django.shortcuts import render
 import json,re
 import requests
@@ -118,6 +119,9 @@ def apiAddPost(request):
         httptype =u.get('httptype')
         headers = u.get('headers')
         params = u.get('params')
+        files = u.get('files')
+        print files
+        loginName = request.session.get('Username', '')
         p=ApiCase.objects.create(project_id=projectid, name=name, user=user, method=method, requestParameterType=requestParameterType,
                                  httpType=httptype, desc=desc, apiAddress=url, CreateTime=timezone.now())
         p.save()
@@ -130,13 +134,21 @@ def apiAddPost(request):
         ApiHead.objects.bulk_create(headersList)
         paramsList = []
         for h in params:
-            name = p.get('param_name')
-            params[name] = value
             nm = h.get('param_name')
             key = h.get('param_key')
             paramType = h.get('paramType')
             paramsList.append(APIParameter(name=nm, api_id=p.id, value=key, paramType=paramType))
         APIParameter.objects.bulk_create(paramsList)
+        filesList = []
+        f=[]
+        for h in files:
+            nm = h.get('file_name')
+            key = h.get('fpath')
+            f.append(uploadFile(name=nm, path=key, user=loginName, CreateTime=timezone.now(), project_id=projectid))
+            paramType = h.get('pType')
+            filesList.append(APIParameter(name=nm, api_id=p.id, value=key, paramType=paramType))
+        APIParameter.objects.bulk_create(filesList)
+        uploadFile.objects.bulk_create(f)
         resultdict = {
             'code': 0,
             'msg': 'success',
@@ -257,6 +269,8 @@ def apiEditPost(request):
         httptype = u.get('httptype')
         headers = u.get('headers')
         params = u.get('params')
+        files = u.get('files')
+        print files
         ApiCase.objects.filter(id=id).update(project_id=projectid, name=name, user=user, method=method,
                                              requestParameterType=requestParameterType,
                                              httpType=httptype, desc=desc, apiAddress=url, LastUpdateTime=timezone.now())
@@ -273,8 +287,15 @@ def apiEditPost(request):
             nm = h.get('param_name')
             key = h.get('param_key')
             type = h.get('paramType')
-            paramsList.append(APIParameter(name=nm, api_id=id, value=key,paramType=type))
+            paramsList.append(APIParameter(name=nm, api_id=id, value=key, paramType=type))
         APIParameter.objects.bulk_create(paramsList)
+        filesList = []
+        for h in files:
+            nm = h.get('file_name')
+            key = h.get('fpath')
+            paramType = h.get('pType')
+            filesList.append(APIParameter(name=nm, api_id=id, value=key, paramType=paramType))
+        APIParameter.objects.bulk_create(filesList)
         # api_headers_old = ApiHead.objects.filter(api_id=id).values_list("head_name", flat=True)
         # api_params_old = APIParameter.objects.filter(api_id=id).values_list("param_name", flat=True)
         # api_headers_list = []
@@ -316,6 +337,7 @@ def simpleRun(request,pid):
         dic = {}
         dic['param_name'] = i.name
         dic['param_key'] = i.value
+        dic['paramType'] = i.paramType
         params.append(dic)
     headers = []
     for i in h:
@@ -346,7 +368,9 @@ def apiSimpleRun(request):
     api=ApiCase.objects.get(id=api_id)
     env_id = u.get('envid')
     method=u.get('method')
-    pa= APIParameter.objects.filter(api_id=api_id).values('name', 'value')
+    pa= APIParameter.objects.filter(Q(api_id=api_id), ~Q(paramType='File')).values('name', 'value')
+    files= APIParameter.objects.filter(Q(api_id=api_id), Q(paramType='File')).values('name', 'value')
+    fi={}
     params = {}
     for p in pa:
         if re.match(r'^\$\{(.+?)\}$', p.get('value')) != None:
@@ -356,6 +380,14 @@ def apiSimpleRun(request):
             value = p.get('value')
         name = p.get('name')
         params[name] = value
+    for f in files:
+        if re.match(r'^\$\{(.+?)\}$', f.get('value')) != None:
+            w = re.sub('[${}]', '', f.get('value'))
+            value= globalVariable.objects.get(name=w).value
+        else:
+            value = f.get('value')
+        name = f.get('name')
+        fi[name] = (name, open(f.get('value'), "rb"), 'file')
     he =ApiHead.objects.filter(api_id=api_id).values('name', 'value')
     headers = {}
     for p in he:
@@ -368,16 +400,24 @@ def apiSimpleRun(request):
     else:
         url = env.env_url+api.apiAddress
     ur = url.encode('unicode-escape').decode('string_escape')
+    print fi
+    o = {'file': (open(f.get('value'), 'rb'),'file')}
+    print ur
+    print params
+    print method.encode("utf-8")
+    print headers
+    print fi
     try:
-        if method =='post':
-            r = requests.request('post', json=params, headers=headers, url=url)
-        else:
-            r = requests.request('get', json=params, headers=headers, url=url)
+    #     if method =='post':
+    #         r = requests.request('post', data=params, headers=headers, url=url, files=fi)
+    #     else:
+    #         r = requests.request('get', json=params, headers=headers, url=url)
 
-        # r = Public.execute(url=url, params=params, method=method, heads=headers)
+        r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), files=fi)
         print r.content
-        return JsonResponse(r.text, safe=False)
-    except:
+        return JsonResponse(r.content, safe=False)
+    except Exception as result:
+        print "未知错误 %s" % result
         data = '没有该接口，请检查接口信息'
         return JsonResponse(data, safe=False)
 

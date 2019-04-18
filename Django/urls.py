@@ -18,7 +18,8 @@ from django.contrib import admin
 from django_web import views
 from bugStatistics.stViews import bugStView
 from django.conf.urls import include
-from django_web.api import projectView, envView, apiView, caseView, caseApiView, taskView, reportView, sqlView,gvView,roleView
+from django_web.api import projectView, envView, apiView, caseView, caseApiView, taskView, reportView, sqlView,gvView,roleView,jmView
+from django_web.api import uploadView
 from django.views import static
 from django.conf import settings
 
@@ -150,6 +151,17 @@ urlpatterns = [
     url(r'^gvAddPost/$', gvView.gvAddPost, name='gvAddPost'),
     url(r'^gvDelete/$', gvView.gvDelete, name='gvDelete'),
     url(r'^selectDBForSql/(?P<sid>\d+)$', gvView.selectDBForSql, name='selectDBForSql'),
+
+    #jm
+    url(r'^jm_index/$', jmView.jm_index, name='jm_index'),
+
+    #file
+    url(r'^file_index/$', uploadView.file_index, name='file_index'),
+    url(r'^fileList/$', uploadView.fileList, name='fileList'),
+    url(r'^fileAdd/$', uploadView.fileAdd, name='fileAdd'),
+    url(r'^fileAddPost/$', uploadView.fileAddPost, name='fileAddPost'),
+    url(r'^upload/$', uploadView.upload, name='upload'),
+    url(r'^fileDelete/$', uploadView.fileDelete, name='fileDelete'),
 
 
 

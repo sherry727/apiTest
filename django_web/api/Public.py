@@ -12,11 +12,15 @@ sys.setdefaultencoding('utf8')
 
 
 def execute(url, heads, params, method='POST', cookies=None, files=None):
-    r =''
-    if method=='POST':
+    r = ''
+    if files !=None:
+        r=requests.request('post', url=url, headers=heads, data=params, cookies=cookies, files=files)
+    elif method=='post'and files==None:
         r=requests.request('post', url=url, headers=heads, json=params, cookies=cookies, files=files)
-    elif method=='GET':
-        r=requests.request('get', url=url, headers=heads, json=params, cookies=cookies, files=files)
+    elif method=='get':
+        r=requests.request('get', url=url, headers=heads, json=params, cookies=cookies)
+    else:
+        print '接口请求方式非法'
     return r
 
 def _load_json_from_response(response):
