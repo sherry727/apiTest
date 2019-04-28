@@ -147,3 +147,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/'),
 )
+
+FILE_PATH = '/Users/sherry/Desktop/pythonProject/Django/django_web/temp_file/'

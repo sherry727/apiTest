@@ -52,14 +52,14 @@
             <label class="layui-form-label">请求方式</label>
             <div class="layui-input-inline">
                 <select name="method" id="method">
-                    <option value="POST">POST</option>
-                    <option value="GET">GET</option>
+                    <option value="post">post</option>
+                    <option value="get">get</option>
                 </select>
             </div>
             <div class="layui-input-inline">
                 <select name="httptype" id="httptype">
-                    <option value="HTTP">HTTP</option>
-                    <option value="HTTPS">HTTPS</option>
+                    <option value="http">http</option>
+                    <option value="https">https</option>
                 </select>
             </div>
         </div>
@@ -103,6 +103,7 @@
         </div>
         <div class="layui-form-item">
             <div id="op" o="{{ params }}" style="display: none"></div>
+            <div id="fi" z="{{ files }}" style="display: none"></div>
             <label class="layui-form-label">请求参数</label>
             <div class="layui-input-block" id="re">
               <input type="radio" name="requestParameterType" id = "raw" value="0" title="json源数据" lay-filter="type" disabled>
@@ -117,7 +118,7 @@
             <div id="hh">
                 <table class="layui-table" id="param">
                     <colgroup>
-                      <col width="200">
+                      <col width="50">
                       <col width="200">
                       <col width="50">
                       <col width="50">
@@ -129,6 +130,8 @@
                         <th>参数值</th>
                         <th>类型</th>
                         <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="add1"><i class="layui-icon">&#xe654;</i></button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addFile"><i class="layui-icon">&#xe621;</i></button>
+
 {#                            <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon" onclick="" id="delrow"></i></button></th>#}
                       </tr>
                     </thead>
@@ -258,12 +261,13 @@
 <script src="/static/mine/lib/layui/layui.js"></script>
 <script>
 
-    layui.use(['element', 'form', 'jquery', 'laydate'], function () {
+    layui.use(['element', 'form', 'jquery', 'laydate','upload'], function () {
         var element = layui.element;
         var table = layui.table;
         var form = layui.form;
         var $ = layui.jquery;
         var laydate = layui.laydate;
+        var upload = layui.upload;
 
         $("#method option[value='{{ method }}']").prop("selected",true);
         $("#httptype option[value='{{ httptype }}']").prop("selected",true);
@@ -295,14 +299,25 @@
          }
 
          //请求参数赋值
-        var k=$("#op").attr("o");
+         var k=$("#op").attr("o");
+        var z=$("#fi").attr("z");
         var l = k.replace(/u'/g,"'");
+        var z1 = z.replace(/u'/g,"'");
         var oa=eval(l);
+        var z2=eval(z1);
         if (oa) {
-            for(var i=0;i<oa.length;i++) {
-                    var thtml = "<tr>" + "<th>" + "<input type='text' name='param_name' placeholder=请输入参数名 class='layui-input' value='" + oa[i].param_name + "'>" + " </th>" + "<th><input type='text'  name='param_key' placeholder=请输入参数值 class='layui-input' value='" + oa[i].param_key + "'> </th>" +"<th><select name='paramType' id='paramType"+i+"'>"+"<option value='int'>int</option>"+"<option value='string'>string</option>"+"</select>"+"</th>"+"<th>"+"<a  class='delrow' id='delrow' ><i class='layui-icon'></i></a>"+"</th>"+ "</tr>";
+            for (var i = 0; i < oa.length; i++) {
+                var thtml = "<tr>" + "<th>" + "<input type='text' name='param_name' placeholder=请输入参数名 class='layui-input' value='" + oa[i].param_name + "'>" + " </th>" + "<th><input type='text'  name='param_key' placeholder=请输入参数值 class='layui-input' value='" + oa[i].param_key + "'> </th>" + "<th><select name='paramType' id='paramType" + i + "'>" + "<option value='int'>int</option>" + "<option value='string'>string</option>" + "<option value='File'>File</option>" + "</select>" + "</th>" + "<th>" + "<a  class='delrow' id='delrow' ><i class='layui-icon'></i></a>" + "</th>" + "</tr>";
+                $('#param tbody').append(thtml);// tabel动态显示元素
+                $("select[id=paramType" + i + "]").val(oa[i].paramType);
+                form.render();
+            }
+        }
+        if(z2){
+            for(var i=0;i<z2.length;i++) {
+                    var thtml="<tr>"+"<th>"+"<input type='text' name='file_name' placeholder=请输入参数名 class='layui-input' value='"+z2[i].param_name+"'>"+" </th>"+"<th>"+"<div class='layui-form-item '>"+"<div class='layui-input-inline' style='width: 75%'>"+"<input type='text' id='fpath' name='fpath' placeholder='请输入路径' class='layui-input' value='"+z2[i].param_key+"'>"+"<input type='hidden'  id='file_real_name' name='file_real_name' placeholder=请输入文件名 class='layui-input' value='"+z2[i].fname+"'>"+"</div>"+"<input type='file' class ='upFile' name='upFile' id='upFile' style='width: 15%' value='选择文件'>"+"</div>"+"</th>"+"<th><select name='pType' id='pType'>"+"<option value='File'>File</option>"+"</select>"+"</th>"+"<th>"+"<a  class='delrow' id='delrow' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
                     $('#param tbody').append(thtml);// tabel动态显示元素
-                    $("select[id=paramType"+i+"]").val(oa[i].paramType);
+                    $("select[id=pType" + i + "]").val(z2[i].paramType);
                     form.render();
             }
 
@@ -337,6 +352,13 @@
          $('#add1').click(function (event) {
                 var thtml="<tr>"+"<th>"+"<input type='text' name='param_name' placeholder=请输入参数名 class='layui-input'>"+" </th>"+"<th><input type='text'  name='param_key' placeholder=请输入参数值 class='layui-input'> </th>"+"<th><select name='paramType' id='paramType'>"+"<option value='string'>string</option>"+"<option value='int'>int</option>"+"</select>"+"</th>"+"<th>"+"<a  class='delrow' id='delrow' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
                 {#var thtml="<tr>"+"<th>"+"<input type='text' name='param_name' placeholder=请输入参数名 class='layui-input'>"+" </th>"+"<th><input type='text'  name='param_key' placeholder=请输入参数值 class='layui-input'> </th>"+"<th><select name='paramType' id='paramType'>"+"<option value='string'>string</option>"+"<option value='int'>int</option>"+"</select>"+"</th>"+"<th>"+"<button class='layui-btn layui-btn-primary layui-btn-sm' onclick='' id='delrow'><i class='layui-icon'></i></button>"+"</th>"+"</tr>";#}
+                $('#param tbody').append(thtml);
+                form.render();
+                return false;
+            });
+
+        $('#addFile').click(function (event) {
+                var thtml="<tr>"+"<th>"+"<input type='text' name='file_name' placeholder=请输入参数名 class='layui-input'>"+" </th>"+"<th>"+"<div class='layui-form-item '>"+"<div class='layui-input-inline' style='width: 75%'>"+"<input type='text' id='fpath' name='fpath' placeholder='请输入路径' class='layui-input'>"+"<input type='hidden'  id='file_real_name' name='file_real_name' placeholder=请输入文件名 class='layui-input'>"+"</div>"+"<input type='file' class ='upFile' name='upFile' id='upFile' style='width: 15%' value='选择文件'>"+"</div>"+"</th>"+"<th><select name='pType' id='pType'>"+"<option value='File'>File</option>"+"</select>"+"</th>"+"<th>"+"<a  class='delrow' id='delrow' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
                 $('#param tbody').append(thtml);
                 form.render();
                 return false;
@@ -408,6 +430,34 @@
                 }
             });
 
+        $('#param').on('click', '.upFile', function (e) {
+            var that = $(this);
+            upload.render({
+                  elem: that
+                  ,url: '/upload/'
+                  ,auto: true
+                  ,accept: 'file'
+                  ,done: function(res, index, upload){
+                    //假设code=0代表上传成功
+                    if(res.code == 0){
+                        layer.msg('上传完成');
+                        that.parent('.layui-form-item ').find('#fpath').val(res.path);
+                        that.parent('.layui-form-item ').find('#file_real_name').val(res.name);
+                        form.render();
+                      //do something （比如将res返回的图片链接保存到表单的隐藏域）
+                    }else {
+                        layer.msg('上传失败');
+                    }
+
+                    //获取当前触发上传的元素，一般用于 elem 绑定 class 的情况，注意：此乃 layui 2.1.0 新增
+                    var item = this.item;
+
+                    //文件保存失败
+                    //do something
+                  }
+                });
+        });
+
         form.on('submit(run)',function (data) {
             {#$("#envid").attr("lay-verify",'required');#}
             {#form.render('select');#}
@@ -419,6 +469,7 @@
             values["params"] = [];
             values["asserts"] = [];
             values["galobalValues"] = [];
+            values["files"] = [];
             var a = ["head_name","head_key","param_name","param_key"];
             for(x in params){
                 var j = $.inArray(params[x].name,a);
@@ -456,6 +507,14 @@
                 dg['gv_name'] = $("input[name='gv_name']")[k].value;
                 dg['gv_path'] = $("input[name='gv_path']")[k].value;
                 values["galobalValues"].push(dg);
+            }
+            for(var e = 0;e < $("input[name='file_name']").length;e++){
+                var fn = {};
+                fn['file_name'] = $("input[name='file_name']")[e].value;
+                fn['fpath'] = $("input[name='fpath']")[e].value;
+                fn['fname'] = $("input[name='file_real_name']")[e].value;
+                fn['pType'] = $("select[name='pType']")[e].value;
+                values["files"].push(fn);
             }
 
             });
@@ -511,6 +570,7 @@
             values["params"] = [];
             values["asserts"] = [];
             values["galobalValues"] = [];
+            values["files"] = [];
             var a = ["head_name","head_key","param_name","param_key"];
             for(x in params){
                 var j = $.inArray(params[x].name,a);
@@ -548,6 +608,14 @@
                 dg['gv_name'] = $("input[name='gv_name']")[k].value;
                 dg['gv_path'] = $("input[name='gv_path']")[k].value;
                 values["galobalValues"].push(dg);
+            }
+            for(var e = 0;e < $("input[name='file_name']").length;e++){
+                var fn = {};
+                fn['file_name'] = $("input[name='file_name']")[e].value;
+                fn['fpath'] = $("input[name='fpath']")[e].value;
+                fn['fname'] = $("input[name='file_real_name']")[e].value;
+                fn['pType'] = $("select[name='pType']")[e].value;
+                values["files"].push(fn);
             }
 
             });

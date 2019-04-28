@@ -48,6 +48,7 @@
             <div class="layui-input-block">
                 <input type="file" id="upFile" name="upFile" placeholder="请选择文件" autocomplete="off" class="layui-input">
                 <input type="hidden" id="fpath" name="fpath" autocomplete="off" class="layui-input">
+                <input type="hidden" id="fname" name="fname" autocomplete="off" class="layui-input">
             </div>
             <span class="layui-inline layui-upload-choose" id="filePath"></span>
         </div>
@@ -94,7 +95,8 @@
                     if(res.code == 0){
                         layer.msg('上传完成');
                          $('#filePath').html(res.path);
-                         $('#fpath').val(res.path)
+                         $('#fpath').val(res.path);
+                         $('#fname').val(res.name)
                       //do something （比如将res返回的图片链接保存到表单的隐藏域）
                     }else {
                         layer.msg('上传失败');
@@ -110,6 +112,7 @@
 
         form.on('submit(add)',function (data) {
         var d = JSON.stringify(data.field);
+        alert(d);
             $.ajax({
                 url : '/fileAddPost/',
                 type : 'post',

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django_web.models import Project,uploadFile
+from django_web.models import Project,uploadFile,ApiCase,AutoApiCase
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.db.models import Q
@@ -30,11 +30,20 @@ def fileList(request):
     for a in p:
         dic = {}
         dic['id'] = a.id
+        dic['typeApi'] = a.typeApi
+        dic['api_id'] = a.api_id
+        if a.typeApi==1:
+            m = ApiCase.objects.get(id=a.api_id)
+            dic['apiname'] = m.name
+        elif a.typeApi==2:
+            m = AutoApiCase.objects.get(id=a.api_id)
+            dic['apiname'] = m.name
+        else:
+            dic['apiname'] = ''
         dic['project_id'] = a.project_id
-        r = Project.objects.get(id=a.project_id)
-        dic['projectName'] = r.name
         dic['path'] = a.path
         dic['name'] = a.name
+        dic['fname'] = a.fname
         dic['createTime'] = a.CreateTime.strftime("%Y-%m-%d %H:%M:%S")
         dic['desc'] = a.desc
         dic['user'] = a.user
@@ -58,7 +67,9 @@ def fileAddPost(request):
         projectid = u.get('projectid')
         desc = u.get('desc')
         fpath = u.get('fpath')
-        p=uploadFile.objects.create(user=loginName, name=filename, project_id=projectid, desc=desc, path=fpath,CreateTime=timezone.now())
+        fname = u.get('fname')
+        p=uploadFile.objects.create(typeApi=0, user=loginName, fname=fname, name=filename, project_id=projectid,
+                                    desc=desc, path=fpath, CreateTime=timezone.now())
         p.save()
         resultdict = {
             'code': 0,
@@ -76,6 +87,7 @@ def fileAddPost(request):
         return JsonResponse(resultdict, safe=False)
 
 def upload(request):
+    print '进入upload'
     File = request.FILES.get("upFile", None)
     resultdict = {}
     resultdict['code'] = 0
@@ -93,7 +105,7 @@ def upload(request):
                 f.write(chunk)
         resultdict['name'] = File.name
         resultdict['path'] = "./django_web/temp_file/%s" % File.name
-    print resultdict
+    # print resultdict
     return JsonResponse(resultdict, safe=False)
 
 def fileDelete(request):

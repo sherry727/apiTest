@@ -168,6 +168,7 @@ class APIParameter(models.Model):
     name = models.CharField(max_length=1024, verbose_name='参数名')
     value = models.CharField(max_length=1024, verbose_name='内容', blank=True, null=True)
     paramType = models.CharField(default='string', max_length=1024, verbose_name='类型',choices=PARAMTYPE)
+    file_id =models.IntegerField(null=True, verbose_name='文件id')
 
 
     def __unicode__(self):
@@ -279,6 +280,7 @@ class autoAPIParameter(models.Model):
     name = models.CharField(max_length=1024, verbose_name='参数名')
     value = models.CharField(max_length=1024, verbose_name='内容', blank=True, null=True)
     paramType = models.CharField(default='string', max_length=1024, verbose_name='类型',choices=PARAMTYPE)
+    file_id = models.IntegerField(null=True, verbose_name='文件id')
 
 
     def __unicode__(self):
@@ -427,7 +429,10 @@ class uploadFile(models.Model):
     """
     id = models.AutoField(primary_key=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='所属项目')
+    api_id = models.IntegerField(null=True, verbose_name='api和autoApiId')
+    typeApi = models.IntegerField(default=0, verbose_name='0:自建 1:api 2：autoApi')
     name= models.CharField(max_length=50, null=True, verbose_name='文件名称')
+    fname=models.CharField(max_length=50, null=True, verbose_name='实际名称')
     desc=models.CharField(max_length=100, verbose_name='文件描述',null=True)
     path=models.CharField(max_length=100, verbose_name='文件路径',null=True)
     user = models.CharField(max_length=50, verbose_name='创建人')

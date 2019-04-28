@@ -211,7 +211,7 @@
             });
 
          $('#addFile').click(function (event) {
-                var thtml="<tr>"+"<th>"+"<input type='text' name='file_name' placeholder=请输入参数名 class='layui-input'>"+" </th>"+"<th>"+"<div class='layui-form-item '>"+"<div class='layui-input-inline' style='width: 75%'>"+"<input type='text' id='fpath' name='fpath' placeholder='请输入路径' class='layui-input'>"+"</div>"+"<input type='file' class ='upFile' name='upFile' id='upFile' style='width: 15%' value='选择文件'>"+"</div>"+"</th>"+"<th><select name='pType' id='pType'>"+"<option value='File'>File</option>"+"</select>"+"</th>"+"<th>"+"<a  class='delrow' id='delrow' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
+                var thtml="<tr>"+"<th>"+"<input type='text' name='file_name' placeholder=请输入参数名 class='layui-input'>"+" </th>"+"<th>"+"<div class='layui-form-item '>"+"<div class='layui-input-inline' style='width: 75%'>"+"<input type='text' id='fpath' name='fpath' placeholder='请输入路径' class='layui-input'>"+"<input type='hidden'  id='file_real_name' name='file_real_name' placeholder=请输入文件名 class='layui-input'>"+"</div>"+"<input type='file' class ='upFile' name='upFile' id='upFile' style='width: 15%' value='选择文件'>"+"</div>"+"</th>"+"<th><select name='pType' id='pType'>"+"<option value='File'>File</option>"+"</select>"+"</th>"+"<th>"+"<a  class='delrow' id='delrow' ><i class='layui-icon'></i></a>"+"</th>"+"</tr>";
                 $('#param tbody').append(thtml);
                 form.render();
                 return false;
@@ -243,6 +243,7 @@
                     if(res.code == 0){
                         layer.msg('上传完成');
                          that.parent('.layui-form-item ').find('#fpath').val(res.path);
+                         that.parent('.layui-form-item ').find('#file_real_name').val(res.name);
                         {#$('#fpath').val(res.path);#}
                         form.render();
                       //do something （比如将res返回的图片链接保存到表单的隐藏域）
@@ -313,6 +314,7 @@
                 var fn = {};
                 fn['file_name'] = $("input[name='file_name']")[e].value;
                 fn['fpath'] = $("input[name='fpath']")[e].value;
+                fn['file_real_name'] = $("input[name='file_real_name']")[e].value;
                 fn['pType'] = $("select[name='pType']")[e].value;
                 values["files"].push(fn);
             }

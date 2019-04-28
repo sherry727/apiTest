@@ -1,0 +1,2 @@
+修改：
+apiView-》apiSimpleRun   path为当前服务器路径

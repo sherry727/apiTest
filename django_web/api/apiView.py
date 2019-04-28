@@ -4,12 +4,13 @@ from django_web.models import Env,Project,ApiCase,ApiHead,APIParameter,globalVar
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.db.models import Q
 from django.shortcuts import render
-import json,re
+import json,re,os
 import requests
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django_web.api import Public
+from django.conf import settings
 
 
 @login_required
@@ -120,7 +121,6 @@ def apiAddPost(request):
         headers = u.get('headers')
         params = u.get('params')
         files = u.get('files')
-        print files
         loginName = request.session.get('Username', '')
         p=ApiCase.objects.create(project_id=projectid, name=name, user=user, method=method, requestParameterType=requestParameterType,
                                  httpType=httptype, desc=desc, apiAddress=url, CreateTime=timezone.now())
@@ -144,11 +144,13 @@ def apiAddPost(request):
         for h in files:
             nm = h.get('file_name')
             key = h.get('fpath')
-            f.append(uploadFile(name=nm, path=key, user=loginName, CreateTime=timezone.now(), project_id=projectid))
+            real_name = h.get('file_real_name')
             paramType = h.get('pType')
-            filesList.append(APIParameter(name=nm, api_id=p.id, value=key, paramType=paramType))
+            e=uploadFile.objects.create(name=nm, path=key, user=loginName, CreateTime=timezone.now(), project_id=projectid,
+                                        api_id=p.id, typeApi=1, fname=real_name)
+            e.save()
+            filesList.append(APIParameter(name=nm, api_id=p.id, value=key, paramType=paramType, file_id=e.id))
         APIParameter.objects.bulk_create(filesList)
-        uploadFile.objects.bulk_create(f)
         resultdict = {
             'code': 0,
             'msg': 'success',
@@ -164,10 +166,11 @@ def apiAddPost(request):
         return JsonResponse(resultdict, safe=False)
 
 @login_required
-def apiEdit(request,aid):
+def apiEdit(request, aid):
     u = ApiCase.objects.get(id=aid)#接口表
     h = ApiHead.objects.filter(api_id=aid)#请求头
-    m = APIParameter.objects.filter(api_id=aid)#请求参数
+    m = APIParameter.objects.filter(Q(api_id=aid), ~Q(paramType='File'))#请求参数
+    fi = APIParameter.objects.filter(api_id=aid, paramType='File')#请求参数
     p = Project.objects.get(id=u.project_id)#项目表
     params =[]
     for i in m:
@@ -182,6 +185,15 @@ def apiEdit(request,aid):
         dic['head_name'] = i.name
         dic['head_key'] = i.value
         headers.append(dic)
+    files=[]
+    for j in fi:
+        dic = {}
+        dic['param_name'] = j.name
+        dic['param_key'] = j.value
+        dic['paramType'] = j.paramType
+        f = uploadFile.objects.get(id=j.file_id)
+        dic['fname'] = f.fname
+        files.append(dic)
     data = {
         'id': aid,
         'name': u.name,
@@ -194,6 +206,7 @@ def apiEdit(request,aid):
         'user': u.user,
         'params':params,
         'headers':headers,
+        'files': files,
         'desc': u.desc
     }
     return render(request, 'main/api-edit.html', data)
@@ -239,6 +252,7 @@ def apiDelete(request):
         # u = request.body
         id=u.get('id')
         ApiCase.objects.filter(id=id).delete()
+        uploadFile.objects.filter(api_id=id,typeApi=1).delete()
         resultdict = {
             'code': 0,
             'msg': 'success',
@@ -270,12 +284,13 @@ def apiEditPost(request):
         headers = u.get('headers')
         params = u.get('params')
         files = u.get('files')
-        print files
-        ApiCase.objects.filter(id=id).update(project_id=projectid, name=name, user=user, method=method,
+        loginName = request.session.get('Username', '')
+        ApiCase.objects.filter(id=id).update(project_id=projectid, name=name, method=method,
                                              requestParameterType=requestParameterType,
                                              httpType=httptype, desc=desc, apiAddress=url, LastUpdateTime=timezone.now())
         ApiHead.objects.filter(api_id=id).delete()
         APIParameter.objects.filter(api_id=id).delete()
+        uploadFile.objects.filter(api_id=id).delete()
         headersList = []
         for h in headers:
             nm = h.get('head_name')
@@ -293,8 +308,13 @@ def apiEditPost(request):
         for h in files:
             nm = h.get('file_name')
             key = h.get('fpath')
+            fname = h.get('fname')
             paramType = h.get('pType')
-            filesList.append(APIParameter(name=nm, api_id=id, value=key, paramType=paramType))
+            e = uploadFile.objects.create(name=nm, path=key, user=loginName, CreateTime=timezone.now(),
+                                          project_id=projectid,
+                                          api_id=id, typeApi=1, fname=fname)
+            e.save()
+            filesList.append(APIParameter(name=nm, api_id=id, value=key, paramType=paramType, file_id=e.id))
         APIParameter.objects.bulk_create(filesList)
         # api_headers_old = ApiHead.objects.filter(api_id=id).values_list("head_name", flat=True)
         # api_params_old = APIParameter.objects.filter(api_id=id).values_list("param_name", flat=True)
@@ -330,7 +350,8 @@ def apiEditPost(request):
 def simpleRun(request,pid):
     u = ApiCase.objects.get(id=pid)  # 接口表
     h = ApiHead.objects.filter(api_id=pid)  # 请求头
-    m = APIParameter.objects.filter(api_id=pid)  # 请求参数
+    m = APIParameter.objects.filter(Q(api_id=pid), ~Q(paramType='File'))  # 请求参数
+    fi = APIParameter.objects.filter(Q(api_id=pid), Q(paramType='File'))  # 请求参数
     p = Project.objects.get(id=u.project_id)  # 项目表
     params = []
     for i in m:
@@ -345,6 +366,15 @@ def simpleRun(request,pid):
         dic['head_name'] = i.name
         dic['head_key'] = i.value
         headers.append(dic)
+    files = []
+    for j in fi:
+        dic = {}
+        dic['param_name'] = j.name
+        dic['param_key'] = j.value
+        dic['paramType'] = j.paramType
+        f = uploadFile.objects.get(id=j.file_id)
+        dic['fname'] = f.fname
+        files.append(dic)
     data = {
         'id': pid,
         'name': u.name,
@@ -355,10 +385,10 @@ def simpleRun(request,pid):
         'projectName': p.name,
         'projectid': u.project_id,
         'user': u.user,
-        'LastUpdateTime': u.LastUpdateTime.strftime("%Y-%m-%d %H:%M:%S"),
-        'CreateTime': u.CreateTime.strftime("%Y-%m-%d %H:%M:%S"),
         'params': params,
-        'headers': headers
+        'headers': headers,
+        'files': files,
+        'desc': u.desc
     }
     return render(request,'main/testRun.html', data)
 
@@ -369,7 +399,7 @@ def apiSimpleRun(request):
     env_id = u.get('envid')
     method=u.get('method')
     pa= APIParameter.objects.filter(Q(api_id=api_id), ~Q(paramType='File')).values('name', 'value')
-    files= APIParameter.objects.filter(Q(api_id=api_id), Q(paramType='File')).values('name', 'value')
+    files= APIParameter.objects.filter(Q(api_id=api_id), Q(paramType='File')).values('name', 'value', 'file_id')
     fi={}
     params = {}
     for p in pa:
@@ -387,7 +417,8 @@ def apiSimpleRun(request):
         else:
             value = f.get('value')
         name = f.get('name')
-        fi[name] = (name, open(f.get('value'), "rb"), 'file')
+        e = uploadFile.objects.get(id=f.get('file_id'))
+        fi[name] = ((e.fname, open(os.path.join(settings.FILE_PATH, e.fname), 'rb'), 'file'))
     he =ApiHead.objects.filter(api_id=api_id).values('name', 'value')
     headers = {}
     for p in he:
@@ -400,20 +431,11 @@ def apiSimpleRun(request):
     else:
         url = env.env_url+api.apiAddress
     ur = url.encode('unicode-escape').decode('string_escape')
-    print fi
-    o = {'file': (open(f.get('value'), 'rb'),'file')}
-    print ur
-    print params
-    print method.encode("utf-8")
-    print headers
-    print fi
     try:
-    #     if method =='post':
-    #         r = requests.request('post', data=params, headers=headers, url=url, files=fi)
-    #     else:
-    #         r = requests.request('get', json=params, headers=headers, url=url)
-
-        r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), files=fi)
+        if fi:
+            r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers, files=fi)
+        else:
+            r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers)
         print r.content
         return JsonResponse(r.content, safe=False)
     except Exception as result:
@@ -435,16 +457,17 @@ def selectEnvName(request,eid):
 
 @login_required
 def copyApi(request,pid):
-    u = ApiCase.objects.get(id=pid)#接口表
-    h = ApiHead.objects.filter(api_id=pid)#请求头
-    m = APIParameter.objects.filter(api_id=pid)#请求参数
-    p = Project.objects.get(id=u.project_id)#项目表
-    params =[]
+    u = ApiCase.objects.get(id=pid)  # 接口表
+    h = ApiHead.objects.filter(api_id=pid)  # 请求头
+    m = APIParameter.objects.filter(Q(api_id=pid), ~Q(paramType='File'))  # 请求参数
+    fi = APIParameter.objects.filter(Q(api_id=pid), Q(paramType='File'))  # 请求参数
+    p = Project.objects.get(id=u.project_id)  # 项目表
+    params = []
     for i in m:
-        dic={}
-        dic['param_name']=i.name
-        dic['param_key'] =i.value
-        dic['paramType'] =i.paramType
+        dic = {}
+        dic['param_name'] = i.name
+        dic['param_key'] = i.value
+        dic['paramType'] = i.paramType
         params.append(dic)
     headers = []
     for i in h:
@@ -452,6 +475,15 @@ def copyApi(request,pid):
         dic['head_name'] = i.name
         dic['head_key'] = i.value
         headers.append(dic)
+    files = []
+    for j in fi:
+        dic = {}
+        dic['param_name'] = j.name
+        dic['param_key'] = j.value
+        dic['paramType'] = j.paramType
+        f = uploadFile.objects.get(id=j.file_id)
+        dic['fname'] = f.fname
+        files.append(dic)
     data = {
         'id': pid,
         'name': u.name,
@@ -462,8 +494,9 @@ def copyApi(request,pid):
         'projectName': p.name,
         'projectid': u.project_id,
         'user': u.user,
-        'params':params,
-        'headers':headers,
+        'params': params,
+        'headers': headers,
+        'files': files,
         'desc': u.desc
     }
     return render(request, 'main/api-copy.html', data)
@@ -472,39 +505,56 @@ def copyApi(request,pid):
 def apiCopyPost(request):
     if request.method == "POST":
         u = json.loads(request.body)
+        print u
         projectname = u.get('projectid')
-        p = Project.objects.get(name=projectname)
-        projectid = p.id
+        o = Project.objects.get(name=projectname)
+        projectid = o.id
+        id = u.get('id')
         name = u.get('name')
         user = u.get('user')
-        method= u.get('method')
+        method = u.get('method')
         requestParameterType = u.get('requestParameterType')
         url = u.get('url')
-        desc =u.get('desc')
-        httptype =u.get('httptype')
+        desc = u.get('desc')
+        httptype = u.get('httptype')
         headers = u.get('headers')
         params = u.get('params')
-        p=ApiCase.objects.create(project_id=projectid, name=name, user=user, method=method, requestParameterType=requestParameterType,
-                                 httpType=httptype, desc=desc, apiAddress=url, CreateTime=timezone.now(),status=1)
+        files = u.get('files')
+        loginName = request.session.get('Username', '')
+        p = ApiCase.objects.create(project_id=projectid, name=name, user=loginName, method=method,
+                                   requestParameterType=requestParameterType, httpType=httptype, desc=desc,
+                                   apiAddress=url, CreateTime=timezone.now())
         p.save()
-        ap = ApiCase.objects.last()
         headersList=[]
         for h in headers:
             nm= h.get('head_name')
             key = h.get('head_key')
-            headersList.append(ApiHead(name=nm, api_id=ap.id, value=key))
+            headersList.append(ApiHead(name=nm, api_id=p.id, value=key))
         ApiHead.objects.bulk_create(headersList)
         paramsList = []
         for h in params:
             nm = h.get('param_name')
             key = h.get('param_key')
             paramType = h.get('paramType')
-            paramsList.append(APIParameter(name=nm, api_id=ap.id, value=key, paramType=paramType))
+            paramsList.append(APIParameter(name=nm, api_id=p.id, value=key, paramType=paramType))
         APIParameter.objects.bulk_create(paramsList)
+        filesList = []
+        f=[]
+        for h in files:
+            nm = h.get('file_name')
+            key = h.get('fpath')
+            fname = h.get('fname')
+            paramType = h.get('pType')
+            e = uploadFile.objects.create(name=nm, path=key, user=loginName, CreateTime=timezone.now(),
+                                          project_id=projectid,
+                                          api_id=p.id, typeApi=1, fname=fname)
+            e.save()
+            filesList.append(APIParameter(name=nm, api_id=p.id, value=key, paramType=paramType, file_id=e.id))
+        APIParameter.objects.bulk_create(filesList)
         resultdict = {
             'code': 0,
             'msg': 'success',
-            'data': {'id': ap.id}
+            'data': {'id': id}
         }
         return JsonResponse(resultdict, safe=False)
     else:

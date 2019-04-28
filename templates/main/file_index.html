@@ -68,10 +68,12 @@
             cols: [[
                 {type: 'checkbox'},
                 {field: 'index', title: 'ID',type:'numbers'},
-                {field: 'projectName', title: '项目名称'},
-                {field: 'name', title: '文件名称'},
-                {field: 'desc', title: '文件描述'},
+                {field: 'name', title: '参数名称'},
+                {field: 'typeApi', title: '类型',width:60},
+                {field: 'apiname', title: '关联接口'},
+                {field: 'fname', title: '实际文件名称',width:200},
                 {field: 'path', title: '文件路径',width:400},
+                {field: 'desc', title: '文件描述'},
                 {field: 'user', title: '创建人'},
                 {field: 'createTime', title: '上传时间',width:200},
                 {title: '操作',  templet: '#operationTpl', align: 'center'}

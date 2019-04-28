@@ -6,6 +6,7 @@ from django_web.models import sqlManager,globalVariable
 import MySQLdb
 import logging
 import sys;
+import os
 reload(sys);
 sys.setdefaultencoding('utf8')
 
@@ -15,7 +16,7 @@ def execute(url, heads, params, method='POST', cookies=None, files=None):
     r = ''
     if files !=None:
         r=requests.request('post', url=url, headers=heads, data=params, cookies=cookies, files=files)
-    elif method=='post'and files==None:
+    elif method=='post' and files==None:
         r=requests.request('post', url=url, headers=heads, json=params, cookies=cookies, files=files)
     elif method=='get':
         r=requests.request('get', url=url, headers=heads, json=params, cookies=cookies)
@@ -64,7 +65,6 @@ def get_value_from_response(response, json_path=''):
         else:
             return response
 
-
 def write_csv_file(path, head, data):
     try:
         with open(path, 'wb') as csv_file:
@@ -93,6 +93,8 @@ def excuteSQL(sqlId,sql):
             logging.info("MySQL Error:%s" % str(e))
         re =''
     return re
+
+
 
 
 

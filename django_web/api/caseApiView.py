@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django_web.models import Env,Project,Case,AutoApiCase,autoApiHead,autoAPIParameter,ApiCase,ApiHead,APIParameter,TestResult,globalVariable
+from django_web.models import uploadFile
 from django_web.models import asserts
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 import json,re
 from django.db.models import Q
 from django_web.api import Public
-import traceback
+import traceback,os
 from django.utils import timezone
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 
@@ -191,6 +193,7 @@ def apiListForProject(request):
 def caseApiAddOldPost(request,caseId):
     if request.method == "POST":
         o = json.loads(request.body)
+        loginName = request.session.get('Username', '')
         for u in o:
             apiId = u.get('id')
             projectid = u.get('project_id')
@@ -201,7 +204,8 @@ def caseApiAddOldPost(request,caseId):
             requestParameterType = 1
             desc = u.get('desc')
             headers = ApiHead.objects.filter(api_id=apiId)
-            params = APIParameter.objects.filter(api_id=apiId)
+            params = APIParameter.objects.filter(Q(api_id=apiId), ~Q(paramType='File'))
+            files = APIParameter.objects.filter(api_id=apiId, paramType='File')
             p = AutoApiCase.objects.create(project_id=projectid, name=name, user=user, method=method,
                                            desc=desc, apiAddress=url, case_id=caseId, requestParameterType=requestParameterType,
                                            CreateTime=timezone.now())
@@ -219,6 +223,19 @@ def caseApiAddOldPost(request,caseId):
                 paramType = h.paramType
                 paramsList.append(autoAPIParameter(name=nm, autoApi_id=p.id, value=key, paramType=paramType))
             autoAPIParameter.objects.bulk_create(paramsList)
+            f=[]
+            for h in files:
+                fi = uploadFile.objects.get(id=h.file_id)
+                nm =fi.name
+                key = h.value
+                fname = fi.fname
+                fparamType = 'File'
+                e = uploadFile.objects.create(name=nm, path=key, user=loginName, CreateTime=timezone.now(),
+                                              project_id=projectid,
+                                              api_id=p.id, typeApi=2, fname=fname)
+                e.save()
+                f.append(autoAPIParameter(name=nm, autoApi_id=p.id, value=key, paramType=fparamType, file_id=e.id))
+            autoAPIParameter.objects.bulk_create(f)
         resultdict = {
             'code': 0,
             'msg': 'success',
@@ -236,7 +253,8 @@ def caseApiAddOldPost(request,caseId):
 def caseApiEdit(request,eid):
     u = AutoApiCase.objects.get(id=eid)  # 接口表
     h = autoApiHead.objects.filter(autoApi_id=eid)  # 请求头
-    m = autoAPIParameter.objects.filter(autoApi_id=eid)  # 请求参数
+    m = autoAPIParameter.objects.filter(Q(autoApi_id=eid), ~Q(paramType='File'))  # 请求参数
+    fi = autoAPIParameter.objects.filter(autoApi_id=eid, paramType='File')  # 请求参数
     p = Project.objects.get(id=u.project_id)  # 项目表
     g = globalVariable.objects.filter(autoApi_id=eid)
     a = asserts.objects.filter(autoApi_id=eid)
@@ -267,7 +285,15 @@ def caseApiEdit(request,eid):
         dic['a_value'] = i.value
         dic['a_path'] = i.path
         at.append(dic)
-    print at
+    files = []
+    for j in fi:
+        dic = {}
+        dic['param_name'] = j.name
+        dic['param_key'] = j.value
+        dic['paramType'] = j.paramType
+        f = uploadFile.objects.get(id=j.file_id)
+        dic['fname'] = f.fname
+        files.append(dic)
     data = {
         'id': eid,
         'name': u.name,
@@ -283,6 +309,7 @@ def caseApiEdit(request,eid):
         'asserts': at,
         'headers': headers,
         'desc': u.desc,
+        'files': files,
         'sort': u.sort
     }
     return render(request, 'main/caseApi-edit.html', data)
@@ -294,6 +321,7 @@ def caseApiDelete(request):
         # u = request.body
         id=u.get('id')
         AutoApiCase.objects.filter(id=id).delete()
+        uploadFile.objects.filter(api_id=id, typeApi=2).delete()
         resultdict = {
             'code': 0,
             'msg': 'success',
@@ -328,6 +356,8 @@ def caseApiEditPost(request):
         galobalValues = u.get('galobalValues')
         loginName = request.session.get('Username', '')
         sort = u.get('sort')
+        files = u.get('files')
+        uploadFile.objects.filter(api_id=id).delete()
         gv=[]
         asert=[]
         if len(galobalValues) > 0:
@@ -369,6 +399,18 @@ def caseApiEditPost(request):
             type = h.get('paramType')
             paramsList.append(autoAPIParameter(name=nm, autoApi_id=id, value=key, paramType=type))
         autoAPIParameter.objects.bulk_create(paramsList)
+        filesList = []
+        for h in files:
+            nm = h.get('file_name')
+            key = h.get('fpath')
+            fname = h.get('fname')
+            paramType = h.get('pType')
+            e = uploadFile.objects.create(name=nm, path=key, user=loginName, CreateTime=timezone.now(),
+                                          project_id=projectid,
+                                          api_id=id, typeApi=2, fname=fname)
+            e.save()
+            filesList.append(autoAPIParameter(name=nm, autoApi_id=id, value=key, paramType=paramType, file_id=e.id))
+        autoAPIParameter.objects.bulk_create(filesList)
         resultdict = {
             'code': 0,
             'msg': 'success',
@@ -405,11 +447,13 @@ def caseApiMultRun(request,eid):
         for s in sorts:
             caseApi = AutoApiCase.objects.get(id=s.get('id'))
             he =autoApiHead.objects.filter(autoApi_id=s.get('id'))
-            pa =autoAPIParameter.objects.filter(autoApi_id=s.get('id'))
+            pa =autoAPIParameter.objects.filter(Q(autoApi_id=s.get('id')), ~Q(paramType='File'))
             galobalValues =globalVariable.objects.filter(autoApi_id=s.get('id'))
             duanyan = asserts.objects.filter(autoApi_id=s.get('id'))
+            files = autoAPIParameter.objects.filter(Q(autoApi_id=s.get('id')), Q(paramType='File')).values('name', 'value', 'file_id')
             headers = {}
             params = {}
+            fi = {}
             for p in he:
                 name = p.name
                 value = p.value
@@ -422,12 +466,27 @@ def caseApiMultRun(request,eid):
                     value = p.value
                 name = p.name
                 params[name] = value
+            for f in files:
+                if re.match(r'^\$\{(.+?)\}$', f.get('value')) != None:
+                    w = re.sub('[${}]', '', f.get('value'))
+                    value = globalVariable.objects.get(name=w).value
+                else:
+                    value = f.get('value')
+                name = f.get('name')
+                e = uploadFile.objects.get(id=f.get('file_id'))
+                fi[name] = ((e.fname, open(os.path.join(settings.FILE_PATH, e.fname), 'rb'), 'file'))
+            print params
+            print files
             url1 =url+caseApi.apiAddress
             ur = url1.encode('unicode-escape').decode('string_escape')
             method = caseApi.method
             sort = s.get('sort')
             try:
-                r = Public.execute(url=ur, params=params, method=method, heads=headers)
+                # r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers)
+                if fi:
+                    r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers, files=fi)
+                else:
+                    r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers)
                 if len(galobalValues) > 0:
                     for g in galobalValues:
                         # va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path').encode("utf-8"))
@@ -459,7 +518,8 @@ def caseApiMultRun(request,eid):
                     asserts.objects.bulk_create(dy)
                 else:
                     AutoApiCase.objects.filter(id=s.get('id')).update(status='成功')
-            except:
+            except Exception as result:
+                print "未知错误 %s" % result
                 AutoApiCase.objects.filter(id=s.get('id')).update(status='异常')
         endTime = timezone.now()
         resultdict = {
@@ -502,6 +562,7 @@ def autoApiSimpleRun(request):
     user = u.get('user')
     galobalValues = u.get('galobalValues')
     duanyan= u.get('asserts')
+    files= u.get('files')
     loginName= request.session.get('Username', '')
     gv = []
     i =0
@@ -516,6 +577,15 @@ def autoApiSimpleRun(request):
                     globalVariable.objects.create(name=sqlGlobalname.split(";")[i], autoApi_id=api_id, value=rSql, user=user, gType=1).save()
             i = i+1
     # pa = autoAPIParameter.objects.filter(autoApi_id=api_id).values('name', 'value')
+    fi = {}
+    for f in files:
+        if re.match(r'^\$\{(.+?)\}$', f.get('fpath')) != None:
+            w = re.sub('[${}]', '', f.get('fpath'))
+            value= globalVariable.objects.get(name=w).value
+        else:
+            value = f.get('fpath')
+        name = f.get('file_name')
+        fi[name] = ((f.get('fname'), open(os.path.join(settings.FILE_PATH, f.get('fname')), 'rb'), 'file'))
     params = {}
     for p in pa:
         if re.match(r'^\$\{(.+?)\}$', p.get('param_key')) != None:
@@ -538,7 +608,10 @@ def autoApiSimpleRun(request):
         url = env.env_url + api.apiAddress
     ur = url.encode('unicode-escape').decode('string_escape')
     try:
-        r = Public.execute(url=url, params=params, method=method, heads=headers)
+        if fi:
+            r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers, files=fi)
+        else:
+            r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers)
         if len(galobalValues)>0:
             for g in galobalValues:
                 va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path').encode("utf-8"))
