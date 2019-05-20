@@ -4,6 +4,7 @@ from django_web.models import Project,uploadFile,ApiCase,AutoApiCase
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.db.models import Q
+from django_web.api import Public
 import json,os
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -87,25 +88,23 @@ def fileAddPost(request):
         return JsonResponse(resultdict, safe=False)
 
 def upload(request):
-    print '进入upload'
     File = request.FILES.get("upFile", None)
-    resultdict = {}
-    resultdict['code'] = 0
-    resultdict['msg'] = ''
-    if File is None:
-        return HttpResponse("没有需要上传的文件")
-        resultdict['name'] = ''
-        resultdict['path'] = ''
-    else:
-        # 打开特定的文件进行二进制的写操作
-        # print(os.path.exists('/temp_file/'))
-        with open("./django_web/temp_file/%s" % File.name, 'wb+') as f:
-            # 分块写入文件
-            for chunk in File.chunks():
-                f.write(chunk)
-        resultdict['name'] = File.name
-        resultdict['path'] = "./django_web/temp_file/%s" % File.name
-    # print resultdict
+    resultdict = Public.uploadFileWithPath(File, './django_web/temp_file/')
+    # resultdict['code'] = 0
+    # resultdict['msg'] = ''
+    # if File is None:
+    #     return HttpResponse("没有需要上传的文件")
+    #     resultdict['name'] = ''
+    #     resultdict['path'] = ''
+    # else:
+    #     # 打开特定的文件进行二进制的写操作
+    #     # print(os.path.exists('/temp_file/'))
+    #     with open("./django_web/temp_file/%s" % File.name, 'wb+') as f:
+    #         # 分块写入文件
+    #         for chunk in File.chunks():
+    #             f.write(chunk)
+    #     resultdict['name'] = File.name
+    #     resultdict['path'] = "./django_web/temp_file/%s" % File.name
     return JsonResponse(resultdict, safe=False)
 
 def fileDelete(request):

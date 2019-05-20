@@ -49,17 +49,19 @@
         <div class="layui-form-item" pane="">
             <label class="layui-form-label">类型</label>
             <div class="layui-input-block">
-                <input type="radio" name="type" id="timing" value="1" title="定时" checked="" lay-filter='aaa'>
+                <input type="radio" name="type" id="simple" value="3" title="单次"lay-filter='aaa' checked="">
+                <input type="radio" name="type" id="timing" value="1" title="定时"  lay-filter='aaa'>
                 <input type="radio" name="type" id="circulation" value="2" title="循环"lay-filter='aaa'>
+
             </div>
         </div>
-        <div class="layui-form-item" id="timing2" style="display: none">
+        <div class="layui-form-item" id="timing2" style="display: block">
             <label class="layui-form-label">开始时间</label>
             <div class="layui-input-block">
                 <input type="text" name="startTime" id="date1" placeholder="请选择开始时间" autocomplete="off" class="layui-input" >
             </div>
         </div>
-        <div class="layui-form-item" id="timing1" style="display: block">
+        <div class="layui-form-item" id="timing1" style="display: none">
             <label class="layui-form-label">定时任务</label>
             <div class="layui-input-inline" style="width: 100px;">
                 <input type="text" name="min" placeholder="分钟（0-59)" autocomplete="off" class="layui-input">
@@ -129,11 +131,16 @@
                 $('#timing2').hide();
                 $('#endTime').hide();
                 form.render('radio')
-            }else{
+            }if(abc==2){
                 $('#timing1').hide();
                 $('#timing2').show();
                 $('#endTime').show();
                 form.render('radio')
+            }else {
+                $('#timing1').hide();
+                $('#timing2').show();
+                $('#endTime').hide();
+
             }
             form.render();
         });

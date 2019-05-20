@@ -34,12 +34,20 @@ def resuLtList(request,autoRuntimeid):
     p = p[i:j]
     dict = []
     for c in p:
-        case = Case.objects.get(id=c.case_id)
-        api = AutoApiCase.objects.get(id=c.autoApi_id)
         dic = {}
-        dic['apiName'] = api.name
+        case = Case.objects.get(id=c.case_id)
+        try:
+            api = AutoApiCase.objects.get(id=c.autoApi_id)
+            dic['apiName'] = api.name
+            dic['apiId'] = api.id
+        except Exception as result:
+            print "未知错误 %s" % result
+            resultdict['code'] = 1
+            resultdict['msg'] = ''
+            resultdict['count'] = total
+            return JsonResponse(resultdict, safe=False)
+
         dic['result_id'] = c.id
-        dic['apiId'] = api.id
         dic['url'] = e.env_url+api.apiAddress
         dic['caseName'] = case.name
         dic['caseId'] = c.case_id
@@ -56,6 +64,7 @@ def resuLtList(request,autoRuntimeid):
     resultdict['msg'] = ''
     resultdict['count'] = total
     resultdict['data'] = dict
+    print resultdict
     return JsonResponse(resultdict, safe=False)
 
 def rDetail(request,apiData):

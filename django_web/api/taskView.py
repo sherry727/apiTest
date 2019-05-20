@@ -243,9 +243,13 @@ def caseTaskPost(request):
             print '定时'
             scheduler.add_job(job, 'cron', id=str(t.id), day_of_week=week, hour=hour, minute=min, day=day, month=month)
             scheduler.add_listener(my_listener,EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
-        else:
+        elif ty==2:
             print '循环'
             scheduler.add_job(job, 'cron', id=str(t.id), start_date=startTime, end_date=endTime)
+            scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
+        else:
+            logging.info('单次')
+            scheduler.add_job(job, 'date', id=str(t.id), run_date=startTime)
             scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
         resultdict = {
             'code': 0,
@@ -375,15 +379,26 @@ def taskRun(request):
 
     ty = int(ty.encode("utf-8"))
     if ty == 1:
-        print '定时'
+        logging.info('定时')
+        if tasks.startTime > timezone.now():
+            task.objects.filter(id=tid).update(status=0)
+        elif tasks.startTime < timezone.now():
+            task.objects.filter(id=tid).update(status=2)
+        else:
+            task.objects.filter(id=tid).update(status=1)
         scheduler.add_job(job, 'cron', id=str(tid), day_of_week=tasks.week, hour=tasks.hour, minute=tasks.min,
                           day=tasks.day, month=tasks.month,max_instances=10)
         scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
-    else:
-        print '循环'
-        print tasks.endTime
+    elif ty == 2:
+        logging.info('循环')
+        if tasks.startTime > timezone.now():
+            task.objects.filter(id=tid).update(status=0)
+        elif tasks.startTime < timezone.now():
+            task.objects.filter(id=tid).update(status=2)
+        else:
+            task.objects.filter(id=tid).update(status=1)
         if tasks.endTime>timezone.now():
-            scheduler.add_job(job, 'cron', id=str(tid), start_date=tasks.startTime, end_date=tasks.endTime,max_instances=10)
+            scheduler.add_job(job, 'cron', id=str(tid), start_date=tasks.startTime, end_date=tasks.endTime, max_instances=10)
             scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
         else:
             AutoTaskRunTime.objects.filter(id=s.id).update(endTime=timezone.now())
@@ -393,6 +408,18 @@ def taskRun(request):
                 'data': {'tid': tid}
             }
             return JsonResponse(resultdict, safe=False)
+    else:
+        logging.info('单次')
+        print tasks.startTime
+        if tasks.startTime > timezone.now():
+            task.objects.filter(id=tid).update(status=0)
+        elif tasks.startTime < timezone.now():
+            task.objects.filter(id=tid).update(status=2)
+        else:
+            task.objects.filter(id=tid).update(status=1)
+        scheduler.add_job(job, 'date', id=str(tid), run_date=tasks.startTime)
+        scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
+
     resultdict = {
         'code': 0,
         'msg': '运行成功',

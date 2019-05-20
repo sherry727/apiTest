@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_web',
-    'bugStatistics'
+    'bugStatistics',
+    'PTS'
 ]
 
 MIDDLEWARE = [
@@ -149,3 +150,4 @@ STATICFILES_DIRS = (
 )
 
 FILE_PATH = '/Users/sherry/Desktop/pythonProject/Django/django_web/temp_file/'
+SCRIPT_PATH = '/Users/sherry/Desktop/pythonProject/Django/PTS/scriptCode/'

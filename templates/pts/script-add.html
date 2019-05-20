@@ -24,27 +24,19 @@
     <!--form表单-->
     <form class="layui-form layui-form-pane ok-form">
         <div class="layui-form-item">
-            <label class="layui-form-label">选择项目</label>
+            <label class="layui-form-label">脚本名</label>
             <div class="layui-input-block">
-                <select name="projectid" id="projectName" lay-verify="required" lay-filter="projectNameFilter">
-                    <option value=""></option>
-                </select>
+                <input type="text" name="filename" placeholder="请输入脚本名" autocomplete="off" class="layui-input" >
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">文件名</label>
+            <label class="layui-form-label">脚本描述</label>
             <div class="layui-input-block">
-                <input type="text" name="filename" placeholder="请输入文件名" autocomplete="off" class="layui-input" >
+                <input type="text" name="desc" placeholder="请输入脚本描述" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">文件描述</label>
-            <div class="layui-input-block">
-                <input type="text" name="desc" placeholder="请输入文件描述" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">选择文件</label>
+            <label class="layui-form-label">选择脚本</label>
             <div class="layui-input-block">
                 <input type="file" id="upFile" name="upFile" placeholder="请选择文件" autocomplete="off" class="layui-input">
                 <input type="hidden" id="fpath" name="fpath" autocomplete="off" class="layui-input">
@@ -87,7 +79,7 @@
 
         upload.render({
                   elem: '#upFile'
-                  ,url: '/upload/'
+                  ,url: '/uploadScript/'
                   ,auto: true
                   ,accept: 'file'
                   ,done: function(res, index, upload){
@@ -113,7 +105,7 @@
         form.on('submit(add)',function (data) {
         var d = JSON.stringify(data.field);
             $.ajax({
-                url : '/fileAddPost/',
+                url : '/scriptAddPost/',
                 type : 'post',
                 dataType : 'json',
                 contentType :"application/json",

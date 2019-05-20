@@ -6,6 +6,7 @@ from django_web.models import sqlManager,globalVariable
 import MySQLdb
 import logging
 import sys;
+import hashlib
 import os
 reload(sys);
 sys.setdefaultencoding('utf8')
@@ -94,8 +95,35 @@ def excuteSQL(sqlId,sql):
         re =''
     return re
 
-
-
+def uploadFileWithPath(File,path):
+    resultdict = {}
+    resultdict['code'] = 0
+    resultdict['msg'] = ''
+    if File is None:
+        return "没有需要上传的文件"
+        resultdict['name'] = ''
+        resultdict['path'] = ''
+    else:
+        # with open("./django_web/temp_file/%s" % File.name, 'wb+') as f:
+        with open(os.path.join(path, File.name), 'wb+') as f:
+            # 分块写入文件
+            for chunk in File.chunks():
+                f.write(chunk)
+        resultdict['name'] = File.name
+        resultdict['path'] = os.path.join(path, File.name)
+    return resultdict
+"""
+def qianming(request,jdata):
+    sortedParam = sorted(jdata.items(), key=lambda d: d[0])
+    paramStr = ''
+    for param in sortedParam:
+    paramStr = paramStr + str(param[0]) +"="+ str(param[1])+"&"
+    print(paramStr)
+    rparamStr = paramStr +"key=94fa9e393e1e6a5a73970db38d78c429"
+    print(rparamStr)
+    result = hashlib.md5(rparamStr.encode("utf-8")).hexdigest()
+    return result
+"""
 
 
 

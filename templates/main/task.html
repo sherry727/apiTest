@@ -295,7 +295,7 @@
         <a href="javascript:;" lay-event="taskDetail" title="查看结果"><i class="layui-icon">&#xe60a;</i></a>
 {#         <a href="javascript:location.href='/tResult/{% verbatim %}{{d.id}}{% endverbatim %}'" title="查看结果"><i class="layui-icon">&#xe60a;</i></a>#}
     {% verbatim %}{{# }if(d.status ==0) { }}{% endverbatim %}
-        <a href="javascript:;" title="运行" lay-event="run"><i class="layui-icon">&#xe652;</i></a>
+        <a href="javascript:;" title="暂停" lay-event="pause"><i class="layui-icon">&#xe651;</i></a>
     {% verbatim %}{{# }if(d.status ==3) { }}{% endverbatim %}
         <a href="javascript:;" title="继续运行" lay-event="resume"><i class="layui-icon">&#xe652;</i></a>
     {% verbatim %}{{#  } }}{% endverbatim %}

@@ -5,13 +5,25 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 import json
 from django.contrib.auth.hashers import make_password
+from django_web.models import Project,ApiCase,Case
 import time
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 
 @login_required
 def welcom(request):
-    return render(request, 'main/welcome.html')
+    userCount = get_user_model().objects.all().count()
+    projectCount = Project.objects.all().count()
+    apiCount = ApiCase.objects.all().count()
+    cases = Case.objects.all().count()
+    data = {
+        'userCount': userCount,
+        'projectCount': projectCount,
+        'apiCount': apiCount,
+        'cases': cases,
+    }
+
+    return render(request, 'main/welcome.html', data)
 
 @login_required
 def index(request):

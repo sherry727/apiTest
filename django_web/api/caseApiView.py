@@ -627,7 +627,6 @@ def autoApiSimpleRun(request):
                 nm = a.get('a_path')
                 key = a.get('a_value')
                 real_value = Public.get_value_from_response(response=r.text, json_path=nm.encode("utf-8"))
-                print real_value
                 if key.encode("utf-8")==str(real_value):
                     AutoApiCase.objects.filter(id=api_id).update(status='成功')
                 else:

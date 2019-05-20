@@ -48,6 +48,7 @@ PARAMTYPE=(
 TASK_CHOICE = (
     ('circulation', '循环'),
     ('timing', '定时'),
+    ('simple', '单次'),
 )
 
 #项目表
@@ -186,7 +187,7 @@ class task(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50, verbose_name='任务名')
     desc = models.CharField(max_length=1024, verbose_name='任务描述')
-    type = models.CharField(max_length=50, default='timing', verbose_name='类型', choices=TASK_CHOICE)
+    type = models.CharField(max_length=50, default='timing', verbose_name='类型1、定时、2、循环、3、单次', choices=TASK_CHOICE)
     time = models.CharField(max_length=1024, verbose_name='定时')
     status = models.IntegerField(default=0, verbose_name='1:执行中，2：结束，0：待执行,3:暂停')
     startTime = models.DateTimeField(auto_now=False, verbose_name='开始时间',null=True)
@@ -437,6 +438,10 @@ class uploadFile(models.Model):
     path=models.CharField(max_length=100, verbose_name='文件路径',null=True)
     user = models.CharField(max_length=50, verbose_name='创建人')
     CreateTime = models.DateTimeField(auto_now=True, verbose_name='创建时间')
+
+
+
+
 
 
 

@@ -16,13 +16,9 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django_web import views
-from bugStatistics.stViews import bugStView
 from django.conf.urls import include
-from django_web.api import projectView, envView, apiView, caseView, caseApiView, taskView, reportView, sqlView,gvView,roleView,jmView
+from django_web.api import projectView, envView, apiView, caseView, caseApiView, taskView, reportView, sqlView,gvView,roleView
 from django_web.api import uploadView
-from django.views import static
-from django.conf import settings
-
 
 handler403 = views.permission_denied
 handler404 = views.page_not_found
@@ -32,6 +28,7 @@ urlpatterns = [
     # url(r'^admin/', include(admin.site.urls)),
     # url(r'^django_web/', include('django_web.urls')),
     url(r'^bugStatistics/', include('bugStatistics.urls')),
+    url(r'^pts/', include('PTS.PTSurls')),
     url(r'^admin/', admin.site.urls),
     url(r'^index/$', views.index),
     url(r'^welcom/$', views.welcom),
@@ -152,9 +149,6 @@ urlpatterns = [
     url(r'^gvDelete/$', gvView.gvDelete, name='gvDelete'),
     url(r'^selectDBForSql/(?P<sid>\d+)$', gvView.selectDBForSql, name='selectDBForSql'),
 
-    #jm
-    url(r'^jm_index/$', jmView.jm_index, name='jm_index'),
-
     #file
     url(r'^file_index/$', uploadView.file_index, name='file_index'),
     url(r'^fileList/$', uploadView.fileList, name='fileList'),
@@ -162,6 +156,8 @@ urlpatterns = [
     url(r'^fileAddPost/$', uploadView.fileAddPost, name='fileAddPost'),
     url(r'^upload/$', uploadView.upload, name='upload'),
     url(r'^fileDelete/$', uploadView.fileDelete, name='fileDelete'),
+
+
 
 
 
