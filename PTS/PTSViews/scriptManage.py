@@ -35,10 +35,8 @@ def scriptList(request):
         dic['id'] = a.id
         dic['sType'] = a.sType
         dic['path'] = a.path
-        dic['name'] = a.name
         dic['fname'] = a.fname
         dic['createTime'] = a.CreateTime.strftime("%Y-%m-%d %H:%M:%S")
-        dic['desc'] = a.desc
         dic['user'] = a.user
         dict.append(dic)
     resultdict['code'] = 0
@@ -53,8 +51,13 @@ def scriptAdd(request):
     return render(request, 'pts/script-add.html')
 
 def uploadScript(request):
-    File = request.FILES.get("upFile", None)
+    loginName = request.session.get('Username', '')
+    File = request.FILES.get("file", None)
     resultdict = Public.uploadFileWithPath(File, settings.SCRIPT_PATH)
+    s = scriptManager.objects.create(sType=0, user=loginName, fname=resultdict.get('name'), path=resultdict.get('path'),
+                                     CreateTime=timezone.now())
+    s.save()
+    print resultdict
     return JsonResponse(resultdict, safe=False)
 
 def scriptAddPost(request):
@@ -66,7 +69,7 @@ def scriptAddPost(request):
         desc = u.get('desc')
         fpath = u.get('fpath')
         fname = u.get('fname')
-        p=scriptManager.objects.create(sType=0, user=loginName, fname=fname, name=filename, desc=desc, path=fpath,
+        p= scriptManager.objects.create(sType=0, user=loginName, fname=fname, desc=desc, path=fpath,
                                        CreateTime=timezone.now())
         p.save()
         resultdict = {

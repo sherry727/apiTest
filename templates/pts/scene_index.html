@@ -54,7 +54,7 @@
         var form = layui.form;
         var $ = layui.jquery;
         var laydate = layui.laydate;
-        var laypage = layui.laypage
+        var laypage = layui.laypage;
 
         table.render({
             elem: '#tableId',
@@ -67,10 +67,12 @@
             },
             cols: [[
                 {#{type: 'checkbox'},#}
-                {field: 'index', title: '场景ID'},
+                {field: 'id', title: '场景ID'},
                 {field: 'name', title: '场景名'},
-                {field: 'fname', title: '持续时间'},
-                {field: 'path', title: '状态'},
+                {field: 'threaduser', title: '峰值并发'},
+                {field: 'intervaliTime', title: '持续时间'},
+                {field: 'status', title: '状态'},
+                {field: 'preTime', title: '压测开始时间',width:200},
                 {field: 'updateTime', title: '最后修改时间',width:200},
                 {title: '操作',  templet: '#operationTpl', align: 'center'}
             ]],
@@ -132,6 +134,59 @@
                     });
                     {#layer.msg("操作成功！", {icon: 1, time: 1000});#}
                 });
+            }else if (layEvent === 'edit') {
+                layer.open({
+                    title: '编辑场景',
+                    type: 2,
+                    shade: false,
+                    maxmin: true,
+                    shade: 0.5,
+                    area: ['90%', '90%'],
+                    content: '/caseEdit/'+eid,
+                    zIndex: layer.zIndex,
+                    end: function () {
+                        $(".layui-laypage-btn")[0].click();
+                    }
+                });
+            }else if (layEvent === 'run') {
+                ht ="<div class='layui-form-item' style='width:400px'>" + "<label class='layui-form-label'>环境</label>" + " <div>" + "<select name='envid' id='envname' lay-verify='required'>" + "<option value=''>请选择</option>" + "</select>" + "</div>" + "</div>";
+                layer.confirm(ht, {skin: 'layui-layer-lan', title: '请选择环境', anim: 6}, function () {
+                    eid = $('#envname option:selected') .val();
+                    $.ajax({
+                    url: "/caseApiMultRun/"+eid,
+                    data: data,
+                    type: "post" ,
+                    dataType:'json',
+                    contentType :"application/json",
+                    success:function(data){
+                        if(data.code==0){
+                        layer.msg('运行成功',{
+                            offset:['50%'],
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                             },function(){
+                            location.reload();
+                            });
+                        }else{
+                            layer.msg('运行失败');
+                         }
+                    }
+                    });
+                    {#layer.msg("操作成功！", {icon: 1, time: 1000});#}
+                });
+            }else if (layEvent === 'report') {
+                layer.open({
+                    title: '查看报告',
+                    type: 2,
+                    shade: false,
+                    maxmin: true,
+                    shade: 0.5,
+                    area: ['90%', '90%'],
+                    content: '/caseEdit/'+eid,
+                    zIndex: layer.zIndex,
+                    end: function () {
+                        $(".layui-laypage-btn")[0].click();
+                    }
+                });
             }
         });
 
@@ -151,6 +206,7 @@
     <a href="javascript:;" title="启动" lay-event="run"><i class="layui-icon">&#xe623;</i></a>
     <a href="javascript:;" title="编辑" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
     <a href="javascript:;" title="删除" lay-event="del"><i class="layui-icon">&#xe640;</i></a>
+    <a href="javascript:;" title="删除" lay-event="report"><i class="layui-icon">&#xe60a;</i></a>
 </script>
 </body>
 </html>

@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from PTS.PTSViews import scriptManage,sceneManage
+from PTS.PTSViews import scriptManage,sceneManage,PTSreport
 
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
@@ -25,9 +25,16 @@ urlpatterns = [
     url(r'^uploadScript/$', scriptManage.uploadScript, name='uploadScript'),
     url(r'^scriptAddPost/$', scriptManage.scriptAddPost, name='scriptAddPost'),
 
-
     #scene
     url(r'^sceneAdd/$', sceneManage.sceneAdd, name='sceneAdd'),
     url(r'^sceneList/$', sceneManage.sceneList, name='sceneList'),
+
+    #PTSreport
+    url(r'^overView/$', PTSreport.overView, name='overView'),
+    url(r'^report_index/$', PTSreport.report_index, name='report_index'),
+    url(r'^report_samplerLog/$', PTSreport.report_samplerLog, name='report_samplerLog'),
+    url(r'^samplerList/$', PTSreport.samplerList, name='samplerList'),
+    url(r'^logDetail/$', PTSreport.logDetail, name='logDetail'),
+
 
 ]

@@ -100,7 +100,8 @@ def uploadFileWithPath(File,path):
     resultdict['code'] = 0
     resultdict['msg'] = ''
     if File is None:
-        return "没有需要上传的文件"
+        # return "没有需要上传的文件"
+        resultdict['code'] = 2
         resultdict['name'] = ''
         resultdict['path'] = ''
     else:

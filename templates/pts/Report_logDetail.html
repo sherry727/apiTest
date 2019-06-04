@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>日志详情</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/mine/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/mine/css/scroll-bar.css">
+    <link rel="stylesheet" href="/static/mine/css/sub-page.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_693759_wytlyqhtdtj1nhfr.css">
+</head>
+<body>
+<div class="ok-body">
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">General</li>
+        <li>Timing</li>
+
+      </ul>
+      <div class="layui-tab-content" style="height: 100px;">
+        <div class="layui-tab-item layui-show">
+            <div class="layui-collapse" lay-filter="test">
+                  <div class="layui-colla-item ">
+                    <h2 class="layui-colla-title">General</h2>
+                    <div class="layui-colla-content layui-show">
+                        <p> Request URL:http://101.37.135.54:8823/memberCenter/member/sendVerifyCode</p>
+                        <p>Request Method:POST</p>
+                         <p> Response Code:200</p>
+                    </div>
+                  </div>
+                  <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">Request Headers</h2>
+                    <div class="layui-colla-content">
+                      <p>111</p>
+                    </div>
+                  </div>
+                  <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">Request Body</h2>
+                    <div class="layui-colla-content">
+                      <p>在前端技术快速变革的今天，layui 仍然坚持语义化的组织模式，甚至于模块理念都是采用类AMD组织形式，并非是有意与时代背道而驰。layui 认为以jQuery为核心的开发方式还没有到完全消亡的时候，而早期市面上基于jQuery的UI都普通做得差强人意，所以需要有一个新的UI去重新为这一领域注入活力，并采用一些更科学的架构方式。
+                      <br><br>
+                      因此准确地说，layui 更多是面向那些追求开发简单的前端工程师们，以及所有层次的服务端程序员。</p>
+                    </div>
+                  </div>
+                  <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">Response Headers</h2>
+                    <div class="layui-colla-content">
+                      <p>man！ 所以这个问题不要再出现了。。。</p>
+                    </div>
+                  </div>
+                  <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">Response Body</h2>
+                    <div class="layui-colla-content">
+                      <p>man！ 所以这个问题不要再出现了。。。</p>
+                    </div>
+                  </div><div class="layui-colla-item">
+                    <h2 class="layui-colla-title">Assertion Results</h2>
+                    <div class="layui-colla-content">
+                      <p>man！ 所以这个问题不要再出现了。。。</p>
+                    </div>
+                  </div>
+
+            </div>
+        </div>
+        <div class="layui-tab-item">
+            内容2
+        </div>
+      </div>
+    </div>
+</div>
+<script src="/static/mine/lib/layui/layui.js"></script>
+<script src="/static/mine/lib/nprogress/nprogress.js"></script>
+<script>
+    layui.use(['element', 'form', 'jquery', 'laydate','upload','table','flow'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.jquery;
+        var laydate = layui.laydate;
+        var upload = layui.upload;
+        var flow = layui.flow;
+
+        laydate.render({
+            elem: '#date1'
+            ,type: 'datetime'
+             });
+        laydate.render({
+            elem: '#date2'
+            ,type: 'datetime'
+             });
+
+        flow.load({
+              elem: '#jmeterLogs' //指定列表容器
+              ,done: function(page, next){ //到达临界点（默认滚动触发），触发下一页
+                var lis = [];
+                //以jQuery的Ajax请求为例，请求下一页数据
+                $.get('/allGoods/?page='+page, function(res){
+                        layui.each(res.data, function(index, item){
+                          lis.push('<a href="/curExam/'+item.id+'"><li class="layui-btn" data-id="'+item.id+'">'+ item.name +'</li></a>');
+                        });
+
+                        //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+                        //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
+                        next(lis.join(''), page < res.last_page);
+                });
+              }
+          });
+
+        $("#viewLog").click(function () {
+            layer.open({
+                title: '查看采样日志',
+                type: 2,
+                shade: false,
+                maxmin: true,
+                shade: 0.5,
+                anim: 4,
+                area: ['90%', '80%'],
+                content: '/pts/report_samplerLog/',
+                zIndex: layer.zIndex,
+                // skin: 'layui-layer-molv',
+                end: function () {
+                    $(".layui-laypage-btn")[0].click();
+                }
+            });
+        })
+     })
+
+</script>
+
+</body>
+</html>

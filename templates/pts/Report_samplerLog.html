@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>采样日志</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/mine/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/mine/css/scroll-bar.css">
+    <link rel="stylesheet" href="/static/mine/css/sub-page.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_693759_wytlyqhtdtj1nhfr.css">
+    <link rel="stylesheet" href="/static/mine/lib/nprogress/nprogress.css">
+</head>
+<div class="ok-body">
+    <!--面包屑导航区域-->
+    <div class="ok-body-breadcrumb">
+            <span class="layui-breadcrumb">
+                <a><cite>PTS管理</cite></a>
+                <a><cite>采样日志</cite></a>
+            </span>
+        <a class="layui-btn layui-btn-small" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon layui-icon-refresh"></i>
+        </a>
+    </div>
+    <!--模糊搜索区域-->
+    <div class="layui-row">
+        <form class="layui-form layui-col-md12 layui-form-pane ok-form">
+            <div class="layui-form-item">
+                    <label class="layui-form-label">压测sampler</label>
+                    <div class="layui-input-inline ">
+                        <select name="ptest" id="ptest">
+                            <option value="0">全部</option>
+                            <option value="1">INFO</option>
+                            <option value="2">WARN</option>
+                            <option value="3">ERROR</option>
+                        </select>
+                    </div>
+                    <label class="layui-form-label">响应状态</label>
+                    <div class="layui-input-inline ">
+                        <select name="status" id="status">
+                            <option value="0">全部</option>
+                            <option value="1">成功</option>
+                            <option value="2">失败</option>
+                        </select>
+                    </div>
+                    <label class="layui-form-label">施压机</label>
+                    <div class="layui-input-inline ">
+                        <select name="machine" id="machine">
+                            <option value="0">施压机0</option>
+                        </select>
+                    </div>
+                    <label class="layui-form-label">时间范围</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="date" id="date1" autocomplete="off" placeholder="开始日期" class="layui-input">
+                     </div>
+                    <div class="layui-input-inline">
+                        <input type="text" name="date" id="date2" autocomplete="off" placeholder="结束日期" class="layui-input">
+                     </div>
+            </div>
+            <div class="layui-form-item">
+                    <label class="layui-form-label">施压线程</label>
+                    <div class="layui-input-inline">
+                        <input type="text"  autocomplete="off" placeholder="请输入线程名" class="layui-input">
+                     </div>
+                    <a class="layui-btn" data-type="reload" lay-filter="search">
+                         <i class="layui-icon layui-icon-search"></i>
+                    </a>
+            </div>
+        </form>
+    </div>
+    <!--工具栏-->
+    <okToolbar>
+        <div style="min-height: 30px">
+            <span>共有数据：<i id="countNum"></i> 条</span>
+        </div>
+    </okToolbar>
+    <!--数据表格-->
+    <table class="layui-hide" id="tableId" lay-filter="tableFilter"></table>
+</div>
+<!--js逻辑-->
+<script src="/static/mine/lib/layui/layui.js"></script>
+<script src="/static/mine/lib/nprogress/nprogress.js"></script>
+<script>
+    NProgress.start();
+    window.onload = function () {
+        NProgress.done();
+    };
+    layui.use(['element', 'table', 'form', 'jquery', 'laydate'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.jquery;
+        var laydate = layui.laydate;
+        var laypage = layui.laypage
+
+        table.render({
+            elem: '#tableId',
+            url: '/pts/samplerList/',
+            limit: 10,
+            page: true,
+            id:"tableId",
+            where: {
+                'keyword': ''
+            },
+            cols: [[
+                {#{type: 'checkbox'},#}
+                {field: 'index', title: 'Sampler'},
+                {field: 'name', title: '开始时间'},
+                {field: 'name', title: '响应状态'},
+                {field: 'fname', title: '响应时间（ms）'},
+                {field: 'path', title: '施压机ID'},
+                {field: 'path', title: '请求线程名'},
+                {title: '操作',  templet: '#operationTpl', align: 'center'}
+            ]],
+            done: function (res, curr, count) {
+                $("#countNum").text(count);
+            }
+        });
+        {#重载#}
+        var active = {
+                    reload: function () {
+                    var pkey = $('#pkey').val();
+                        {#alert(pkey);#}
+                          //执行重载
+                    table.reload('tableId', {
+                                page: {
+                                      curr: 1 //重新从第 1 页开始
+                        }
+                        , where: {
+                                'keyword': pkey
+                        },
+                        {#url: '/search/'#}
+                    });
+                }
+            };
+        $('.layui-btn').on('click', function () {
+
+            var type = $(this).data('type');
+
+            active[type] ? active[type].call(this) : '';
+
+        });
+        {#重载结束#}
+
+        table.on('tool(tableFilter)', function (obj) {
+            var data = obj.data;
+            var pid=data['id'];
+            var layEvent = obj.event;
+            if (layEvent === 'detail') {
+                    layer.open({
+                        title: '日志详情',
+                        type: 2,
+                        shade: false,
+                        maxmin: true,
+                        shade: 0.5,
+                        anim: 4,
+                        area: ['90%', '100%'],
+                        content: '/pts/logDetail/',
+                        zIndex: layer.zIndex,
+                        // skin: 'layui-layer-molv',
+                        end: function () {
+                            $(".layui-laypage-btn")[0].click();
+                        }
+                    });
+
+            }
+        });
+
+    })
+</script>
+<!--模板-->
+{#<script type="text/html" id="statusTpl">#}
+{#    <div>#}
+{#    <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="启用|停用" {% verbatim %}{{ d.status==true?'启用':'禁用'}}{% endverbatim %}>#}
+{#    </div>#}
+{#</script>#}
+{#<script type="text/html" id="roleTpl">#}
+{#    {{ d.role == 0 ? '管理员' : '普通用户    '}}#}
+{#</script>#}
+<script type="text/html" id="operationTpl">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">点击查看详情</a>
+
+</script>
+</body>
+</html>
