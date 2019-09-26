@@ -9,16 +9,17 @@ from django.shortcuts import render
 import json,re
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django_web.api import Public
-import logging
+from django_web.api import Public,fuctionView
+import logging,datetime,apscheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.events import EVENT_JOB_EXECUTED,EVENT_JOB_ERROR,EVENT_SCHEDULER_PAUSED,EVENT_SCHEDULER_SHUTDOWN
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
+from apscheduler.jobstores import base
 import time
 jobstores = {
-       'default': SQLAlchemyJobStore(url='mysql://root:yhh12345678@localhost/autoapi')
+       'default': SQLAlchemyJobStore(url='mysql://root:cjtest@10.0.3.25/apitest')
        # 'default': SQLAlchemyJobStore(url='mysql+mysqlconnector://root:yhh12345678@localhost/autoapi')
    }
 executors = {
@@ -75,6 +76,7 @@ def taskList(request):
         dic['envName'] = r.env_name
         dic['name'] = a.name
         dic['createTime'] = a.CreateTime.strftime("%Y-%m-%d %H:%M:%S")
+        dic['startTime'] = a.startTime.strftime("%Y-%m-%d %H:%M:%S")
         dic['desc'] = a.desc
         dic['user'] = user
         dic['type'] = a.type
@@ -131,6 +133,14 @@ def caseTaskPost(request):
         month=u.get('month')
         week=u.get('week')
         testTime = timezone.now()
+        if len(cases) == 2:
+            resultdict = {
+                'code': 2,
+                'msg': '请勾选用例！',
+                'data': {}
+            }
+            return JsonResponse(resultdict, safe=False)
+
         if min=='':
             min=None
         if hour=='':
@@ -145,9 +155,16 @@ def caseTaskPost(request):
             endTime=None
         if startTime=='':
             startTime=None
+        if datetime.datetime.strptime(startTime, "%Y-%m-%d %H:%M:%S") > timezone.now():
+            status=0
+        elif datetime.datetime.strptime(startTime, "%Y-%m-%d %H:%M:%S") <= timezone.now():
+            status=1
+        else:
+            status=2
+
         t = task.objects.create(name=name, desc=desc, type=ty, startTime=startTime, endTime=endTime, user=user,
                                 min=min, hour=hour, day=day, month=month, week=week, CreateTime=timezone.now(),
-                                env_id=envid)
+                                env_id=envid, status=status)
         t.save()
         s = AutoTaskRunTime.objects.create(startTime=timezone.now(), task_id=t.id, testTime=testTime)
         s.save()
@@ -159,7 +176,7 @@ def caseTaskPost(request):
         for c in ca:
             tasks.append(taskCase(task_id=t.id, case_id=c.get('id')))
         taskCase.objects.bulk_create(tasks)
-        url = url.encode('unicode-escape').decode('string_escape')
+        # url = url.encode('unicode-escape').decode('string_escape')
 
         def job():
             for c in ca:
@@ -172,38 +189,63 @@ def caseTaskPost(request):
                     headers = {}
                     params = {}
                     for p in he:
+                        if re.match(r'^\$\{(.+?)\}$', p.value) != None:
+                            w = re.sub('[${}]', '', p.value)
+                            try:
+                                value = globalVariable.objects.get(name=w).value
+                            except Exception as result:
+                                print("未知错误 %s" % result)
+                                data = {
+                                    'code': 1,
+                                    'msg': "请检查请求头的全局变量参数！"
+                                }
+                                return JsonResponse(data, safe=False)
+                        else:
+                            value = p.value
                         name = p.name
-                        value = p.value
+                        # value = p.value
                         headers[name] = value
                     for p in pa:
                         if re.match(r'^\$\{(.+?)\}$', p.value) != None:
                             w = re.sub('[${}]', '', p.value)
-                            value = globalVariable.objects.get(name=w).value
+                            try:
+                                value = globalVariable.objects.get(name=w).value
+                            except Exception as result:
+                                print("未知错误 %s" % result)
+                                taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id,
+                                                          httpStatus='502',
+                                                          result='ERROR', responseData='请检查设置的变量！', user=user,
+                                                          testTime=testTime, autoRunTime_id=s.id).save()
+
                         else:
                             value = p.value
                         name = p.name
                         params[name] = value
+                    if i.fuctionLib_id:
+                        fu = fuctionView.qianming(fu_id=int(i.fuctionLib_id), appKey=env.appKey, app_secret=env.app_secret,
+                                                  jdata=params)
+                        params = fu
                     ur = url+ i.apiAddress
                     try:
                         r = Public.execute(url=ur, params=params, method=i.method, heads=headers)
                         if len(galobalValues) > 0:
                             for g in galobalValues:
-                                # va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path').encode("utf-8"))
+                                # va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path'))
                                 va = Public.get_value_from_response(response=r.text, json_path='data.accessToken')
                                 try:
                                     o = globalVariable.objects.get(name=g.name, user=loginName)
                                     globalVariable.objects.filter(name=o.name).update(path=g.path, value=va)
                                 except Exception as result:
-                                    print "未知错误 %s" % result
+                                    print("未知错误 %s" % result)
                         dy=[]
                         if len(ast) > 0:
                             for a in ast:
                                 nm = a.path
                                 key = a.value
                                 real_value = Public.get_value_from_response(response=r.text,
-                                                                            json_path=nm.encode("utf-8"))
-                                print real_value
-                                if key.encode("utf-8") == str(real_value):
+                                                                            json_path=nm)
+                                print(real_value)
+                                if key == str(real_value):
                                     result = 'PASS'
                                 else:
                                     result = 'FAIL'
@@ -218,14 +260,17 @@ def caseTaskPost(request):
                             asserts.objects.bulk_create(dy)
                         else:
                             result = 'PASS'
-                        print r.text
+                            ast = "无数据"
+                        print(r.text)
                         taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id,
                                                   httpStatus=r.status_code, result=result, responseData=r.text, user=loginName,
-                                                  testTime=testTime, autoRunTime_id=s.id).save()
+                                                  testTime=testTime, autoRunTime_id=s.id, RequestHeaders=r.request.headers,
+                                                  RequestBody=params, ResponseHeaders=r.headers, Assertion=ast).save()
                     except:
                         taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id, httpStatus='502',
                                                   result='ERROR', responseData='接口请求异常，请检查', user=user,
-                                                  testTime=testTime, autoRunTime_id=s.id).save()
+                                                  testTime=testTime, autoRunTime_id=s.id, RequestHeaders='无请求头信息',
+                                                  RequestBody=params, ResponseHeaders='无响应头信息', Assertion='无数据').save()
 
         def my_listener(event):
             if event.exception:
@@ -238,17 +283,32 @@ def caseTaskPost(request):
                     AutoTaskRunTime.objects.filter(id=s.id).update(endTime=timezone.now())
 
 
-        ty = int(ty.encode("utf-8"))
+        ty = int(ty)
         if ty==1:
-            print '定时'
+            logging.info('定时')
+            print(apscheduler.jobstores.base.BaseJobStore().get_next_run_time())
+            print('定时')
             scheduler.add_job(job, 'cron', id=str(t.id), day_of_week=week, hour=hour, minute=min, day=day, month=month)
             scheduler.add_listener(my_listener,EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
         elif ty==2:
-            print '循环'
+            print('循环')
+            if datetime.datetime.strptime(startTime, "%Y-%m-%d %H:%M:%S") > timezone.now():
+                task.objects.filter(id=t.id).update(status=0)
+            elif datetime.datetime.strptime(startTime, "%Y-%m-%d %H:%M:%S") < timezone.now():
+                task.objects.filter(id=t.id).update(status=2)
+            else:
+                task.objects.filter(id=t.id).update(status=2)
             scheduler.add_job(job, 'cron', id=str(t.id), start_date=startTime, end_date=endTime)
             scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
+
         else:
             logging.info('单次')
+            if datetime.datetime.strptime(startTime, "%Y-%m-%d %H:%M:%S") > timezone.now():
+                task.objects.filter(id=t.id).update(status=0)
+            elif datetime.datetime.strptime(startTime, "%Y-%m-%d %H:%M:%S") < timezone.now():
+                task.objects.filter(id=t.id).update(status=2)
+            else:
+                task.objects.filter(id=t.id).update(status=2)
             scheduler.add_job(job, 'date', id=str(t.id), run_date=startTime)
             scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
         resultdict = {
@@ -309,39 +369,62 @@ def taskRun(request):
                 headers = {}
                 params = {}
                 for p in he:
+                    if re.match(r'^\$\{(.+?)\}$', p.value) != None:
+                        w = re.sub('[${}]', '', p.value)
+                        try:
+                            value = globalVariable.objects.get(name=w).value
+                        except Exception as result:
+                            print("未知错误 %s" % result)
+                            data = {
+                                'code': 1,
+                                'msg': "请检查请求头的全局变量参数！"
+                            }
+                            return JsonResponse(data, safe=False)
+                    else:
+                        value = p.value
                     name = p.name
-                    value = p.value
+                    # value = p.value
                     headers[name] = value
                 for p in pa:
                     if re.match(r'^\$\{(.+?)\}$', p.value) != None:
                         w = re.sub('[${}]', '', p.value)
-                        value = globalVariable.objects.get(name=w).value
+                        try:
+                            value = globalVariable.objects.get(name=w).value
+                        except Exception as result:
+                            print("未知错误 %s" % result)
+                            taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=tid,
+                                                      httpStatus='502',
+                                                      result='ERROR', responseData='请检查设置的变量！', user=user,
+                                                      testTime=testTime, autoRunTime_id=s.id).save()
                     else:
                         value = p.value
                     name = p.name
                     params[name] = value
+                if i.fuctionLib_id:
+                    fu = fuctionView.qianming(fu_id=int(i.fuctionLib_id), appKey=ev.appKey, app_secret=ev.app_secret,
+                                              jdata=params)
+                    params = fu
                 ur = url + i.apiAddress
                 try:
                     r = Public.execute(url=ur, params=params, method=i.method, heads=headers)
-                    print r.text
+                    print(r.text)
                     if len(galobalValues) > 0:
                         for g in galobalValues:
-                            # va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path').encode("utf-8"))
+                            # va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path'))
                             va = Public.get_value_from_response(response=r.text, json_path='data.accessToken')
                             try:
                                 o = globalVariable.objects.get(name=g.name, user=loginName)
                                 globalVariable.objects.filter(name=o.name).update(path=g.path, value=va)
                             except Exception as result:
-                                print "未知错误 %s" % result
+                                print("未知错误 %s" % result)
                     dy=[]
                     if len(ast) > 0:
                         for a in ast:
                             nm = a.path
                             key = a.value
                             real_value = Public.get_value_from_response(response=r.text,
-                                                                        json_path=nm.encode("utf-8"))
-                            print real_value
-                            if key.encode("utf-8") == str(real_value):
+                                                                        json_path=nm)
+                            if key == str(real_value):
                                 result = 'PASS'
                             else:
                                 result = 'FAIL'
@@ -356,28 +439,31 @@ def taskRun(request):
                         asserts.objects.bulk_create(dy)
                     else:
                         result = 'PASS'
-                    print r.text
-                    taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id,
+                        ast = "无数据"
+                    print(r.text)
+                    taskResult.objects.create(case_id=c.case_id, autoApi_id=i.id, task_id=tid,
                                               httpStatus=r.status_code, result=result, responseData=r.text, user=loginName,
-                                              testTime=testTime, autoRunTime_id=s.id).save()
+                                              testTime=testTime, autoRunTime_id=s.id, RequestHeaders=r.request.headers,
+                                              RequestBody=params, ResponseHeaders=r.headers, Assertion=ast).save()
                 except:
-                    taskResult.objects.create(case_id=c.get('id'), autoApi_id=i.id, task_id=t.id, httpStatus='502',
+                    taskResult.objects.create(case_id=c.case_id, autoApi_id=i.id, task_id=tid, httpStatus='502',
                                               result='ERROR', responseData='接口请求异常，请检查', user=user,
-                                              testTime=testTime, autoRunTime_id=s.id).save()
+                                              testTime=testTime, autoRunTime_id=s.id, RequestHeaders=r.request.headers,
+                                              RequestBody=params, ResponseHeaders=r.headers, Assertion='无数据').save()
 
     def my_listener(event):
         if event.exception:
             print('接口请求异常，请检查')
         else:
             print('运行中')
-            print scheduler.get_jobs()
+            print(scheduler.get_jobs())
             task.objects.filter(id=tid).update(status=1)
             if scheduler.get_job(job_id=str(tid)) == None:
                 task.objects.filter(id=tid).update(status=2)
                 taskEndTime = timezone.now()
                 AutoTaskRunTime.objects.filter(id=s.id).update(endTime=taskEndTime)
 
-    ty = int(ty.encode("utf-8"))
+    ty = int(ty)
     if ty == 1:
         logging.info('定时')
         if tasks.startTime > timezone.now():
@@ -385,7 +471,7 @@ def taskRun(request):
         elif tasks.startTime < timezone.now():
             task.objects.filter(id=tid).update(status=2)
         else:
-            task.objects.filter(id=tid).update(status=1)
+            task.objects.filter(id=tid).update(status=2)
         scheduler.add_job(job, 'cron', id=str(tid), day_of_week=tasks.week, hour=tasks.hour, minute=tasks.min,
                           day=tasks.day, month=tasks.month,max_instances=10)
         scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
@@ -393,11 +479,11 @@ def taskRun(request):
         logging.info('循环')
         if tasks.startTime > timezone.now():
             task.objects.filter(id=tid).update(status=0)
-        elif tasks.startTime < timezone.now():
-            task.objects.filter(id=tid).update(status=2)
-        else:
+        elif tasks.startTime < timezone.now() and tasks.endTime > timezone.now():
             task.objects.filter(id=tid).update(status=1)
-        if tasks.endTime>timezone.now():
+        else:
+            task.objects.filter(id=tid).update(status=2)
+        if tasks.endTime > timezone.now():
             scheduler.add_job(job, 'cron', id=str(tid), start_date=tasks.startTime, end_date=tasks.endTime, max_instances=10)
             scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
         else:
@@ -410,13 +496,12 @@ def taskRun(request):
             return JsonResponse(resultdict, safe=False)
     else:
         logging.info('单次')
-        print tasks.startTime
         if tasks.startTime > timezone.now():
             task.objects.filter(id=tid).update(status=0)
         elif tasks.startTime < timezone.now():
             task.objects.filter(id=tid).update(status=2)
         else:
-            task.objects.filter(id=tid).update(status=1)
+            task.objects.filter(id=tid).update(status=2)
         scheduler.add_job(job, 'date', id=str(tid), run_date=tasks.startTime)
         scheduler.add_listener(my_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
 
@@ -517,7 +602,7 @@ def tResult(request,autoRuntimeid):
     errorTotalCount = taskResult.objects.filter(task_id=taskId, autoRunTime_id=autoRuntimeid, result='ERROR').count()
     sTime = AutoTaskRunTime.objects.get(id=autoRuntimeid).startTime
     eTime = AutoTaskRunTime.objects.get(id=autoRuntimeid).endTime
-    print eTime
+    print(eTime)
     caseCount =taskCase.objects.filter(task_id=taskId).count()
     if eTime==None:
         ys=0
@@ -550,7 +635,7 @@ def taskDetail(request,tid):
 def taskLogList(request,tid):
     p = AutoTaskRunTime.objects.filter(task_id=tid).order_by('-testTime')
     t = task.objects.get(id=tid)
-    print t.endTime
+    print(t.endTime)
     resultdict = {}
     total = p.count()
     dict = []

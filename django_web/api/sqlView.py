@@ -7,7 +7,7 @@ from django_web.models import sqlManager
 from django.shortcuts import render
 import json,re
 from django.utils import timezone
-import  MySQLdb
+import  pymysql
 import redis
 from django.contrib.auth.decorators import login_required
 import logging
@@ -166,18 +166,18 @@ def testDB(request):
         resultdict={}
         if int(sqlType) == 1:
             try:
-                d = MySQLdb.connect(host=host, user=username, passwd=password, db=db, port=int(port), charset='utf8')
+                d = pymysql.connect(host=host, user=username, passwd=password, db=db, port=int(port), charset='utf8')
                 d.close()
                 resultdict = {
                     'code': 0,
                     'msg': 'success',
                     'data': {'id': DBid}
                 }
-            except MySQLdb.Error, e:
+            except pymysql.Error as e:
                 try:
                     sqlError = "Error %d:%s" % (e.args[0], e.args[1])
                 except IndexError:
-                    print "MySQL Error:%s" % str(e)
+                    print("MySQL Error:%s" % str(e))
                 resultdict = {
                     'code': 2,
                     'msg': '连接失败',
@@ -194,7 +194,7 @@ def testDB(request):
                     'data': {'id': DBid}
                 }
             except:
-                print '连接异常'
+                print('连接异常')
                 resultdict = {
                     'code': 2,
                     'msg': '连接失败',

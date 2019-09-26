@@ -131,7 +131,7 @@
                 $('#timing2').hide();
                 $('#endTime').hide();
                 form.render('radio')
-            }if(abc==2){
+            }else if(abc==2){
                 $('#timing1').hide();
                 $('#timing2').show();
                 $('#endTime').show();
@@ -140,9 +140,11 @@
                 $('#timing1').hide();
                 $('#timing2').show();
                 $('#endTime').hide();
+                form.render('radio')
+
 
             }
-            form.render();
+            {#form.render();#}
         });
 
         laydate.render({
@@ -172,7 +174,7 @@
                             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                             parent.layer.close(index);
                             {#top.location.href = '/task_index/'#}
-
+                            parent.location.href= '/task_index/'
                         });
                     } else if (data1.code==2) {
                         layer.msg(data1.msg)

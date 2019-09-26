@@ -37,9 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_web',
-    'bugStatistics',
-    'PTS'
+    'django_web'
 ]
 
 MIDDLEWARE = [
@@ -89,20 +87,8 @@ DATABASES = {
             "init_command": "SET default_storage_engine='INNODB'"
         }
    }
-    # 'chandao': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'zentao', #第二个数据库的名称
-    #     'USER': 'test',
-    #     'PASSWORD': '123456',
-    #     'HOST': '192.168.1.235',
-    #     'PORT': '3306',
-    # }
-}
 
-# DATABASE_ROUTERS = ['Django.db_router.chandaoRouter']
-# DATABASE_APPS_MAPPING = {
-#     'bugStatistics': 'chandao',
-# }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -120,9 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Shanghai'
@@ -134,16 +117,6 @@ USE_L10N = True
 USE_TZ = False
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-#
-# STATIC_URL = '/static/'
-# STATICFILES_DIRS = (os.path.join(BASE_DIR,'static'),)
-# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static').replace('\\', '/'),)
-
-# STATIC_URL = '/static/'
-# STATIC_ROOT = 'static'
-
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/'),
@@ -151,3 +124,6 @@ STATICFILES_DIRS = (
 
 FILE_PATH = '/Users/sherry/Desktop/pythonProject/Django/django_web/temp_file/'
 SCRIPT_PATH = '/Users/sherry/Desktop/pythonProject/Django/PTS/scriptCode/'
+
+#login_required URL
+LOGIN_URL = '/login/'

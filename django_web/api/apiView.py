@@ -430,16 +430,16 @@ def apiSimpleRun(request):
          url = env.env_url+':'+env.evn_port+api.apiAddress
     else:
         url = env.env_url+api.apiAddress
-    ur = url.encode('unicode-escape').decode('string_escape')
+    # ur = url.encode('unicode-escape').decode('string_escape')
     try:
         if fi:
-            r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers, files=fi)
+            r = Public.execute(url=url, params=params, method=method, heads=headers, files=fi)
         else:
-            r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers)
-        print r.content
-        return JsonResponse(r.content, safe=False)
+            r = Public.execute(url=url, params=params, method=method, heads=headers)
+        print(r.content)
+        return JsonResponse(r.json(), safe=False)
     except Exception as result:
-        print "未知错误 %s" % result
+        print ("未知错误 %s" % result)
         data = '没有该接口，请检查接口信息'
         return JsonResponse(data, safe=False)
 
@@ -505,7 +505,7 @@ def copyApi(request,pid):
 def apiCopyPost(request):
     if request.method == "POST":
         u = json.loads(request.body)
-        print u
+        print(u)
         projectname = u.get('projectid')
         o = Project.objects.get(name=projectname)
         projectid = o.id

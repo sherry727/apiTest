@@ -52,7 +52,7 @@ def gvAdd(request):
 def gvAddPost(request):
     if request.method == "POST":
         u = json.loads(request.body)
-        print u
+        print(u)
         name = u.get('name')
         user = u.get('user')
         value =u.get('value')

@@ -135,6 +135,8 @@ def envEdit(request,eid):
         'desc': u.env_desc,
         'projectName': r.name,
         'projectid':u.project_id,
+        'appKey': u.appKey,
+        'app_secret':u.app_secret,
         'user': u.user
     }
     return render(request, 'main/env-edit.html', data)
@@ -150,9 +152,13 @@ def envEditPost(request):
         projectid = u.get('projectid')
         desc = u.get('desc')
         url = u.get('url')
+        appKey = u.get('appKey')
+        app_secret = u.get('app_secret')
+        print(projectid)
         un = Env.objects.filter(env_url=url, evn_port=port).exclude(id=id).values_list()#排除id值的记录
         if len(un)==0:
-            Env.objects.filter(id=id).update(env_name=name, user=user, env_url=url, evn_port=port, env_desc=desc, project_id=projectid)
+            Env.objects.filter(id=id).update(env_name=name, user=user, env_url=url, evn_port=port, env_desc=desc,
+                                             project_id=projectid, app_secret=app_secret, appKey=appKey)
             resultdict = {
                 'code': 0,
                 'msg': 'success',

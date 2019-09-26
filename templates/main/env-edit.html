@@ -49,7 +49,19 @@
         <div class="layui-form-item">
             <label class="layui-form-label">端口号</label>
             <div class="layui-input-block">
-                <input type="text" name="port" placeholder="请输入端口号" autocomplete="off" class="layui-input" lay-verify="required|number" value="{{ port }}">
+                <input type="text" name="port" placeholder="请输入端口号" autocomplete="off" class="layui-input" value="{{ port }}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">appKey</label>
+            <div class="layui-input-block">
+                <input type="text" name="appKey" placeholder="请输入环境对应的appKey" autocomplete="off" class="layui-input" value="{{ appKey }}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">app_secret</label>
+            <div class="layui-input-block">
+                <input type="text" name="app_secret" placeholder="请输入app_secret" autocomplete="off" class="layui-input" value="{{ app_secret }}">
             </div>
         </div>
         <div class="layui-form-item">
@@ -83,7 +95,7 @@
             type: 'get',
             success: function (data) {
                 $.each(data, function (index, item) {
-                    var t= "<option value='"+item.projectName+"' "+(item.projectName=='{{ projectName }}'?'selected':'')+">"+item.projectName+"</option>";
+                    var t= "<option value='"+item.id+"' "+(item.projectName=='{{ projectName }}'?'selected':'')+">"+item.projectName+"</option>";
                     $('#projectName').append(t)
                 });
 

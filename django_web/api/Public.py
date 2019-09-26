@@ -2,14 +2,15 @@
 import requests
 import json,csv
 import codecs
-from django_web.models import sqlManager,globalVariable
-import MySQLdb
+from django_web.models import sqlManager,globalVariable,Env
+# import MySQLdb
+import pymysql
 import logging
 import sys;
 import hashlib
-import os
-reload(sys);
-sys.setdefaultencoding('utf8')
+import os,re
+# reload(sys);
+# sys.setdefaultencoding('utf8')
 
 
 
@@ -22,7 +23,7 @@ def execute(url, heads, params, method='POST', cookies=None, files=None):
     elif method=='get':
         r=requests.request('get', url=url, headers=heads, json=params, cookies=cookies)
     else:
-        print '接口请求方式非法'
+        print('接口请求方式非法')
     return r
 
 def _load_json_from_response(response):
@@ -35,17 +36,15 @@ def _load_json_from_response(response):
 def get_value_from_response(response, json_path=''):
     """get value
     """
-    if isinstance(response, (str, unicode)):
+    if isinstance(response, (str, bytes)):
         response = _load_json_from_response(response)
 
     if json_path.find('.') > -1:
         key = json_path[0: json_path.index('.')]
-        #print(key)
         if isinstance(response, list) and key.isdigit():
             dict1 = response[int(key)]
         elif isinstance(response, dict):
             dict1 = response.get(key)
-            #print(dict1)
         else:
             return response
         key1 = json_path[json_path.index('.') + 1:]
@@ -84,10 +83,10 @@ def write_csv_file(path, head, data):
 def excuteSQL(sqlId,sql):
     s = sqlManager.objects.get(id=sqlId)
     try:
-        db = MySQLdb.connect(host=s.host, user=s.username, passwd=s.password, db=s.db, port=int(s.port), charset='utf8')
+        db = pymysql.connect(host=s.host, user=s.username, passwd=s.password, db=s.db, port=int(s.port), charset='utf8')
         cursor = db.cursor()
         re=cursor.execute(sql)
-    except MySQLdb.Error, e:
+    except pymysql.Error as e:
         try:
             logging.info("Error %d:%s" % (e.args[0], e.args[1]))
         except IndexError:
@@ -113,18 +112,19 @@ def uploadFileWithPath(File,path):
         resultdict['name'] = File.name
         resultdict['path'] = os.path.join(path, File.name)
     return resultdict
+
+
 """
-def qianming(request,jdata):
-    sortedParam = sorted(jdata.items(), key=lambda d: d[0])
-    paramStr = ''
-    for param in sortedParam:
-    paramStr = paramStr + str(param[0]) +"="+ str(param[1])+"&"
-    print(paramStr)
-    rparamStr = paramStr +"key=94fa9e393e1e6a5a73970db38d78c429"
-    print(rparamStr)
-    result = hashlib.md5(rparamStr.encode("utf-8")).hexdigest()
-    return result
+    ${}全局变量替换
 """
+def global_variable(key):
+    key = str(key)
+    results = re.findall(r'\$\{([A-Za-z0-9_\.]+?)\}', key)
+    if len(results)>0:
+        for i in results:
+            value = globalVariable.objects.get(name=i).value
+            key = key.replace('${%s}' % i, value)
+    return key
 
 
 

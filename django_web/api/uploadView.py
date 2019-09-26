@@ -33,13 +33,16 @@ def fileList(request):
         dic['id'] = a.id
         dic['typeApi'] = a.typeApi
         dic['api_id'] = a.api_id
-        if a.typeApi==1:
-            m = ApiCase.objects.get(id=a.api_id)
-            dic['apiname'] = m.name
-        elif a.typeApi==2:
-            m = AutoApiCase.objects.get(id=a.api_id)
-            dic['apiname'] = m.name
-        else:
+        try:
+            if a.typeApi==1:
+                m = ApiCase.objects.get(id=a.api_id)
+                dic['apiname'] = m.name
+            elif a.typeApi==2:
+                m = AutoApiCase.objects.get(id=a.api_id)
+                dic['apiname'] = m.name
+            else:
+                dic['apiname'] = ''
+        except:
             dic['apiname'] = ''
         dic['project_id'] = a.project_id
         dic['path'] = a.path
@@ -53,7 +56,6 @@ def fileList(request):
     resultdict['msg'] = ''
     resultdict['count'] = total
     resultdict['data'] = dict
-    # print resultdict
     return JsonResponse(resultdict, safe=False)
 
 def fileAdd(request):
@@ -63,7 +65,7 @@ def fileAddPost(request):
     if request.method == "POST":
         u = json.loads(request.body)
         loginName = request.session.get('Username', '')
-        print u
+        print(u)
         filename = u.get('filename')
         projectid = u.get('projectid')
         desc = u.get('desc')
@@ -90,21 +92,6 @@ def fileAddPost(request):
 def upload(request):
     File = request.FILES.get("upFile", None)
     resultdict = Public.uploadFileWithPath(File, './django_web/temp_file/')
-    # resultdict['code'] = 0
-    # resultdict['msg'] = ''
-    # if File is None:
-    #     return HttpResponse("没有需要上传的文件")
-    #     resultdict['name'] = ''
-    #     resultdict['path'] = ''
-    # else:
-    #     # 打开特定的文件进行二进制的写操作
-    #     # print(os.path.exists('/temp_file/'))
-    #     with open("./django_web/temp_file/%s" % File.name, 'wb+') as f:
-    #         # 分块写入文件
-    #         for chunk in File.chunks():
-    #             f.write(chunk)
-    #     resultdict['name'] = File.name
-    #     resultdict['path'] = "./django_web/temp_file/%s" % File.name
     return JsonResponse(resultdict, safe=False)
 
 def fileDelete(request):

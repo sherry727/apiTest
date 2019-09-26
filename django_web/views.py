@@ -61,7 +61,7 @@ def getUserList(request):
     ukey = request.GET.get('keyword')
     if ukey =='':
         User = User1.objects.all()
-        print User
+        print(User)
         total = User.count()
         resultdict = {}
         User = User[i:j]
@@ -219,10 +219,10 @@ def userDelete(request):
 
 def searchUser(request):
     keywords= request.GET.get('keyword')
-    print keywords
+    print(keywords)
     User=get_user_model()
     result= User.objects.filter(username__icontains=keywords)
-    print result
+    print(result)
     return render(request, 'main/user.html', {'keyword': keywords, 'result_list': result})
 
 def loginout(request):
@@ -230,7 +230,7 @@ def loginout(request):
     return HttpResponseRedirect('/login/')
 
 
-def page_not_found(request):
+def page_not_found(request,exception):
     return render(request, 'main/404.html')
 
 
@@ -238,7 +238,7 @@ def page_error(request):
     return render(request, 'main/500.html')
 
 
-def permission_denied(request):
+def permission_denied(request,exception):
     return render(request, 'main/403.html')
 
 # def convert_to_dict(obj):

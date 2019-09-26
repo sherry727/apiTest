@@ -233,7 +233,7 @@
                 data : hp,
                 success : function (data1) {
                     {#alert(JSON.stringify(data1));#}
-                    $("#response").text(data1);//给textarea赋值
+                    $("#response").text(JSON.stringify(data1));//给textarea赋值
                 },
                 error:function(){
                      layer.msg('运行失败，请检查接口信息设置')

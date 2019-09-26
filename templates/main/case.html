@@ -24,7 +24,7 @@
     </div>
     <!--模糊搜索区域-->
     <div class="layui-row">
-        <form class="layui-form layui-col-md12 layui-form-pane ok-form"">
+        <form class="layui-form layui-col-md12 layui-form-pane ok-form">
             <div class="layui-form-item">
                 <label class="layui-form-label">项目名称</label>
                 <div class="layui-input-inline ">
@@ -242,7 +242,7 @@
     <a href="javascript:;" title="删除" lay-event="del"><i class="layui-icon">&#xe640;</i></a>
 </script>
 <script type="text/html" id="nameTpl">
-  <a href="javascript:location.href='/caseApi/{% verbatim %}{{d.id}}{% endverbatim %}'" class="layui-table-link" target="_blank">{% verbatim %}{{ d.name }}{% endverbatim %}</a>
+  <a href="javascript:location.href='/caseApi/{% verbatim %}{{d.id}}{% endverbatim %}'" class="layui-table-link">{% verbatim %}{{ d.name }}{% endverbatim %}</a>
 </script>
 </body>
 </html>

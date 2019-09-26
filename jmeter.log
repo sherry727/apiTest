@@ -1,0 +1,26 @@
+2019-09-19 13:49:59,970 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2019-09-19 13:49:59,996 INFO o.a.j.JMeter: Loading user properties from: /Users/sherry/tools/apache-jmeter-5.1.1/bin/user.properties
+2019-09-19 13:49:59,997 INFO o.a.j.JMeter: Loading system properties from: /Users/sherry/tools/apache-jmeter-5.1.1/bin/system.properties
+2019-09-19 13:50:00,003 INFO o.a.j.JMeter: Copyright (c) 1998-2019 The Apache Software Foundation
+2019-09-19 13:50:00,003 INFO o.a.j.JMeter: Version 5.1.1 r1855137
+2019-09-19 13:50:00,004 INFO o.a.j.JMeter: java.version=1.8.0_191
+2019-09-19 13:50:00,004 INFO o.a.j.JMeter: java.vm.name=Java HotSpot(TM) 64-Bit Server VM
+2019-09-19 13:50:00,004 INFO o.a.j.JMeter: os.name=Mac OS X
+2019-09-19 13:50:00,004 INFO o.a.j.JMeter: os.arch=x86_64
+2019-09-19 13:50:00,004 INFO o.a.j.JMeter: os.version=10.14.1
+2019-09-19 13:50:00,004 INFO o.a.j.JMeter: file.encoding=UTF-8
+2019-09-19 13:50:00,004 INFO o.a.j.JMeter: java.awt.headless=null
+2019-09-19 13:50:00,004 INFO o.a.j.JMeter: Max memory     =1073741824
+2019-09-19 13:50:00,004 INFO o.a.j.JMeter: Available Processors =12
+2019-09-19 13:50:00,016 INFO o.a.j.JMeter: Default Locale=English (EN)
+2019-09-19 13:50:00,016 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2019-09-19 13:50:00,017 INFO o.a.j.JMeter: JMeterHome=/Users/sherry/tools/apache-jmeter-5.1.1
+2019-09-19 13:50:00,017 INFO o.a.j.JMeter: user.dir  =/Users/sherry/Desktop/pythonProject/apiTest
+2019-09-19 13:50:00,017 INFO o.a.j.JMeter: PWD       =/Users/sherry/Desktop/pythonProject/apiTest
+2019-09-19 13:50:00,018 INFO o.a.j.JMeter: IP: 10.0.207.96 Name: hzsharkdeMacBook-Pro.local FullName: 10.0.207.96
+2019-09-19 13:50:02,866 INFO o.a.j.g.a.LookAndFeelCommand: Installing Darcula LAF
+2019-09-19 13:50:02,888 INFO o.a.j.g.a.LookAndFeelCommand: Using look and feel: com.bulenkov.darcula.DarculaLaf [Darcula]
+2019-09-19 13:50:02,889 INFO o.a.j.JMeter: Setting LAF to: com.bulenkov.darcula.DarculaLaf
+2019-09-19 13:50:02,974 INFO o.a.j.JMeter: Loaded icon properties from org/apache/jmeter/images/icon.properties
+2019-09-19 13:50:03,888 WARN o.j.r.PluginManager: Found JAR conflict: /Users/sherry/tools/apache-jmeter-5.1.1/lib/ext/jmeter-plugins-cmn-jmeter-0.4.jar and /Users/sherry/tools/apache-jmeter-5.1.1/lib/jmeter-plugins-cmn-jmeter-0.4.jar
+2019-09-19 13:50:03,888 WARN o.j.r.PluginManager: Found JAR conflict: /Users/sherry/tools/apache-jmeter-5.1.1/lib/ext/jmeter-plugins-manager-1.3.jar and /Users/sherry/tools/apache-jmeter-5.1.1/lib/ext/jmeter-plugins-manager-0.20.jar

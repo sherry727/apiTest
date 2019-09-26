@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django_web.models import Env,Project,Case,AutoApiCase,autoApiHead,autoAPIParameter,ApiCase,ApiHead,APIParameter,TestResult,globalVariable
-from django_web.models import uploadFile
+from django_web.models import uploadFile,fuctionLib
 from django_web.models import asserts
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 import json,re
 from django.db.models import Q
-from django_web.api import Public
+from django_web.api import Public, fuctionView
 import traceback,os
 from django.utils import timezone
 from django.conf import settings
@@ -29,7 +29,7 @@ def getCaseApiList(request):
     q1.children.append(('case_id', caseId))
     if len(key)>0:
         q1.children.append(('name__contains', key))
-    p = AutoApiCase.objects.filter(q1).order_by('sort')
+    p = AutoApiCase.objects.filter(q1).order_by('CreateTime')
     resultdict = {}
     total = p.count()
     p = p[i:j]
@@ -78,7 +78,7 @@ def caseApiAdd(request,caseId):
 def caseApiAddPost(request):
     if request.method == "POST":
         u = json.loads(request.body)
-        print u
+        print(u)
         projectid = u.get('projectid')
         caseId = u.get('caseId')
         name = u.get('name')
@@ -91,11 +91,13 @@ def caseApiAddPost(request):
         headers = u.get('headers')
         params = u.get('params')
         ase = u.get('asserts')
+        selectFuction = u.get('selectFuction')
         galobalValues = u.get('galobalValues')
         loginName = request.session.get('Username', '')
         p = AutoApiCase.objects.create(project_id=projectid, name=name, user=user, method=method,
                                        requestParameterType=requestParameterType,
-                                       httpType=httptype, desc=desc, apiAddress=url, case_id=caseId, CreateTime=timezone.now(),status=1)
+                                       httpType=httptype, desc=desc, apiAddress=url, case_id=caseId,
+                                       CreateTime=timezone.now(), status=1, fuctionLib_id=selectFuction)
         p.save()
         if len(galobalValues) > 0:
             for h in galobalValues:
@@ -123,14 +125,14 @@ def caseApiAddPost(request):
         for h in headers:
             nm = h.get('head_name')
             key = h.get('head_key')
-            headersList.append(autoApiHead(name=nm, api_id=p.id, value=key))
+            headersList.append(autoApiHead(name=nm, autoApi_id=p.id, value=key))
         autoApiHead.objects.bulk_create(headersList)
         paramsList = []
         for h in params:
             nm = h.get('param_name')
             key = h.get('param_key')
             paramType = h.get('paramType')
-            paramsList.append(autoAPIParameter(name=nm, api_id=p.id, value=key, paramType=paramType))
+            paramsList.append(autoAPIParameter(name=nm, autoApi_id=p.id, value=key, paramType=paramType))
         autoAPIParameter.objects.bulk_create(paramsList)
         resultdict = {
             'code': 0,
@@ -156,6 +158,7 @@ def caseApiAddOld(request,caseId):
 def apiListForProject(request):
     page = request.GET.get('page', '1')
     rows = request.GET.get('limit', '10')
+    loginName = request.session.get('Username', '')
     i = (int(page) - 1) * int(rows)
     j = (int(page) - 1) * int(rows) + int(rows)
     projectid = request.GET.get('projectId')
@@ -164,7 +167,7 @@ def apiListForProject(request):
     q1.connector = 'AND'
     if len(projectid) > 0:
         q1.children.append(('project_id', projectid))
-    p = ApiCase.objects.filter(q1).order_by('-CreateTime')
+    p = ApiCase.objects.filter(q1, user=loginName).order_by('-CreateTime')
     resultdict = {}
     total = p.count()
     p = p[i:j]
@@ -206,7 +209,7 @@ def caseApiAddOldPost(request,caseId):
             headers = ApiHead.objects.filter(api_id=apiId)
             params = APIParameter.objects.filter(Q(api_id=apiId), ~Q(paramType='File'))
             files = APIParameter.objects.filter(api_id=apiId, paramType='File')
-            p = AutoApiCase.objects.create(project_id=projectid, name=name, user=user, method=method,
+            p = AutoApiCase.objects.create(project_id=projectid, name=name, user=loginName, method=method,
                                            desc=desc, apiAddress=url, case_id=caseId, requestParameterType=requestParameterType,
                                            CreateTime=timezone.now())
             p.save()
@@ -258,6 +261,13 @@ def caseApiEdit(request,eid):
     p = Project.objects.get(id=u.project_id)  # 项目表
     g = globalVariable.objects.filter(autoApi_id=eid)
     a = asserts.objects.filter(autoApi_id=eid)
+    try:
+        fc = fuctionLib.objects.get(id=u.fuctionLib_id)
+        fcname=fc.name
+        fcid=fc.id
+    except:
+        fcname = ''
+        fcid = ''
     params = []
     for i in m:
         dic = {}
@@ -298,6 +308,8 @@ def caseApiEdit(request,eid):
         'id': eid,
         'name': u.name,
         'url': u.apiAddress,
+        'fuctionName': fcname,
+        'fuctionId': fcid,
         'requestParameterType': u.requestParameterType,
         'httptype': u.httpType,
         'method': u.method,
@@ -354,12 +366,22 @@ def caseApiEditPost(request):
         params = u.get('params')
         ase = u.get('asserts')
         galobalValues = u.get('galobalValues')
+        fu = u.get('selectFuction')
         loginName = request.session.get('Username', '')
         sort = u.get('sort')
         files = u.get('files')
         uploadFile.objects.filter(api_id=id).delete()
         gv=[]
         asert=[]
+        try:
+            ul=Public.global_variable(key=url)
+        except:
+            resultdict = {
+                'code': 2,
+                'msg': '全局变量不存在，请检查！',
+                'data': {}
+            }
+            return JsonResponse(resultdict, safe=False)
         if len(galobalValues) > 0:
             for h in galobalValues:
                 try:
@@ -369,17 +391,22 @@ def caseApiEditPost(request):
                     globalVariable.objects.create(name=h.get('gv_name'), path=h.get('gv_path'), autoApi_id=id, user=loginName,
                                                   gType=2).save()
         at= asserts.objects.filter(autoApi_id=id)
-        if len(ase) > 0:
+        if at:
             at.delete()
+        if len(ase) > 0:
             for h in ase:
                 nm = h.get('a_path')
                 key = h.get('a_value')
                 asert.append(asserts(value=key, autoApi_id=id, path=nm, user=loginName, CreateTime=timezone.now()))
             asserts.objects.bulk_create(asert)
+        if len(fu)>0:
+            fuction_id = int(fu)
+        else:
+            fuction_id = 0
 
         AutoApiCase.objects.filter(id=id).update(project_id=projectid, name=name, user=user, method=method,
-                                                 requestParameterType=requestParameterType,
-                                                 httpType=httptype, desc=desc, apiAddress=url, LastUpdateTime=timezone.now())
+                                                 requestParameterType=requestParameterType, httpType=httptype, desc=desc,
+                                                 apiAddress=url, LastUpdateTime=timezone.now(), fuctionLib_id=fuction_id)
         h= autoApiHead.objects.filter(autoApi_id=id)
         if h:
             h.delete()
@@ -461,7 +488,15 @@ def caseApiMultRun(request,eid):
             for p in pa:
                 if re.match(r'^\$\{(.+?)\}$', p.value) != None:
                     w = re.sub('[${}]', '', p.value)
-                    value = globalVariable.objects.get(name=w).value
+                    try:
+                        value = globalVariable.objects.get(name=w).value
+                    except:
+                        resultdict = {
+                            'code': 1,
+                            'msg': '请输入正确的全局变量',
+                            'data': {}
+                        }
+                        return JsonResponse(resultdict, safe=False)
                 else:
                     value = p.value
                 name = p.name
@@ -469,42 +504,53 @@ def caseApiMultRun(request,eid):
             for f in files:
                 if re.match(r'^\$\{(.+?)\}$', f.get('value')) != None:
                     w = re.sub('[${}]', '', f.get('value'))
-                    value = globalVariable.objects.get(name=w).value
+                    try:
+                        value = globalVariable.objects.get(name=w).value
+                    except:
+                        resultdict = {
+                            'code': 1,
+                            'msg': '请输入正确的全局变量',
+                            'data': {}
+                        }
+                        return JsonResponse(resultdict, safe=False)
                 else:
                     value = f.get('value')
                 name = f.get('name')
                 e = uploadFile.objects.get(id=f.get('file_id'))
                 fi[name] = ((e.fname, open(os.path.join(settings.FILE_PATH, e.fname), 'rb'), 'file'))
-            print params
-            print files
+
+            if caseApi.fuctionLib_id:
+                fu = fuctionView.qianming(fu_id=int(caseApi.fuctionLib_id), appKey=env.appKey, app_secret=env.app_secret,
+                                          jdata=params)
+                params = fu
             url1 =url+caseApi.apiAddress
-            ur = url1.encode('unicode-escape').decode('string_escape')
+            # ur = url1.encode('unicode-escape').decode('string_escape')
             method = caseApi.method
             sort = s.get('sort')
             try:
-                # r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers)
+                # r = Public.execute(url=ur, params=params, method=method, heads=headers)
                 if fi:
-                    r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers, files=fi)
+                    r = Public.execute(url=url1, params=params, method=method, heads=headers, files=fi)
                 else:
-                    r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers)
+                    r = Public.execute(url=url1, params=params, method=method, heads=headers)
                 if len(galobalValues) > 0:
                     for g in galobalValues:
-                        # va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path').encode("utf-8"))
+                        # va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path'))
                         va = Public.get_value_from_response(response=r.text, json_path='data.accessToken')
                         try:
                             o = globalVariable.objects.get(name=g.name, user=loginName)
                             globalVariable.objects.filter(name=o.name).update(path=g.path, value=va)
                         except Exception as result:
-                            print "未知错误 %s" % result
-                print r.text
+                            print("未知错误 %s" % result)
+                print(r.text)
                 dy = []
                 if len(duanyan) > 0:
                     for a in duanyan:
                         nm = a.path
                         key = a.value
-                        real_value = Public.get_value_from_response(response=r.text, json_path=nm.encode("utf-8"))
-                        print real_value
-                        if key.encode("utf-8") == str(real_value):
+                        real_value = Public.get_value_from_response(response=r.text, json_path=nm)
+                        print(real_value)
+                        if key == str(real_value):
                             AutoApiCase.objects.filter(id=s.get('id')).update(status='成功')
                         else:
                             AutoApiCase.objects.filter(id=s.get('id')).update(status='失败')
@@ -519,7 +565,7 @@ def caseApiMultRun(request,eid):
                 else:
                     AutoApiCase.objects.filter(id=s.get('id')).update(status='成功')
             except Exception as result:
-                print "未知错误 %s" % result
+                print("未知错误 %s" % result)
                 AutoApiCase.objects.filter(id=s.get('id')).update(status='异常')
         endTime = timezone.now()
         resultdict = {
@@ -548,10 +594,10 @@ def selectApiEnvName(request):
 
 def autoApiSimpleRun(request):
     u = json.loads(request.body)
-    # print u
     api_id = u.get('id')
     api = AutoApiCase.objects.get(id=api_id)
     env_id = u.get('envid')
+    address = u.get('url')
     method = u.get('method')
     sqlType = u.get('sqlType')
     sqlId = u.get('sqlId')
@@ -563,9 +609,17 @@ def autoApiSimpleRun(request):
     galobalValues = u.get('galobalValues')
     duanyan= u.get('asserts')
     files= u.get('files')
+    fuction_id= u.get('selectFuction')
     loginName= request.session.get('Username', '')
     gv = []
     i =0
+    address=Public.global_variable(key=address)
+    if env_id=='请选择':
+        data = {
+            'code': 1,
+            'msg': "请选择执行环境！"
+        }
+        return JsonResponse(data, safe=False)
     if sqlId and sqlType:
         for s in sqlText.split(";"):
             if s:
@@ -576,7 +630,6 @@ def autoApiSimpleRun(request):
                 except:
                     globalVariable.objects.create(name=sqlGlobalname.split(";")[i], autoApi_id=api_id, value=rSql, user=user, gType=1).save()
             i = i+1
-    # pa = autoAPIParameter.objects.filter(autoApi_id=api_id).values('name', 'value')
     fi = {}
     for f in files:
         if re.match(r'^\$\{(.+?)\}$', f.get('fpath')) != None:
@@ -590,12 +643,19 @@ def autoApiSimpleRun(request):
     for p in pa:
         if re.match(r'^\$\{(.+?)\}$', p.get('param_key')) != None:
             w = re.sub('[${}]', '', p.get('param_key'))
-            value= globalVariable.objects.get(name=w).value
+            try:
+                value= globalVariable.objects.get(name=w).value
+            except Exception as result:
+                print("未知错误 %s" % result)
+                data = {
+                    'code':1,
+                    'msg' :"请检查全局变量参数！"
+                }
+                return JsonResponse(data, safe=False)
         else:
             value = p.get('param_key')
         name = p.get('param_name')
         params[name] = value
-    # he = autoApiHead.objects.filter(autoApi_id=api_id).values('name', 'value')
     headers = {}
     for p in he:
         name = p.get('head_name')
@@ -603,18 +663,21 @@ def autoApiSimpleRun(request):
         headers[name] = value
     env = Env.objects.get(id=env_id)
     if env.evn_port:
-        url = env.env_url + ':' + env.evn_port + api.apiAddress
+        url = env.env_url + ':' + env.evn_port + address
     else:
-        url = env.env_url + api.apiAddress
-    ur = url.encode('unicode-escape').decode('string_escape')
+        url = env.env_url + address
+    # ur = url.encode('unicode-escape').decode('string_escape')
+    if len(fuction_id) > 0:
+        fu=fuctionView.qianming(fu_id=int(fuction_id), appKey=env.appKey, app_secret=env.app_secret, jdata=params)
+        params= fu
     try:
         if fi:
-            r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers, files=fi)
+            r = Public.execute(url=url, params=params, method=method, heads=headers, files=fi)
         else:
-            r = Public.execute(url=ur, params=params, method=method.encode("utf-8"), heads=headers)
+            r = Public.execute(url=url, params=params, method=method, heads=headers)
         if len(galobalValues)>0:
             for g in galobalValues:
-                va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path').encode("utf-8"))
+                va = Public.get_value_from_response(response=r.text, json_path=g.get('gv_path'))
                 try:
                     o = globalVariable.objects.get(name=g.get('gv_name'), user=loginName)
                     globalVariable.objects.filter(name=o.name).update(path=g.get('gv_path'), value=va, gType=2)
@@ -626,11 +689,19 @@ def autoApiSimpleRun(request):
             for a in duanyan:
                 nm = a.get('a_path')
                 key = a.get('a_value')
-                real_value = Public.get_value_from_response(response=r.text, json_path=nm.encode("utf-8"))
-                if key.encode("utf-8")==str(real_value):
+                real_value = Public.get_value_from_response(response=r.text, json_path=nm)
+                if key==str(real_value):
                     AutoApiCase.objects.filter(id=api_id).update(status='成功')
+                    data = {
+                        'code': 0,
+                        'msg': r.text
+                    }
                 else:
                     AutoApiCase.objects.filter(id=api_id).update(status='失败')
+                    data = {
+                        'code': 1,
+                        'msg': "断言失败："+r.text
+                    }
                 ast = asserts.objects.filter(autoApi_id=api_id, path=nm)
                 if len(ast)> 2:
                     dy.append(asserts(path=nm, autoApi_id=api_id, value=key, user=loginName, real_value=real_value, CreateTime=timezone.now()))
@@ -639,12 +710,28 @@ def autoApiSimpleRun(request):
             asserts.objects.bulk_create(dy)
         else:
             AutoApiCase.objects.filter(id=api_id).update(status='成功')
-
-        return JsonResponse(r.text, safe=False)
-    except Exception, e:
-        print 'traceback.format_exc():\n%s' % traceback.format_exc()
-        data = '没有该接口，请检查接口信息'
+            data = {
+                'code': 0,
+                'msg': r.text
+            }
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        print('traceback.format_exc():\n%s' % traceback.format_exc())
+        data = {
+            'code': 1,
+            'msg': '没有该接口，请检查接口信息'
+        }
         return JsonResponse(data, safe=False)
 
+
+def selectFuction(request):
+    p = fuctionLib.objects.filter(ftype=0)
+    dict = []
+    for a in p:
+        dic = {}
+        dic['id'] = a.id
+        dic['name'] = a.name
+        dict.append(dic)
+    return JsonResponse(dict, safe=False)
 
 

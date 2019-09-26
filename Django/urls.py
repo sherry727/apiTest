@@ -18,7 +18,7 @@ from django.contrib import admin
 from django_web import views
 from django.conf.urls import include
 from django_web.api import projectView, envView, apiView, caseView, caseApiView, taskView, reportView, sqlView,gvView,roleView
-from django_web.api import uploadView
+from django_web.api import uploadView,fuctionView
 
 handler403 = views.permission_denied
 handler404 = views.page_not_found
@@ -26,9 +26,6 @@ handler500 = views.page_error
 
 urlpatterns = [
     # url(r'^admin/', include(admin.site.urls)),
-    # url(r'^django_web/', include('django_web.urls')),
-    url(r'^bugStatistics/', include('bugStatistics.urls')),
-    url(r'^pts/', include('PTS.PTSurls')),
     url(r'^admin/', admin.site.urls),
     url(r'^index/$', views.index),
     url(r'^welcom/$', views.welcom),
@@ -111,6 +108,7 @@ urlpatterns = [
     url(r'^caseApiEditPost/$', caseApiView.caseApiEditPost, name='caseApiEditPost'),
     url(r'^selectApiEnvName/$', caseApiView.selectApiEnvName, name='selectApiEnvName'),
     url(r'^autoApiSimpleRun/$', caseApiView.autoApiSimpleRun, name='autoApiSimpleRun'),
+    url(r'^selectFuction/$', caseApiView.selectFuction, name='selectFuction'),
 
     #task
     url(r'^task_index/$', taskView.task_index, name='task_index'),
@@ -156,6 +154,11 @@ urlpatterns = [
     url(r'^fileAddPost/$', uploadView.fileAddPost, name='fileAddPost'),
     url(r'^upload/$', uploadView.upload, name='upload'),
     url(r'^fileDelete/$', uploadView.fileDelete, name='fileDelete'),
+
+
+    #fuction
+    url(r'^fuction_index/$', fuctionView.fuction_index, name='fuction_index'),
+    url(r'^fuctionList/$', fuctionView.fuctionList, name='fuctionList'),
 
 
 

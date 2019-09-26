@@ -61,173 +61,229 @@
                    <input type="text" name="url" placeholder="格式：/actmgt/user/login" autocomplete="off" class="layui-input" lay-verify="required" >
                </div>
          </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">请求头</label>
-            <div class="layui-input-block">
-                <div id="hd">
-                    <table class="layui-table" id="pa">
-                        <colgroup>
-                          <col width="200">
-                          <col width="200">
-                          <col width="50">
-                          <col width="100">
-                          <col>
-                        </colgroup>
-                        <thead>
-                          <tr>
-                            <th>参数名</th>
-                            <th>参数值</th>
-                            <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addhead"><i class="layui-icon">&#xe654;</i></button>
-{#                                  <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="delhead"><i class="layui-icon" ></i></button>#}
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-{#                          <tr>#}
-{#                              <th><input type="text" name="head_name" placeholder="请输入参数名" class="layui-input"> </th>#}
-{#                              <th><input type="text" name="head_key" placeholder="请输入参数值" class="layui-input"> </th>#}
-{#                              <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addhead"><i class="layui-icon">&#xe654;</i></button>#}
-{#                                  <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon" onclick="" id="delhead"></i></button>#}
-{#                              </th>#}
-{#                          </tr>#}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">请求参数</label>
-            <div class="layui-input-block" id="re">
-              <input type="radio" name="requestParameterType" id = "raw" value="0" title="json源数据" lay-filter="type" disabled>
-              <input type="radio" name="requestParameterType" id="fa" value="1" title="表单（form-data）" lay-filter="type" checked="true">
-{#                <div class='layui-form-item layui-form-text' id='hh'>#}
-{#                    <label class='layui-form-label'>json参数</label>#}
-{#                    <div class='layui-input-block'>#}
-{#                        <textarea placeholder='请输入内容' class='layui-textarea'></textarea>#}
-{#                    </div>#}
-{#                </div>#}
-{#                  表格#}
-            <div id="hh">
-                <table class="layui-table" id="param">
-                    <colgroup>
-                      <col width="200">
-                      <col width="200">
-                      <col width="50">
-                      <col width="50">
-                      <col>
-                    </colgroup>
-                    <thead>
-                      <tr>
-                        <th>参数名</th>
-                        <th>参数值</th>
-                        <th>类型</th>
-                        <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="add1"><i class="layui-icon">&#xe654;</i></button>
-{#                              <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon" onclick="" id="delrow"></i></button>#}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-{#                      <tr>#}
-{#                          <th><input type="text" name="param_name" placeholder="请输入参数名" class="layui-input"> </th>#}
-{#                          <th><input type="text" name="param_key" placeholder="请输入参数值" class="layui-input"> </th>#}
-{#                          <th><select name="paramType" id="paramType">#}
-{#                                    <option value="int">int</option>#}
-{#                                    <option value="string">string</option>#}
-{#                              </select>#}
-{#                          </th>#}
-{#                          <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="add1"><i class="layui-icon">&#xe654;</i></button>#}
-{#                              <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon" onclick="" id="delrow"></i></button>#}
-{#                          </th>#}
-{#                      </tr>#}
-                    </tbody>
-                </table>
-            </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div id="globalVariable"  style="display: none"></div>
-            <label class="layui-form-label">设置变量</label>
-            <div class="layui-input-block">
-                <div id="hd">
-                    <table class="layui-table" id="gv">
-                        <colgroup>
-                          <col width="200">
-                          <col width="200">
-                          <col width="50">
-                          <col>
-                        </colgroup>
-                        <thead>
-                          <tr>
-                            <th>全局变量命名</th>
-                            <th>返回参数的路径</th>
-                            <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addGv"><i class="layui-icon">&#xe654;</i></button>
-                          </tr>
-                        </thead>
-                        <tbody>
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+          <ul class="layui-tab-title" style="background-color: #e6e6e6; ">
+            <li class="layui-this">请求头</li>
+            <li>请求参数</li>
+            <li>前置sql</li>
+            <li>添加签名</li>
+          </ul>
+          <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="layui-form-item">
+                    <div id="head" d="{{ headers }}" style="display: none"></div>
+                        <div id="hd">
+                            <table class="layui-table" id="pa">
+                                <colgroup>
+                                  <col width="200">
+                                  <col width="200">
+                                  <col width="50">
+                                  <col>
+                                </colgroup>
+                                <thead>
+                                  <tr>
+                                    <th>参数名</th>
+                                    <th>参数值</th>
+                                    <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addhead"><i class="layui-icon">&#xe654;</i></button>
+                                  </tr>
+                                </thead>
+                                <tbody>
+        {#                          <tr>#}
+        {#                              <th><input type="text" name="head_name" placeholder="请输入参数名" class="layui-input" id="hname"> </th>#}
+        {#                              <th><input type="text" name="head_key" placeholder="请输入参数值" class="layui-input" id="hkey"> </th>#}
+        {#                              <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addhead"><i class="layui-icon">&#xe654;</i></button>#}
+        {#                                  <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon" onclick="" id="delhead"></i></button>#}
+        {#                              </th>#}
+        {#                          </tr>#}
+                                </tbody>
+                            </table>
+                        </div>
 
-                        </tbody>
-                    </table>
                 </div>
+
             </div>
-        </div>
-         <div class="layui-form-item">
-            <div id="sqlM"  style="display: none"></div>
-            <label class="layui-form-label">添加数据库</label>
-            <div class="layui-input-inline" style="width: 300px">
-                <select name="sqlType" id="sqlType" lay-filter="sqlType">
-                    <option value="">请选择数据库类型</option>
-                    <option value="1">mysql</option>
-                    <option value="2">redis</option>
-                    <option value="3">mangoDB</option>
-                </select>
+            <div class="layui-tab-item">
+                <div class="layui-form-item">
+                    <div id="op" o="{{ params }}" style="display: none"></div>
+                    <div id="fi" z="{{ files }}" style="display: none"></div>
+                      <input type="radio" name="requestParameterType" id = "raw" value="0" title="json源数据" lay-filter="type" disabled>
+                      <input type="radio" name="requestParameterType" id="fa" value="1" title="表单（form-data）" lay-filter="type" checked="true">
+        {#                <div class='layui-form-item layui-form-text' id='hh'>#}
+        {#                    <label class='layui-form-label'>json参数</label>#}
+        {#                    <div class='layui-input-block'>#}
+        {#                        <textarea placeholder='请输入内容' class='layui-textarea'></textarea>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#                  表格#}
+                    <div id="hh">
+                        <table class="layui-table" id="param">
+                            <colgroup>
+                              <col width="80">
+                              <col width="200">
+                              <col width="50">
+                              <col width="50">
+                              <col>
+                            </colgroup>
+                            <thead>
+                              <tr>
+                                <th>参数名</th>
+                                <th>参数值</th>
+                                <th>类型</th>
+                                <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="add1"><i class="layui-icon">&#xe654;</i></button>
+                                    <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addFile"><i class="layui-icon">&#xe621;</i></button>
+                              </tr>
+                            </thead>
+                            <tbody>
+        {#                      <tr>#}
+        {#                          <th><input type="text" name="param_name" placeholder="请输入参数名" class="layui-input" id="pname"> </th>#}
+        {#                          <th><input type="text" name="param_key" placeholder="请输入参数值" class="layui-input" id="pkey"> </th>#}
+        {#                          <th><select name="paramType" id="paramType">#}
+        {#                                    <option value="int">int</option>#}
+        {#                                    <option value="string">string</option>#}
+        {#                              </select> </th>#}
+        {#                          <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="add1"><i class="layui-icon">&#xe654;</i></button>#}
+        {#                              <button class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon" onclick="" id="delrow"></i></button>#}
+        {#                          </th>#}
+        {#                      </tr>#}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
             </div>
+            <div class="layui-tab-item">
+                 <div class="layui-form-item">
+                    <div id="sqlM"  style="display: none"></div>
+                    <label class="layui-form-label">添加数据库</label>
+                    <div class="layui-input-inline" style="width: 300px">
+                        <select name="sqlType" id="sqlType" lay-filter="sqlType">
+                            <option value="">请选择数据库类型</option>
+                            <option value="1">mysql</option>
+                            <option value="2">redis</option>
+                            <option value="3">mangoDB</option>
+                        </select>
+                    </div>
             <div class="layui-input-inline" style="width: 300px">
                 <select name="sqlId" id="sqlName">
                     <option value="">请选数据库环境</option>
                 </select>
             </div>
         </div>
-         <div class="layui-form-item">
-             <div class="layui-input-block">
-                <textarea name="sqlText" autocomplete="off" placeholder="请输入对应sql语句，分号隔开" class="layui-textarea" id="sqlText" style="min-height: 100px"></textarea>
-             </div>
-             <label class="layui-form-label">sql变量名</label>
-             <div class="layui-input-block">
-                <input type="text" name="sqlGlobalname" placeholder="请输入sql接收变量名称，分号隔开" autocomplete="off" class="layui-input"  value="{{ sqlGlobalname }}" >
-             </div>
-         </div>
-         <div class="layui-form-item">
-            <div id="assert"  style="display: none"></div>
-            <label class="layui-form-label">响应断言</label>
-            <div class="layui-input-block">
-                <div id="xy">
-                    <table class="layui-table" id="as">
-                        <colgroup>
-                          <col width="200">
-                          <col width="200">
-                          <col width="50">
-                          <col>
-                        </colgroup>
-                        <thead>
-                          <tr>
-                            <th>返回参数路径</th>
-                            <th>返回参数值</th>
-                            <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addAs"><i class="layui-icon">&#xe654;</i></button>
-                          </tr>
-                        </thead>
-                        <tbody>
+                 <div class="layui-form-item">
+                     <div class="layui-input-block">
+                        <textarea name="sqlText" autocomplete="off" placeholder="请输入对应sql语句，分号隔开" class="layui-textarea" id="sqlText" style="min-height: 100px"></textarea>
+                     </div>
+                     <label class="layui-form-label">sql变量名</label>
+                     <div class="layui-input-block">
+                        <input type="text" name="sqlGlobalname" placeholder="请输入sql接收变量名称，分号隔开" autocomplete="off" class="layui-input"  value="{{ sqlGlobalname }}" >
+                     </div>
+                 </div>
+            </div>
+            <div class="layui-tab-item">
+                <div class="layui-form-item">
+                    <div id="qianming" d="{{ qiangming }}" style="display: none"></div>
+                        <div id="qm1">
+                            <table class="layui-table" id="qm">
+                                <colgroup>
+                                  <col width="300">
+                                  <col width="200">
+                                  <col>
+                                </colgroup>
+                                <thead>
+                                  <tr>
+                                    <th>函数</th>
+{#                                    <th>appKey</th>#}
+{#                                    <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addqm"><i class="layui-icon">&#xe654;</i></button></th>#}
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th><select name='selectFuction' id='selectFuction'> <option value=''>请选择</option></select></th>
+                                    </tr>
 
-                        </tbody>
-                    </table>
+                                </tbody>
+                            </table>
+                        </div>
+
+                </div>
+
+            </div>
+          </div>
+        </div>
+{#        <div class="layui-form-item ">#}
+{#            <label class="layui-form-label">排序</label>#}
+{#            <div class="layui-input-block">#}
+{#                <input type="text" name="desc" placeholder="请输入数字1-99" autocomplete="off" class="layui-input" value="{{ sort }}" lay-verify="numbers" >#}
+{#            </div>#}
+{#        </div>#}
+        <div class="layui-form-item ">
+            <label class="layui-form-label">描述</label>
+            <div class="layui-input-block">
+                <input type="text" name="desc" placeholder="请输入描述" autocomplete="off" class="layui-input" value="{{ desc }}">
+            </div>
+        </div>
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+          <ul class="layui-tab-title" style="background-color: #e6e6e6; ">
+            <li class="layui-this">响应断言</li>
+            <li>后置</li>
+          </ul>
+          <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="layui-form-item">
+                    <div id="assert"  at="{{ asserts }}" style="display: none"></div>
+                        <div id="xy">
+                            <table class="layui-table" id="as">
+                                <colgroup>
+                                  <col width="200">
+                                  <col width="200">
+                                  <col width="50">
+                                  <col>
+                                </colgroup>
+                                <thead>
+                                  <tr>
+                                    <th>返回参数路径</th>
+                                    <th>返回参数值</th>
+                                    <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addAs"><i class="layui-icon">&#xe654;</i></button>
+                                  </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="layui-tab-item">
+                <div class="layui-form-item">
+                    <div id="globalVariable" globalV="{{ gv }}" style="display: none"></div>
+{#                    <label class="layui-form-label">设置变量</label>#}
+                        <div id="hd">
+                            <table class="layui-table" id="gv">
+                                <colgroup>
+                                  <col width="200">
+                                  <col width="200">
+                                  <col width="50">
+                                  <col>
+                                </colgroup>
+                                <thead>
+                                  <tr>
+                                    <th>全局变量命名</th>
+                                    <th>返回参数的路径</th>
+                                    <th><button class="layui-btn layui-btn-primary layui-btn-sm" onclick="" id="addGv"><i class="layui-icon">&#xe654;</i></button>
+                                  </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                         </div>
+                </div>
                 </div>
             </div>
         </div>
-        <div class="layui-form-item ">
-            <label class="layui-form-label">环境描述</label>
-            <div class="layui-input-block">
-                <input type="text" name="desc" placeholder="请输入环境描述" autocomplete="off" class="layui-input">
-            </div>
-        </div>
+
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class="layui-btn" lay-submit lay-filter="add">立即提交</button>
@@ -317,6 +373,22 @@
                 }
             });
 
+         //签名下拉
+        $.ajax({
+                url: '/selectFuction/',
+                dataType: 'json',
+                type: 'get',
+                success:function (data) {
+                    $.each(data, function (index, item) {
+                        var t= "<option value='"+item.id+"'"+">"+item.name+"</option>";
+                        $('#selectFuction').append(t)
+                    });
+
+                    layui.form.render("select");
+                    //重新渲染 固定写法
+                }
+            });
+
         form.on('select(sqlType)', function(data) {
             sid = data['value'];
             $.ajax({
@@ -384,7 +456,6 @@
             }
             });
             var hp = JSON.stringify(values);
-            alert(hp);
             $.ajax({
                 url : '/caseApiAddPost/',
                 type : 'post',

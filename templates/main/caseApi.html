@@ -141,7 +141,7 @@
                     shade: false,
                     maxmin: true,
                     shade: 0.5,
-                    area: ['70%', '90%'],
+                    area: ['90%', '90%'],
                     content: '/caseApiEdit/'+eid,
                     zIndex: layer.zIndex,
                     end: function () {
@@ -220,12 +220,18 @@
                     contentType :"application/json",
                     success:function(data){
                         if(data.code==0){
-                        layer.msg('运行成功',{
-                            offset:['50%'],
-                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
-                             },function(){
-                            location.reload();
-                            });
+                            layer.msg('运行成功',{
+                                offset:['50%'],
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                 },function(){
+                                location.reload();
+                                });
+                        }else if(data.code==1){
+                            layer.msg(data.msg,{
+                                offset:['50%'],
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                 })
+
                         }else{
                             layer.msg('运行失败');
                          }
@@ -254,7 +260,7 @@
                 maxmin: true,
                 shade: 0.5,
                 anim: 4,
-                area: ['60%', '90%'],
+                area: ['90%', '90%'],
                 content: '/caseApiAdd/'+caseId,
                 zIndex: layer.zIndex,
                 // skin: 'layui-layer-molv',

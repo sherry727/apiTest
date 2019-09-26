@@ -19,7 +19,8 @@ def resuLtList(request,autoRuntimeid):
     q1.connector = 'AND'
     q1.children.append(('task_id', taskId))
     q1.children.append(('autoRunTime_id', autoRuntimeid))
-    status=sta.encode('unicode-escape').decode('string_escape')
+    # status=sta.encode('unicode-escape').decode('string_escape')
+    status = sta
     if status=='1':
         q1.children.append(('httpStatus', '200'))
     elif status=='2':
@@ -41,7 +42,7 @@ def resuLtList(request,autoRuntimeid):
             dic['apiName'] = api.name
             dic['apiId'] = api.id
         except Exception as result:
-            print "未知错误 %s" % result
+            print ("未知错误 %s" % result)
             resultdict['code'] = 1
             resultdict['msg'] = ''
             resultdict['count'] = total
@@ -64,13 +65,14 @@ def resuLtList(request,autoRuntimeid):
     resultdict['msg'] = ''
     resultdict['count'] = total
     resultdict['data'] = dict
-    print resultdict
+    print(resultdict)
     return JsonResponse(resultdict, safe=False)
 
 def rDetail(request,apiData):
     c = apiData.encode('utf-8')
     apiData = json.loads(c)
-    # u = AutoApiCase.objects.get(id=apiData.get('apiId'))  # 接口表
+    print (apiData)
+    u = AutoApiCase.objects.get(id=apiData.get('apiId'))  # 接口表
     gv = globalVariable.objects.filter(autoApi_id=apiData.get('apiId'))  # 全局变量
     ast = asserts.objects.filter(autoApi_id=apiData.get('apiId'))  # 断言
     h = autoApiHead.objects.filter(autoApi_id=apiData.get('apiId'))  # 请求头
@@ -101,9 +103,15 @@ def rDetail(request,apiData):
         'autoRuntimeid': apiData.get('autoRuntimeid'),
         'user': apiData.get('user'),
         'url': apiData.get('url'),
+        'method': u.method,
         'headers': headers,
         'params': params,
         'responseData': s.responseData,
+        'RequestHeaders': s.RequestHeaders,
+        'RequestBody': s.RequestBody,
+        'ResponseHeaders': s.ResponseHeaders,
+        'Assertion': s.Assertion,
+        'code': s.httpStatus,
         'result': apiData.get('result').encode('utf-8')
     }
     # print type(apiData.get('result').encode('utf-8'))

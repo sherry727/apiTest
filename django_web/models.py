@@ -73,6 +73,8 @@ class Env(models.Model):
     project = models.ForeignKey('Project', on_delete=models.CASCADE)
     env_name = models.CharField(max_length=32)
     env_url= models.CharField(max_length=100, verbose_name='访问地址')
+    appKey= models.CharField(max_length=100, verbose_name='appkey', null=True, default='')
+    app_secret = models.CharField(max_length=200, verbose_name='app_secret', null=True, default='')
     evn_port=models.CharField(max_length=10, verbose_name='端口')
     env_desc = models.CharField(max_length=1000, default='')
     env_createTime = models.DateTimeField('创建时间', default=timezone.now)
@@ -222,7 +224,8 @@ class AutoApiCase(models.Model):
     id = models.AutoField(primary_key=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='所属项目')
     case = models.ForeignKey(Case, on_delete=models.CASCADE, verbose_name='所属用例')
-    name = models.CharField(max_length=50, verbose_name='接口名称')
+    fuctionLib_id = models.IntegerField(null=True, verbose_name='签名ids')
+    name = models.CharField(max_length=50, verbose_name='接口名称', null=True)
     httpType = models.CharField(max_length=50, default='HTTPS', verbose_name='http/https', choices=HTTP_CHOICE)
     method = models.CharField(max_length=50, verbose_name='请求方式', choices=REQUEST_TYPE_CHOICE)
     apiAddress = models.CharField(max_length=1024, verbose_name='接口地址')
@@ -332,9 +335,13 @@ class taskResult(models.Model):
     task = models.ForeignKey(task, on_delete=models.CASCADE, verbose_name='任务关联')
     autoRunTime_id = models.IntegerField(null=True, verbose_name='时间关联')
     case_id=models.IntegerField(default=0, verbose_name='用例')
-    autoApi_id=models.IntegerField(default=0, verbose_name='用例')
+    autoApi_id=models.IntegerField(default=0, verbose_name='接口')
     result = models.CharField(max_length=50, verbose_name='测试结果', choices=RESULT_CHOICE)
     httpStatus = models.CharField(max_length=50, blank=True, null=True, verbose_name='http状态', choices=HTTP_CODE_CHOICE)
+    RequestHeaders = models.CharField(max_length=1000, blank=True, null=True, verbose_name='信息头')
+    ResponseHeaders = models.CharField(max_length=1000, blank=True, null=True, verbose_name='信息头')
+    RequestBody = models.CharField(max_length=1000, blank=True, null=True, verbose_name='请求参数')
+    Assertion = models.CharField(max_length=1000, blank=True, null=True, verbose_name='断言')
     responseData = models.TextField(blank=True, null=True, verbose_name='实际返回内容')
     user = models.CharField(max_length=32, verbose_name='创建人')
     testTime = models.CharField(max_length=50, verbose_name='测试时间',default='')
@@ -430,7 +437,7 @@ class uploadFile(models.Model):
     """
     id = models.AutoField(primary_key=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='所属项目')
-    api_id = models.IntegerField(null=True, verbose_name='api和autoApiId')
+    api_id = models.IntegerField(null=True, verbose_name='apiautoApiId')
     typeApi = models.IntegerField(default=0, verbose_name='0:自建 1:api 2：autoApi')
     name= models.CharField(max_length=50, null=True, verbose_name='文件名称')
     fname=models.CharField(max_length=50, null=True, verbose_name='实际名称')
@@ -438,6 +445,39 @@ class uploadFile(models.Model):
     path=models.CharField(max_length=100, verbose_name='文件路径',null=True)
     user = models.CharField(max_length=50, verbose_name='创建人')
     CreateTime = models.DateTimeField(auto_now=True, verbose_name='创建时间')
+
+
+
+class feedback(models.Model):
+    """
+        信息反馈
+    """
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50,  verbose_name='标题')
+    user = models.CharField(max_length=50,  verbose_name='创建人')
+    mail=models.CharField(max_length=100,  verbose_name='邮箱', null=True)
+    fbtype = models.CharField(max_length=50,  verbose_name='反馈类型')
+    context =models.TextField(blank=True, null=True, verbose_name='反馈内容')
+    status =models.IntegerField(default=0, verbose_name='0:未确认 1:已修复')
+    modfyuser = models.CharField(max_length=50,  verbose_name='修复人',null=True)
+    CreateTime = models.DateTimeField(auto_now=True, verbose_name='创建时间')
+    modfyTime = models.DateTimeField(auto_now=False, verbose_name='修复时间',null=True)
+
+
+
+
+class fuctionLib(models.Model):
+    """
+    函数库
+    """
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50,  verbose_name='函数名称')
+    method = models.CharField(max_length=100,  verbose_name='方法')
+    ftype = models.IntegerField(default=0, verbose_name='0:签名 1:加密函数 2：随机函数 3：四则运算4：系统函数')
+    desc = models.CharField(max_length=100, verbose_name='描述', null=True)
+
+
+
 
 
 
