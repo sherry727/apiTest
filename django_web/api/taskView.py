@@ -225,7 +225,8 @@ def caseTaskPost(request):
                         fu = fuctionView.qianming(fu_id=int(i.fuctionLib_id), appKey=env.appKey, app_secret=env.app_secret,
                                                   jdata=params)
                         params = fu
-                    ur = url+ i.apiAddress
+                    address = Public.global_variable(key=i.apiAddress)
+                    ur = url+ address
                     try:
                         r = Public.execute(url=ur, params=params, method=i.method, heads=headers)
                         if len(galobalValues) > 0:
@@ -404,7 +405,8 @@ def taskRun(request):
                     fu = fuctionView.qianming(fu_id=int(i.fuctionLib_id), appKey=ev.appKey, app_secret=ev.app_secret,
                                               jdata=params)
                     params = fu
-                ur = url + i.apiAddress
+                address = Public.global_variable(key=i.apiAddress)
+                ur = url + address
                 try:
                     r = Public.execute(url=ur, params=params, method=i.method, heads=headers)
                     print(r.text)

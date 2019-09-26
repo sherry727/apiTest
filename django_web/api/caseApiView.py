@@ -481,6 +481,7 @@ def caseApiMultRun(request,eid):
             headers = {}
             params = {}
             fi = {}
+
             for p in he:
                 name = p.name
                 value = p.value
@@ -523,7 +524,8 @@ def caseApiMultRun(request,eid):
                 fu = fuctionView.qianming(fu_id=int(caseApi.fuctionLib_id), appKey=env.appKey, app_secret=env.app_secret,
                                           jdata=params)
                 params = fu
-            url1 =url+caseApi.apiAddress
+            address = Public.global_variable(key=caseApi.apiAddress)
+            url1 =url+address
             # ur = url1.encode('unicode-escape').decode('string_escape')
             method = caseApi.method
             sort = s.get('sort')
